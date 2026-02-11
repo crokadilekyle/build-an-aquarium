@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build an Aquarium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-top: #65b7f6;
+      --bg-bottom: #0e4c92;
+      --panel: #ffffffee;
+      --accent: #ffb703;
+      --text: #0b1c3f;
+      --soft: #e7f5ff;
+      --card: #f5fbff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 30%),
+                  radial-gradient(circle at 80% 0%, rgba(255,255,255,0.28), transparent 25%),
+                  linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .shell {
+      width: min(1200px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 12px 16px;
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      font-size: clamp(24px, 4vw, 34px);
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--panel);
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .main {
+      position: relative;
+      background: url('https://cdn.pixabay.com/photo/2017/01/31/22/06/underwater-2025965_1280.png') center/cover no-repeat;
+      border-radius: 20px;
+      height: min(60vh, 560px);
+      min-height: 320px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.2);
+    }
+
+    .tank-entities {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .overlay-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.25), transparent 35%),
+                  radial-gradient(circle at 20% 70%, rgba(255,255,255,0.18), transparent 40%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .click-fish {
+      position: absolute;
+      width: clamp(120px, 18vw, 220px);
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,0.25));
+      user-select: none;
+      z-index: 2;
+    }
+
+    .click-fish:active { transform: translate(-50%, -50%) scale(0.95); }
+
+    .bubble {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 6px rgba(255,255,255,0.9);
+      animation: rise 1.4s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120px) scale(0.4); opacity: 0; }
+    }
+
+    .swimmer {
+      position: absolute;
+      will-change: transform;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.18));
+      transition-property: transform, filter;
+      transition-timing-function: linear, ease;
+      transition-duration: 0s, 120ms;
+      pointer-events: none;
+    }
+
+    .swimmer.fast { filter: drop-shadow(0 10px 14px rgba(0,0,0,0.22)); }
+
+    .gum-bubble {
+      position: absolute;
+      width: 90px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffe4f7, #ff8dd7 60%);
+      box-shadow: 0 0 12px rgba(255, 133, 211, 0.8);
+      animation: gum-drift 6s linear forwards;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .gum-bubble.pop {
+      animation: gum-pop 0.5s ease-out forwards;
+    }
+
+    @keyframes gum-drift {
+      0% { transform: translate(-120px, 40%); opacity: 0.2; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(120%, 30%); opacity: 0; }
+    }
+
+    @keyframes gum-pop {
+      0% { transform: scale(1); opacity: 1; }
+      70% { transform: scale(1.8); opacity: 0.8; box-shadow: 0 0 30px rgba(255,133,211,0.8); }
+      100% { transform: scale(0.4); opacity: 0; }
+    }
+
+    .shop {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 10px 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    .shop-title {
+      margin: 0 0 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #08305f;
+    }
+
+    .shop-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-color: #9cd7ff rgba(255,255,255,0.6);
+    }
+
+    .shop-row::-webkit-scrollbar { height: 10px; }
+    .shop-row::-webkit-scrollbar-track { background: rgba(255,255,255,0.55); border-radius: 999px; }
+    .shop-row::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #7dd3fc, #2563eb); border-radius: 999px; }
+
+    .card {
+      flex: 0 0 220px;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 10px 16px rgba(0,0,0,0.08);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    }
+
+    .card h3 {
+      margin: 0;
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.01em;
+    }
+
+    .meta { font-size: 13px; color: #1f3558; margin: 2px 0 6px; }
+    .owned { font-size: 12px; color: #1f3558; font-weight: 700; }
+
+    .buy-btn {
+      border: none;
+      background: linear-gradient(135deg, #34d399, #0ea5e9);
+      color: #0b1220;
+      font-weight: 800;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
+      box-shadow: 0 8px 16px rgba(14, 165, 233, 0.35);
+    }
+
+    .buy-btn:active { transform: translateY(2px); }
+    .buy-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+    .helper {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      background: rgba(0, 34, 85, 0.2);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.25);
+      width: fit-content;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    @media (max-width: 640px) {
+      .card { flex-basis: 180px; }
+      .card { grid-template-columns: 64px 1fr; }
+      .card img { width: 64px; height: 64px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>Build an Aquarium</h1>
+        <div class="helper">Tap the starter fish to earn shells, then buy friends who swim for you!</div>
+      </div>
+      <div class="stats">
+        <div class="pill" id="coins">🐚 Shells: 0</div>
+        <div class="pill" id="cps">⏱️ /sec: 0</div>
+      </div>
+    </header>
+
+    <section class="main" aria-label="Aquarium tank">
+      <img src="https://img.icons8.com/color/256/clown-fish.png" alt="Tap to earn shells" class="click-fish" id="tapFish">
+      <div class="tank-entities" id="tank"></div>
+      <div class="overlay-glow"></div>
+    </section>
+
+    <section class="shop" aria-label="Fish shop">
+      <h2 class="shop-title">Fish Friends Shop</h2>
+      <div class="shop-row" id="shopRow"></div>
+    </section>
+  </div>
+
+  <script>
+    const coinsEl = document.getElementById('coins');
+    const cpsEl = document.getElementById('cps');
+    const tapFish = document.getElementById('tapFish');
+    const shopRow = document.getElementById('shopRow');
+    const tank = document.getElementById('tank');
+
+    const gumFinSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 90'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23ff9ddf'/><stop offset='100%' stop-color='%23ff62c7'/></linearGradient></defs><rect x='30' y='22' width='100' height='46' rx='20' fill='url(%23g)' stroke='%23ff7acb' stroke-width='4'/><polygon points='130,45 170,22 170,68' fill='%23ff7acb'/><circle cx='70' cy='45' r='8' fill='white'/><circle cx='72' cy='43' r='4' fill='%230b1c3f'/><circle cx='76' cy='41' r='2' fill='white' opacity='0.8'/><path d='M45 40 q-8 5 0 10' stroke='%23ffb8e6' stroke-width='4' fill='none' stroke-linecap='round'/></svg>`;
+
+    const fishList = [
+      { id: 'guppy', name: 'Guppy', cost: 10, cps: 0.1, stockCap: 10, restockAt: 200, img: 'https://img.icons8.com/color/256/fish.png' },
+      { id: 'seahorse', name: 'Seahorse', cost: 50, cps: 1, stockCap: 8, restockAt: 400, img: 'https://img.icons8.com/color/256/seahorse.png' },
+      { id: 'puffer', name: 'Puffer', cost: 200, cps: 4, stockCap: 6, restockAt: 900, img: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f421.svg' },
+      { id: 'turtle', name: 'Turtle', cost: 600, cps: 10, stockCap: 5, restockAt: 1500, img: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f422.svg' },
+      { id: 'jelly', name: 'Jelly', cost: 1500, cps: 24, stockCap: 4, restockAt: 2600, img: 'https://img.icons8.com/color/256/jellyfish.png' },
+      { id: 'shark', name: 'Shark', cost: 4000, cps: 65, stockCap: 3, restockAt: 6500, img: 'https://img.icons8.com/color/256/shark.png' },
+      { id: 'gumfin', name: 'Gum Fin', cost: 5000, cps: 20, stockCap: 2, restockAt: 8000, img: gumFinSvg, locked: true }
+    ];
+
+    const state = {
+      coins: 0,
+      cps: 0,
+      owned: Object.fromEntries(fishList.map(f => [f.id, 0])),
+      stock: Object.fromEntries(fishList.map(f => [f.id, f.stockCap || 0])),
+      mutationStarted: false,
+      mutationDone: false,
+    };
+
+    function format(n) {
+      if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
+      if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
+      return n.toFixed(1).replace(/\.0$/, '');
+    }
+
+    function renderStats() {
+      coinsEl.textContent = `🐚 Shells: ${format(state.coins)}`;
+      cpsEl.textContent = `⏱️ /sec: ${format(state.cps)}`;
+    }
+
+    function makeCard(fish) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${fish.img}" alt="${fish.name}">
+        <div>
+          <h3>${fish.name}</h3>
+          <div class="meta">Cost: ${fish.cost} | +${fish.cps}/s</div>
+          <div class="meta" id="stock-${fish.id}">Stock: ${state.stock[fish.id] ?? fish.stockCap}</div>
+          <div class="owned" id="owned-${fish.id}">Owned: 0</div>
+          <button class="buy-btn" data-id="${fish.id}">Buy</button>
+        </div>
+      `;
+      return card;
+    }
+
+    function rebuildShop() {
+      shopRow.innerHTML = '';
+      fishList.filter(f => !f.locked).forEach(fish => {
+        const card = makeCard(fish);
+        shopRow.appendChild(card);
+      });
+    }
+
+    function updateAffordability() {
+      document.querySelectorAll('.buy-btn').forEach(btn => {
+        const fish = fishList.find(f => f.id === btn.dataset.id);
+        const inStock = (state.stock[fish.id] ?? 0) > 0;
+        btn.disabled = !inStock || state.coins < fish.cost;
+        btn.textContent = inStock ? 'Buy' : `Restock at ${fish.restockAt}`;
+      });
+      fishList.forEach(fish => {
+        const stockEl = document.getElementById(`stock-${fish.id}`);
+        if (stockEl) stockEl.textContent = `Stock: ${state.stock[fish.id] ?? 0}`;
+      });
+    }
+
+    function recalcCps() {
+      state.cps = fishList.reduce((sum, fish) => sum + state.owned[fish.id] * fish.cps, 0);
+    }
+
+    function swim(swimmer) {
+      const w = tank.clientWidth || 600;
+      const h = tank.clientHeight || 320;
+      const margin = 40;
+      const prev = swimmer._pos || { x: w / 2, y: h / 2 };
+      const dir = swimmer._dir ?? (Math.random() < 0.5 ? 1 : -1);
+      const nextX = dir === 1 ? w - margin : margin;
+      const wobble = Math.random() * 80 - 40;
+      const nextY = Math.max(margin, Math.min(h - margin, prev.y + wobble));
+      const dx = nextX - prev.x;
+      const dy = nextY - prev.y;
+      const distance = Math.hypot(dx, dy);
+      const pixelsPerSecond = 30; // slower cruise speed
+      const duration = Math.min(18, Math.max(8, distance / pixelsPerSecond));
+      swimmer._pos = { x: nextX, y: nextY };
+      swimmer._dir = -dir;
+      swimmer.style.transitionDuration = `${duration}s, 120ms`;
+      swimmer.style.transform = `translate(${nextX}px, ${nextY}px) scaleX(${dir})`;
+    }
+
+    function addFishToTank(fish) {
+      if (!tank) return;
+      const img = document.createElement('img');
+      img.src = fish.img;
+      img.alt = fish.name;
+      img.className = `swimmer${fish.cps >= 20 ? ' fast' : ''}`;
+      const base = Math.max(60, Math.min(140, 70 + fish.cps * 1.5));
+      img.style.width = `${base}px`;
+      const w = tank.clientWidth || 600;
+      const h = tank.clientHeight || 320;
+      img._pos = { x: w / 2, y: h / 2 };
+      img._dir = Math.random() < 0.5 ? 1 : -1;
+      img.style.transform = `translate(${img._pos.x}px, ${img._pos.y}px) scaleX(${img._dir})`;
+      img.style.transitionDuration = '0s, 120ms';
+      tank.appendChild(img);
+      img.addEventListener('transitionend', (evt) => {
+        if (evt.propertyName === 'transform') swim(img);
+      });
+      requestAnimationFrame(() => swim(img));
+    }
+
+    function unlockFish(fishId) {
+      const fish = fishList.find(f => f.id === fishId);
+      if (!fish) return;
+      fish.locked = false;
+      if (!(fishId in state.owned)) state.owned[fishId] = 0;
+      if (!(fishId in state.stock)) state.stock[fishId] = fish.stockCap || 0;
+      rebuildShop();
+      updateAffordability();
+    }
+
+    function startCandyMutation() {
+      if (state.mutationStarted) return;
+      state.mutationStarted = true;
+      const bubble = document.createElement('div');
+      bubble.className = 'gum-bubble';
+      bubble.style.top = `${Math.random() * 40 + 20}%`;
+      document.querySelector('.main').appendChild(bubble);
+      bubble.addEventListener('animationend', () => {
+        bubble.classList.add('pop');
+        setTimeout(() => bubble.remove(), 500);
+        if (!state.mutationDone) {
+          state.mutationDone = true;
+          unlockFish('gumfin');
+          state.owned['gumfin'] += 1;
+          state.stock['gumfin'] = Math.max(0, (state.stock['gumfin'] ?? 0) - 1);
+          recalcCps();
+          renderStats();
+          const owned = document.getElementById('owned-gumfin');
+          if (owned) owned.textContent = `Owned: ${state.owned['gumfin']}`;
+          addFishToTank(fishList.find(f => f.id === 'gumfin'));
+        }
+      }, { once: true });
+    }
+
+    function buyFish(id) {
+      const fish = fishList.find(f => f.id === id);
+      if (!fish || state.coins < fish.cost) return;
+      if ((state.stock[id] ?? 0) <= 0) return;
+      state.coins -= fish.cost;
+      state.owned[id] += 1;
+      state.stock[id] = (state.stock[id] ?? 0) - 1;
+      recalcCps();
+      document.getElementById(`owned-${id}`).textContent = `Owned: ${state.owned[id]}`;
+      addFishToTank(fish);
+      renderStats();
+      updateAffordability();
+    }
+
+    function spawnBubble(x, y) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.style.left = `${x - 7}px`;
+      bubble.style.top = `${y - 7}px`;
+      document.querySelector('.main').appendChild(bubble);
+      setTimeout(() => bubble.remove(), 1400);
+    }
+
+    tapFish.addEventListener('click', (e) => {
+      state.coins += 1;
+      const rect = tapFish.getBoundingClientRect();
+      spawnBubble(e.clientX - rect.left, e.clientY - rect.top + (tapFish.offsetTop - rect.top));
+      renderStats();
+      updateAffordability();
+      if (state.coins >= 300 && !state.mutationDone) startCandyMutation();
+    });
+
+    shopRow.addEventListener('click', (e) => {
+      if (e.target.matches('.buy-btn')) {
+        buyFish(e.target.dataset.id);
+      }
+    });
+
+    // Passive income ticker
+    setInterval(() => {
+      if (state.cps > 0) {
+        state.coins += state.cps / 10; // update 10x per second for smoother flow
+        renderStats();
+        updateAffordability();
+      }
+      if (state.coins >= 300 && !state.mutationDone) startCandyMutation();
+      // Restock check
+      fishList.forEach(fish => {
+        if (fish.locked) return;
+        if ((state.stock[fish.id] ?? 0) > 0) return;
+        if (state.coins >= fish.restockAt) {
+          state.stock[fish.id] = fish.stockCap || 0;
+          updateAffordability();
+        }
+      });
+    }, 100);
+
+    rebuildShop();
+    renderStats();
+    updateAffordability();
+  </script>
+</body>
+</html>
