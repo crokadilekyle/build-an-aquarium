@@ -12,8 +12,10 @@ const resetGame = document.getElementById('resetGame');
 const STORAGE_KEY = 'aquarium-save-v1';
 const SAVE_DELAY_MS = 300;
 let saveTimer = null;
+let luckyEggHatching = false;
 
 const gumFinSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 90'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23ff9ddf'/><stop offset='100%' stop-color='%23ff62c7'/></linearGradient></defs><rect x='30' y='22' width='100' height='46' rx='20' fill='url(%23g)' stroke='%23ff7acb' stroke-width='4'/><polygon points='130,45 170,22 170,68' fill='%23ff7acb'/><circle cx='70' cy='45' r='8' fill='white'/><circle cx='72' cy='43' r='4' fill='%230b1c3f'/><circle cx='76' cy='41' r='2' fill='white' opacity='0.8'/><path d='M45 40 q-8 5 0 10' stroke='%23ffb8e6' stroke-width='4' fill='none' stroke-linecap='round'/></svg>`;
+const luckyEggSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f95a.svg';
 
 const fishList = [
   { id: 'guppy', name: 'Guppy', cost: 10, cps: 0.1, stockCap: 10, restockAt: 200, img: 'https://img.icons8.com/color/256/fish.png' },
@@ -22,7 +24,8 @@ const fishList = [
   { id: 'turtle', name: 'Turtle', cost: 600, cps: 10, stockCap: 5, restockAt: 1500, img: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f422.svg' },
   { id: 'jelly', name: 'Jelly', cost: 1500, cps: 24, stockCap: 4, restockAt: 2600, img: 'https://img.icons8.com/color/256/jellyfish.png' },
   { id: 'shark', name: 'Shark', cost: 4000, cps: 65, stockCap: 3, restockAt: 6500, img: 'https://img.icons8.com/color/256/shark.png' },
-  { id: 'gumfin', name: 'Gum Fin', cost: 5000, cps: 20, stockCap: 2, restockAt: 8000, img: gumFinSvg, locked: true, defaultLocked: true }
+  { id: 'gumfin', name: 'Gum Fin', cost: 5000, cps: 20, stockCap: 2, restockAt: 8000, img: gumFinSvg, locked: true, defaultLocked: true },
+  { id: 'luckyegg', name: 'Lucky Egg', cost: 1000, cps: 0, stockCap: 0, restockAt: 0, img: luckyEggSvg, locked: true, defaultLocked: true, isEgg: true }
 ];
 
 function createDefaultState() {
@@ -32,7 +35,8 @@ function createDefaultState() {
     owned: Object.fromEntries(fishList.map(f => [f.id, 0])),
     stock: Object.fromEntries(fishList.map(f => [f.id, f.stockCap || 0])),
     mutationStarted: false,
-    mutationDone: false
+    mutationDone: false,
+    luckyEggEventDone: false
   };
 }
 
@@ -66,6 +70,7 @@ function loadState() {
     });
 
     defaults.mutationDone = Boolean(saved.mutationDone);
+    defaults.luckyEggEventDone = Boolean(saved.luckyEggEventDone);
     return defaults;
   } catch (error) {
     return defaults;
@@ -78,7 +83,8 @@ function persistNow() {
       coins: state.coins,
       owned: state.owned,
       stock: state.stock,
-      mutationDone: state.mutationDone
+      mutationDone: state.mutationDone,
+      luckyEggEventDone: state.luckyEggEventDone
     }));
   } catch (error) {
     // Ignore storage quota/privacy mode errors.
@@ -107,6 +113,10 @@ if (state.mutationDone) {
   const gumfin = fishList.find(fish => fish.id === 'gumfin');
   if (gumfin) gumfin.locked = false;
 }
+if (state.luckyEggEventDone) {
+  const luckyEgg = fishList.find(fish => fish.id === 'luckyegg');
+  if (luckyEgg) luckyEgg.locked = false;
+}
 
 function format(n) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
@@ -129,7 +139,19 @@ function renderStats() {
 
 function makeCard(fish) {
   const card = document.createElement('article');
-  card.className = 'card';
+  card.className = `card${fish.isEgg ? ' lucky-egg-card' : ''}`;
+  if (fish.isEgg) {
+    card.innerHTML = `
+      <img src="${fish.img}" alt="${fish.name}">
+      <div>
+        <h3>${fish.name}</h3>
+        <div class="meta">Cost: ${fish.cost} | Crack for a surprise</div>
+        <div class="owned">Prize pool: Puffer, Turtle, or Shark</div>
+        <button class="buy-btn" data-id="${fish.id}">Open Egg</button>
+      </div>
+    `;
+    return card;
+  }
   card.innerHTML = `
     <img src="${fish.img}" alt="${fish.name}">
     <div>
@@ -154,11 +176,18 @@ function rebuildShop() {
 function updateAffordability() {
   document.querySelectorAll('.buy-btn').forEach(btn => {
     const fish = fishList.find(f => f.id === btn.dataset.id);
+    if (!fish) return;
+    if (fish.isEgg) {
+      btn.disabled = luckyEggHatching || state.coins < fish.cost;
+      btn.textContent = luckyEggHatching ? 'Hatching...' : 'Open Egg';
+      return;
+    }
     const inStock = (state.stock[fish.id] ?? 0) > 0;
     btn.disabled = !inStock || state.coins < fish.cost;
     btn.textContent = inStock ? 'Buy' : `Restock at ${fish.restockAt}`;
   });
   fishList.forEach(fish => {
+    if (fish.isEgg) return;
     const stockEl = document.getElementById(`stock-${fish.id}`);
     if (stockEl) stockEl.textContent = `Stock: ${state.stock[fish.id] ?? 0}`;
     const ownedEl = document.getElementById(`owned-${fish.id}`);
@@ -273,9 +302,93 @@ function startCandyMutation() {
   }, { once: true });
 }
 
+function chooseLuckyEggPrize() {
+  const weightedPrizes = [
+    { id: 'puffer', weight: 60 },
+    { id: 'turtle', weight: 30 },
+    { id: 'shark', weight: 10 }
+  ];
+  const totalWeight = weightedPrizes.reduce((sum, item) => sum + item.weight, 0);
+  let roll = Math.random() * totalWeight;
+  for (const item of weightedPrizes) {
+    if (roll < item.weight) return fishList.find(fish => fish.id === item.id);
+    roll -= item.weight;
+  }
+  return fishList.find(fish => fish.id === 'puffer');
+}
+
+function hatchLuckyEgg() {
+  if (luckyEggHatching) return;
+  const main = document.querySelector('.main');
+  if (!main) return;
+  luckyEggHatching = true;
+  updateAffordability();
+
+  const prize = chooseLuckyEggPrize();
+  const scene = document.createElement('div');
+  scene.className = 'lucky-egg-scene';
+  scene.innerHTML = `
+    <div class="lucky-egg-shell">🥚</div>
+    <div class="lucky-egg-prize"></div>
+  `;
+  main.appendChild(scene);
+
+  setTimeout(() => {
+    scene.classList.add('crack');
+  }, 1400);
+
+  setTimeout(() => {
+    if (prize) {
+      state.owned[prize.id] += 1;
+      recalcCps();
+      const ownedEl = document.getElementById(`owned-${prize.id}`);
+      if (ownedEl) ownedEl.textContent = `Owned: ${state.owned[prize.id]}`;
+      addFishToTank(prize);
+      const prizeEl = scene.querySelector('.lucky-egg-prize');
+      if (prizeEl) prizeEl.textContent = `You hatched a ${prize.name}!`;
+      queuePersist();
+    }
+    renderStats();
+    updateAffordability();
+  }, 1750);
+
+  setTimeout(() => {
+    scene.classList.add('fade');
+  }, 3100);
+
+  setTimeout(() => {
+    scene.remove();
+    luckyEggHatching = false;
+    updateAffordability();
+  }, 3650);
+}
+
+function startLuckyEggEvent() {
+  if (state.luckyEggEventDone) return;
+  state.luckyEggEventDone = true;
+  unlockFish('luckyegg');
+  const main = document.querySelector('.main');
+  if (main) {
+    const notice = document.createElement('div');
+    notice.className = 'lucky-egg-unlock';
+    notice.textContent = 'The Lucky Egg is now in the shop!';
+    main.appendChild(notice);
+    setTimeout(() => notice.remove(), 2400);
+  }
+  queuePersist();
+}
+
 function buyFish(id) {
   const fish = fishList.find(f => f.id === id);
   if (!fish || state.coins < fish.cost) return;
+  if (fish.isEgg) {
+    if (luckyEggHatching) return;
+    state.coins -= fish.cost;
+    renderStats();
+    hatchLuckyEgg();
+    queuePersist();
+    return;
+  }
   if ((state.stock[id] ?? 0) <= 0) return;
   state.coins -= fish.cost;
   state.owned[id] += 1;
@@ -304,6 +417,7 @@ tapFish.addEventListener('click', e => {
   renderStats();
   updateAffordability();
   queuePersist();
+  if (state.coins >= 500 && !state.luckyEggEventDone) startLuckyEggEvent();
   if (state.coins >= 300 && !state.mutationDone) startCandyMutation();
 });
 
@@ -340,8 +454,11 @@ if (resetGame) {
     state.stock = defaults.stock;
     state.mutationStarted = false;
     state.mutationDone = false;
+    state.luckyEggEventDone = false;
+    luckyEggHatching = false;
     resetFishLocks();
     if (tank) tank.innerHTML = '';
+    document.querySelectorAll('.lucky-egg-scene, .lucky-egg-unlock').forEach(el => el.remove());
     clearSave();
     rebuildShop();
     renderStats();
@@ -361,9 +478,11 @@ setInterval(() => {
     updateAffordability();
     queuePersist();
   }
+  if (state.coins >= 500 && !state.luckyEggEventDone) startLuckyEggEvent();
   if (state.coins >= 300 && !state.mutationDone) startCandyMutation();
   let didRestock = false;
   fishList.forEach(fish => {
+    if (fish.isEgg) return;
     if (fish.locked) return;
     if ((state.stock[fish.id] ?? 0) > 0) return;
     if (state.coins >= fish.restockAt) {
@@ -379,6 +498,7 @@ setInterval(() => {
 
 function spawnOwnedFish() {
   fishList.forEach(fish => {
+    if (fish.isEgg) return;
     const count = state.owned[fish.id] ?? 0;
     for (let i = 0; i < count; i += 1) {
       addFishToTank(fish);
