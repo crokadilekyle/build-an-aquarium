@@ -3,55 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build an Aquarium</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>Creek Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <div class="header-info">
-        <h1>Build an Aquarium</h1>
-        <div class="stats">
-          <div class="pill" id="coins">🐚 Shells: 0</div>
-          <div class="pill" id="cps">⏱️ /sec: 0</div>
-        </div>
-      </div>
-      <button class="shop-toggle" id="shopToggle" aria-label="Open fish shop" aria-controls="shopPanel" aria-expanded="false">
-        <span class="shop-toggle-icon" aria-hidden="true">
-          <svg class="shop-bag-icon" viewBox="0 0 64 64">
-            <path d="M16 22h32l-3 30H19z" fill="#ffffff" stroke="#0a4a8d" stroke-width="3"></path>
-            <path d="M24 22a8 8 0 0 1 16 0" fill="none" stroke="#0a4a8d" stroke-width="3" stroke-linecap="round"></path>
-            <ellipse cx="32" cy="39" rx="9" ry="5.5" fill="#59c0ff"></ellipse>
-            <circle cx="29" cy="38" r="1.3" fill="#0b1c3f"></circle>
-            <polygon points="40,39 46,35 46,43" fill="#2f97dd"></polygon>
-          </svg>
-        </span>
-        <span class="shop-toggle-text">Shop</span>
-      </button>
-    </header>
+  <header class="topbar">
+    <div class="inner">
+      <a class="brand" href="./">Creek Games</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#gamesGrid">Games</a>
+        <a href="./build-an-aquarium/">Play Now</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="main" aria-label="Aquarium tank">
-      <img src="https://img.icons8.com/color/256/clown-fish.png" alt="Tap to earn shells" class="click-fish" id="tapFish">
-      <div class="tank-entities" id="tank"></div>
-      <div class="overlay-glow"></div>
-    </section>
-
-    <section class="shop" id="shopPanel" aria-label="Fish shop">
-      <div class="shop-head">
-        <h2 class="shop-title">Fish Friends Shop</h2>
-        <button class="shop-close" id="shopClose" aria-label="Close fish shop">✕</button>
+  <section class="hero">
+    <div class="inner hero-inner">
+      <div>
+        <p class="kicker">Arcade Portal</p>
+        <h1>Creek Games</h1>
+        <p class="subtitle">A growing collection of fun little browser games. Pick one and play instantly.</p>
+        <p class="meta"><span id="gameCount">0</span> live game</p>
       </div>
-      <div class="shop-row" id="shopRow"></div>
-      <div class="shop-actions">
-        <button class="reset-btn" id="resetGame">Start Over</button>
+      <div class="hero-art">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f3ae.svg" alt="Video game controller illustration" />
       </div>
-    </section>
-  </div>
-  <button class="shop-backdrop" id="shopBackdrop" aria-label="Close fish shop"></button>
+    </div>
+  </section>
 
-  <script src="script.js"></script>
+  <main class="page">
+    <section class="grid" id="gamesGrid" aria-label="Game library"></section>
+  </main>
+
+  <template id="gameCardTemplate">
+    <article class="card">
+      <div class="card-art"><img alt="" loading="lazy" /></div>
+      <div class="badge">Playable Now</div>
+      <h2></h2>
+      <p class="description"></p>
+      <a class="play">Play</a>
+    </article>
+  </template>
+
+  <script>
+    const games = [
+      {
+        title: "Build an Aquarium",
+        description: "Tap for shells, buy fish, and grow your underwater clicker tank.",
+        href: "./build-an-aquarium/",
+        icon: "https://img.icons8.com/color/256/clown-fish.png"
+      }
+    ];
+
+    const grid = document.getElementById("gamesGrid");
+    const template = document.getElementById("gameCardTemplate");
+    const count = document.getElementById("gameCount");
+
+    count.textContent = String(games.length);
+    if (games.length !== 1) {
+      count.parentElement.textContent = `${games.length} live games`;
+    }
+
+    games.forEach((game) => {
+      const card = template.content.cloneNode(true);
+      card.querySelector("img").src = game.icon;
+      card.querySelector("img").alt = game.title;
+      card.querySelector("h2").textContent = game.title;
+      card.querySelector(".description").textContent = game.description;
+      const link = card.querySelector(".play");
+      link.href = game.href;
+      link.textContent = `Play ${game.title}`;
+      grid.appendChild(card);
+    });
+  </script>
 </body>
 </html>
