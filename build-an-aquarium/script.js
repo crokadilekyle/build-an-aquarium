@@ -8,7 +8,9 @@ const shopToggle = document.getElementById('shopToggle');
 const shopClose = document.getElementById('shopClose');
 const shopBackdrop = document.getElementById('shopBackdrop');
 const resetGame = document.getElementById('resetGame');
+const crabTestBtn = document.getElementById('crabTestBtn');
 const tacoTimerEl = document.getElementById('tacoTimer');
+const crabTimerEl = document.getElementById('crabTimer');
 const mainSection = document.querySelector('.main');
 
 const STORAGE_KEY = 'aquarium-save-v1';
@@ -17,6 +19,11 @@ const TACO_EVENT_SHARK_STEP = 5;
 const TACO_EVENT_DURATION_MS = 30_000;
 const TACO_TRUCK_DRIVE_IN_MS = 1400;
 const TACO_TRUCK_DRIVE_OUT_MS = 900;
+const CRAB_EVENT_DURATION_MS = 114_000;
+const CRAB_RAVE_AUDIO_URL = './assets/audio/Crab Rave.mp3';
+const CRAB_RAVE_TARGET_VOLUME = 0.6;
+const CRAB_RAVE_FADE_IN_MS = 1800;
+const CRAB_RAVE_FADE_OUT_MS = 2200;
 let saveTimer = null;
 let luckyEggHatching = false;
 let tacoEventActive = false;
@@ -29,10 +36,20 @@ let tacoEventEndsAt = 0;
 let tacoIntroTimers = [];
 let tacoTruckEl = null;
 let tacoLaunchEl = null;
+let crabEventActive = false;
+let crabEventTimer = null;
+let crabEventEndsAt = 0;
+let crabRaveAudioEl = null;
+let crabDancers = [];
+let crabFadeTimer = null;
+let crabFadeFrame = null;
+let bubbleAudioContext = null;
+let lastBubbleSoundAt = 0;
 
 const gumFinSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 90'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23ff9ddf'/><stop offset='100%' stop-color='%23ff62c7'/></linearGradient></defs><rect x='30' y='22' width='100' height='46' rx='20' fill='url(%23g)' stroke='%23ff7acb' stroke-width='4'/><polygon points='130,45 170,22 170,68' fill='%23ff7acb'/><circle cx='70' cy='45' r='8' fill='white'/><circle cx='72' cy='43' r='4' fill='%230b1c3f'/><circle cx='76' cy='41' r='2' fill='white' opacity='0.8'/><path d='M45 40 q-8 5 0 10' stroke='%23ffb8e6' stroke-width='4' fill='none' stroke-linecap='round'/></svg>`;
 const luckyEggSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f95a.svg';
 const tacoSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f32e.svg';
+const crabSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f980.svg';
 const tacoTurtleSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 120'><ellipse cx='102' cy='72' rx='58' ry='34' fill='%238a5a30'/><ellipse cx='164' cy='72' rx='22' ry='18' fill='%23966a3f'/><circle cx='172' cy='67' r='3.2' fill='%231b1b1b'/><ellipse cx='70' cy='98' rx='13' ry='8' fill='%23754a25'/><ellipse cx='102' cy='104' rx='13' ry='8' fill='%23754a25'/><ellipse cx='133' cy='99' rx='13' ry='8' fill='%23754a25'/><path d='M58 62 q44 -52 88 0 l-44 34z' fill='%23e2b354' stroke='%23ba8a38' stroke-width='4'/><path d='M73 57 q30 -28 58 0' fill='none' stroke='%23b4642c' stroke-width='5' stroke-linecap='round'/><circle cx='84' cy='58' r='4' fill='%23d33f49'/><circle cx='96' cy='62' r='4' fill='%23d33f49'/><circle cx='110' cy='58' r='4' fill='%23d33f49'/><path d='M72 55 q18 -12 36 0 q18 -12 36 0' fill='none' stroke='%2353a84f' stroke-width='4' stroke-linecap='round'/></svg>`;
 
 const fishList = [
@@ -41,6 +58,7 @@ const fishList = [
   { id: 'puffer', name: 'Puffer', cost: 200, cps: 4, stockCap: 6, restockAt: 900, img: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f421.svg' },
   { id: 'turtle', name: 'Turtle', cost: 600, cps: 10, stockCap: 5, restockAt: 1500, img: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f422.svg' },
   { id: 'tacoturtle', name: 'Taco Turtle', cost: 0, cps: 14, stockCap: 0, restockAt: 0, img: tacoTurtleSvg, locked: true, defaultLocked: true },
+  { id: 'crab', name: 'Crab', cost: 0, cps: 0, stockCap: 0, restockAt: 0, img: crabSvg, locked: true, defaultLocked: true },
   { id: 'jelly', name: 'Jelly', cost: 1500, cps: 24, stockCap: 4, restockAt: 2600, img: 'https://img.icons8.com/color/256/jellyfish.png' },
   { id: 'shark', name: 'Shark', cost: 4000, cps: 65, stockCap: 3, restockAt: 6500, img: 'https://img.icons8.com/color/256/shark.png' },
   { id: 'gumfin', name: 'Gum Fin', cost: 5000, cps: 20, stockCap: 2, restockAt: 8000, img: gumFinSvg, locked: true, defaultLocked: true },
@@ -56,7 +74,8 @@ function createDefaultState() {
     mutationStarted: false,
     mutationDone: false,
     luckyEggEventDone: false,
-    tacoMilestone: 0
+    tacoMilestone: 0,
+    crabEventDone: false
   };
 }
 
@@ -91,6 +110,7 @@ function loadState() {
 
     defaults.mutationDone = Boolean(saved.mutationDone);
     defaults.luckyEggEventDone = Boolean(saved.luckyEggEventDone);
+    defaults.crabEventDone = Boolean(saved.crabEventDone);
     const savedTacoMilestone = Number(saved.tacoMilestone);
     if (Number.isFinite(savedTacoMilestone) && savedTacoMilestone >= 0) {
       defaults.tacoMilestone = Math.floor(savedTacoMilestone / TACO_EVENT_SHARK_STEP) * TACO_EVENT_SHARK_STEP;
@@ -111,7 +131,8 @@ function persistNow() {
       stock: state.stock,
       mutationDone: state.mutationDone,
       luckyEggEventDone: state.luckyEggEventDone,
-      tacoMilestone: state.tacoMilestone
+      tacoMilestone: state.tacoMilestone,
+      crabEventDone: state.crabEventDone
     }));
   } catch (error) {
     // Ignore storage quota/privacy mode errors.
@@ -149,6 +170,51 @@ function format(n) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
   if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
   return n.toFixed(1).replace(/\.0$/, '');
+}
+
+function formatCountdown(ms) {
+  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+}
+
+function playBubbleClickSound() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  const nowMs = Date.now();
+  if (nowMs - lastBubbleSoundAt < 10) return;
+  lastBubbleSoundAt = nowMs;
+
+  if (!bubbleAudioContext) bubbleAudioContext = new AudioCtx();
+  if (bubbleAudioContext.state === 'suspended') {
+    bubbleAudioContext.resume().catch(() => {});
+  }
+
+  const now = bubbleAudioContext.currentTime + 0.01;
+  const osc = bubbleAudioContext.createOscillator();
+  const gain = bubbleAudioContext.createGain();
+  const filter = bubbleAudioContext.createBiquadFilter();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(880, now);
+  osc.frequency.exponentialRampToValueAtTime(300, now + 0.14);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(1800, now);
+  filter.Q.value = 4;
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.085, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(bubbleAudioContext.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.2);
 }
 
 function setShopOpen(isOpen) {
@@ -333,6 +399,7 @@ function awardTacoTurtle() {
   recalcCps();
   renderStats();
   addFishToTank(tacoTurtle);
+  maybeStartCrabEvent();
   queuePersist();
 }
 
@@ -346,6 +413,7 @@ function createTacoTarget() {
   tacoTarget.innerHTML = `<img src="${tacoSvg}" alt="" aria-hidden="true" draggable="false">`;
   tacoTarget.addEventListener('click', () => {
     if (!tacoEventActive || !tacoCountdownStarted) return;
+    playBubbleClickSound();
     awardTacoTurtle();
     if (tacoHideTimer) {
       clearTimeout(tacoHideTimer);
@@ -490,10 +558,11 @@ function endTacoTimeEvent() {
     tacoTimerEl.textContent = `Taco Time: ${Math.round(TACO_EVENT_DURATION_MS / 1000)}s`;
   }
   renderTacoTimer();
+  maybeStartCrabEvent();
 }
 
 function startTacoTimeEvent() {
-  if (tacoEventActive || !mainSection) return;
+  if (tacoEventActive || crabEventActive || !mainSection) return;
   tacoEventActive = true;
   tacoCountdownStarted = false;
   tacoEventEndsAt = 0;
@@ -504,7 +573,7 @@ function startTacoTimeEvent() {
 }
 
 function maybeStartTacoTimeEvent() {
-  if (tacoEventActive) return;
+  if (tacoEventActive || crabEventActive) return;
   const sharksOwned = state.owned.shark ?? 0;
   const milestone = Math.floor(sharksOwned / TACO_EVENT_SHARK_STEP) * TACO_EVENT_SHARK_STEP;
   if (milestone < TACO_EVENT_SHARK_STEP) return;
@@ -512,6 +581,183 @@ function maybeStartTacoTimeEvent() {
   state.tacoMilestone = milestone;
   queuePersist();
   startTacoTimeEvent();
+}
+
+function clearCrabTimer() {
+  if (crabEventTimer) {
+    clearTimeout(crabEventTimer);
+    crabEventTimer = null;
+  }
+  if (crabFadeTimer) {
+    clearTimeout(crabFadeTimer);
+    crabFadeTimer = null;
+  }
+  if (crabFadeFrame) {
+    cancelAnimationFrame(crabFadeFrame);
+    crabFadeFrame = null;
+  }
+}
+
+function setCrabTheme(active) {
+  if (!mainSection) return;
+  mainSection.classList.toggle('crab-rave', active);
+}
+
+function renderCrabTimer() {
+  if (!crabTimerEl) return;
+  if (!crabEventActive || crabEventEndsAt <= 0) {
+    crabTimerEl.hidden = true;
+    return;
+  }
+  crabTimerEl.textContent = `Crab Rave: ${formatCountdown(crabEventEndsAt - Date.now())}`;
+  crabTimerEl.hidden = false;
+}
+
+function clearCrabDancers() {
+  crabDancers.forEach(dancer => dancer.remove());
+  crabDancers = [];
+}
+
+function spawnCrabDancers() {
+  if (!mainSection) return;
+  clearCrabDancers();
+  const dancerCount = 9;
+  for (let i = 0; i < dancerCount; i += 1) {
+    const dancer = document.createElement('div');
+    dancer.className = 'crab-dancer';
+    dancer.style.left = `${8 + i * 10 + randomInRange(-3, 3)}%`;
+    dancer.style.top = `${randomInRange(16, 74)}%`;
+    dancer.style.setProperty('--crab-size', `${randomInRange(62, 102)}px`);
+    dancer.style.setProperty('--dance-duration', `${randomInRange(0.86, 1.35)}s`);
+    dancer.style.setProperty('--dance-delay', `${randomInRange(-1.1, 0)}s`);
+    dancer.style.setProperty('--dance-tilt', `${randomInRange(7, 18)}deg`);
+    dancer.innerHTML = `<img src="${crabSvg}" alt="" aria-hidden="true" draggable="false">`;
+    mainSection.appendChild(dancer);
+    crabDancers.push(dancer);
+  }
+}
+
+function fadeCrabRaveVolume(targetVolume, durationMs) {
+  if (!crabRaveAudioEl) return;
+  if (crabFadeFrame) {
+    cancelAnimationFrame(crabFadeFrame);
+    crabFadeFrame = null;
+  }
+
+  const audioEl = crabRaveAudioEl;
+  const startVolume = audioEl.volume;
+  const volumeDelta = targetVolume - startVolume;
+  if (durationMs <= 0 || Math.abs(volumeDelta) < 0.001) {
+    audioEl.volume = targetVolume;
+    return;
+  }
+
+  const startAt = performance.now();
+  const step = now => {
+    if (crabRaveAudioEl !== audioEl) return;
+    const elapsed = now - startAt;
+    const progress = Math.min(1, elapsed / durationMs);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    audioEl.volume = Math.max(0, Math.min(1, startVolume + volumeDelta * eased));
+    if (progress < 1) {
+      crabFadeFrame = requestAnimationFrame(step);
+    } else {
+      crabFadeFrame = null;
+    }
+  };
+
+  crabFadeFrame = requestAnimationFrame(step);
+}
+
+function startCrabRaveSong() {
+  if (crabRaveAudioEl) return;
+  crabRaveAudioEl = document.createElement('audio');
+  crabRaveAudioEl.className = 'crab-rave-audio';
+  crabRaveAudioEl.src = CRAB_RAVE_AUDIO_URL;
+  crabRaveAudioEl.loop = false;
+  crabRaveAudioEl.preload = 'auto';
+  crabRaveAudioEl.volume = 0;
+  crabRaveAudioEl.playsInline = true;
+  crabRaveAudioEl.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(crabRaveAudioEl);
+  const playPromise = crabRaveAudioEl.play();
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => {});
+  }
+  fadeCrabRaveVolume(CRAB_RAVE_TARGET_VOLUME, CRAB_RAVE_FADE_IN_MS);
+}
+
+function stopCrabRaveSong() {
+  if (!crabRaveAudioEl) return;
+  if (crabFadeFrame) {
+    cancelAnimationFrame(crabFadeFrame);
+    crabFadeFrame = null;
+  }
+  crabRaveAudioEl.pause();
+  crabRaveAudioEl.removeAttribute('src');
+  crabRaveAudioEl.load();
+  crabRaveAudioEl.remove();
+  crabRaveAudioEl = null;
+}
+
+function awardCrab() {
+  const crab = fishList.find(fish => fish.id === 'crab');
+  if (!crab) return;
+  state.owned.crab += 1;
+  recalcCps();
+  renderStats();
+  addFishToTank(crab);
+}
+
+function endCrabEvent(grantReward = true, allowFollowUpTaco = true) {
+  const shouldReward = grantReward && crabEventActive && !state.crabEventDone;
+  crabEventActive = false;
+  crabEventEndsAt = 0;
+  clearCrabTimer();
+  setCrabTheme(false);
+  clearCrabDancers();
+  stopCrabRaveSong();
+  if (crabTimerEl) {
+    crabTimerEl.hidden = true;
+    crabTimerEl.textContent = `Crab Rave: ${formatCountdown(CRAB_EVENT_DURATION_MS)}`;
+  }
+  if (shouldReward) {
+    state.crabEventDone = true;
+    awardCrab();
+    queuePersist();
+  }
+  renderCrabTimer();
+  if (allowFollowUpTaco) maybeStartTacoTimeEvent();
+}
+
+function startCrabEvent() {
+  if (crabEventActive || tacoEventActive || state.crabEventDone || !mainSection) return;
+  crabEventActive = true;
+  crabEventEndsAt = Date.now() + CRAB_EVENT_DURATION_MS;
+  clearCrabTimer();
+  setCrabTheme(true);
+  spawnCrabDancers();
+  startCrabRaveSong();
+  renderCrabTimer();
+  crabFadeTimer = setTimeout(() => {
+    crabFadeTimer = null;
+    fadeCrabRaveVolume(0, CRAB_RAVE_FADE_OUT_MS);
+  }, Math.max(0, CRAB_EVENT_DURATION_MS - CRAB_RAVE_FADE_OUT_MS));
+  crabEventTimer = setTimeout(endCrabEvent, CRAB_EVENT_DURATION_MS);
+}
+
+function forceStartCrabEvent() {
+  state.crabEventDone = false;
+  if (tacoEventActive) endTacoTimeEvent();
+  if (crabEventActive) endCrabEvent(false, false);
+  startCrabEvent();
+}
+
+function maybeStartCrabEvent() {
+  if (crabEventActive || tacoEventActive || state.crabEventDone) return;
+  if ((state.owned.gumfin ?? 0) < 1) return;
+  if ((state.owned.tacoturtle ?? 0) < 1) return;
+  startCrabEvent();
 }
 
 function swim(swimmer) {
@@ -599,6 +845,7 @@ function startCandyMutation() {
       const owned = document.getElementById('owned-gumfin');
       if (owned) owned.textContent = `Owned: ${state.owned.gumfin}`;
       addFishToTank(fishList.find(f => f.id === 'gumfin'));
+      maybeStartCrabEvent();
       queuePersist();
     }
   }, { once: true });
@@ -700,6 +947,7 @@ function buyFish(id) {
   recalcCps();
   document.getElementById(`owned-${id}`).textContent = `Owned: ${state.owned[id]}`;
   addFishToTank(fish);
+  maybeStartCrabEvent();
   renderStats();
   updateAffordability();
   queuePersist();
@@ -716,6 +964,7 @@ function spawnBubble(x, y) {
 
 tapFish.addEventListener('click', e => {
   state.coins += 1;
+  playBubbleClickSound();
   const rect = tapFish.getBoundingClientRect();
   spawnBubble(e.clientX - rect.left, e.clientY - rect.top + (tapFish.offsetTop - rect.top));
   renderStats();
@@ -746,6 +995,12 @@ if (shopBackdrop) {
   shopBackdrop.addEventListener('click', () => setShopOpen(false));
 }
 
+if (crabTestBtn) {
+  crabTestBtn.addEventListener('click', () => {
+    forceStartCrabEvent();
+  });
+}
+
 if (resetGame) {
   resetGame.addEventListener('click', () => {
     const confirmed = window.confirm('Start over and erase saved shells and fish progress?');
@@ -760,8 +1015,10 @@ if (resetGame) {
     state.mutationDone = false;
     state.luckyEggEventDone = false;
     state.tacoMilestone = 0;
+    state.crabEventDone = false;
     luckyEggHatching = false;
     endTacoTimeEvent();
+    endCrabEvent(false);
     resetFishLocks();
     if (tank) tank.innerHTML = '';
     document.querySelectorAll('.lucky-egg-scene, .lucky-egg-unlock').forEach(el => el.remove());
@@ -779,6 +1036,7 @@ document.addEventListener('keydown', e => {
 
 setInterval(() => {
   renderTacoTimer();
+  renderCrabTimer();
   if (state.cps > 0) {
     state.coins += state.cps / 10;
     renderStats();
@@ -788,6 +1046,7 @@ setInterval(() => {
   if (state.coins >= 500 && !state.luckyEggEventDone) startLuckyEggEvent();
   if (state.coins >= 300 && !state.mutationDone) startCandyMutation();
   maybeStartTacoTimeEvent();
+  maybeStartCrabEvent();
   let didRestock = false;
   fishList.forEach(fish => {
     if (fish.isEgg) return;
@@ -820,11 +1079,13 @@ spawnOwnedFish();
 renderStats();
 updateAffordability();
 renderTacoTimer();
+renderCrabTimer();
 
 window.addEventListener('beforeunload', () => {
   if (saveTimer) {
     clearTimeout(saveTimer);
     saveTimer = null;
   }
+  stopCrabRaveSong();
   persistNow();
 });
