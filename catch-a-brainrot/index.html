@@ -242,68 +242,60 @@
       filter: brightness(0.94);
     }
 
-    @media not all and (hover: none) and (pointer: coarse) {
-      .mobile-overlay {
-        display: none !important;
-      }
+    body.mobile-ui {
+      place-items: stretch;
+      padding: 0;
     }
 
-    @media (hover: none) and (pointer: coarse) {
-      body {
-        place-items: stretch;
-        padding: 0;
-      }
+    body.mobile-ui .game-shell {
+      width: 100vw;
+      min-height: 100dvh;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: #102714;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-      .game-shell {
-        width: 100vw;
-        min-height: 100dvh;
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        background: #102714;
-        box-shadow: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    body.mobile-ui .game-header {
+      display: none;
+    }
 
-      .game-header {
-        display: none;
-      }
+    body.mobile-ui .game-stage {
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: var(--mobile-top-gap);
+      box-sizing: border-box;
+    }
 
-      .game-stage {
-        width: 100%;
-        height: 100dvh;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: var(--mobile-top-gap);
-        box-sizing: border-box;
-      }
+    body.mobile-ui canvas {
+      width: 100vw;
+      height: calc(100dvh - var(--mobile-top-gap) - var(--mobile-bottom-gap));
+      border-width: 0;
+      border-radius: 0;
+    }
 
-      canvas {
-        width: 100vw;
-        height: calc(100dvh - var(--mobile-top-gap) - var(--mobile-bottom-gap));
-        border-width: 0;
-        border-radius: 0;
-      }
+    body.mobile-ui .menu-toggle {
+      display: block;
+    }
 
-      .menu-toggle {
-        display: block;
-      }
+    body.mobile-ui .mobile-drawer,
+    body.mobile-ui .drawer-scrim {
+      display: block;
+    }
 
-      .mobile-drawer,
-      .drawer-scrim {
-        display: block;
-      }
-
-      .mobile-overlay {
-        display: flex;
-      }
+    body.mobile-ui .mobile-overlay {
+      display: flex;
     }
 
     @media (max-width: 640px) {
-      .drop-fab {
+      body.mobile-ui .drop-fab {
         width: 52px;
         height: 52px;
         font-size: 11px;
@@ -359,6 +351,7 @@
     let HUD_HEIGHT = 60;
     const BASE = { x: WIDTH - 244, y: HEIGHT - 196, w: 224, h: 176, slotSize: 40, cols: 3, rows: 2, gapX: 14, gapY: 10, minCols: 3, rightMargin: 20 };
     const MOBILE_LAYOUT_QUERY = window.matchMedia("(hover: none) and (pointer: coarse)");
+    const MOBILE_LAYOUT_MAX_WIDTH = 1024;
     const MOBILE_STAGE_TOP_GAP = 68;
     const MOBILE_STAGE_BOTTOM_GAP = 112;
     const JOYSTICK_MAX_OFFSET = 26;
@@ -894,8 +887,20 @@
       state.mouseInside = true;
     }
 
+    function shouldUseMobileLayout() {
+      const hasTouchLikeInput =
+        MOBILE_LAYOUT_QUERY.matches ||
+        navigator.maxTouchPoints > 0 ||
+        "ontouchstart" in window;
+      return hasTouchLikeInput && window.innerWidth <= MOBILE_LAYOUT_MAX_WIDTH;
+    }
+
+    function applyMobileLayoutState() {
+      document.body.classList.toggle("mobile-ui", shouldUseMobileLayout());
+    }
+
     function isMobileLayout() {
-      return MOBILE_LAYOUT_QUERY.matches;
+      return document.body.classList.contains("mobile-ui");
     }
 
     function setDrawerOpen(isOpen) {
@@ -2206,6 +2211,7 @@
     });
 
     const handleViewportResize = () => {
+      applyMobileLayoutState();
       refreshCanvasLayout();
       if (!isMobileLayout() && mobileDrawer.classList.contains("open")) {
         setDrawerOpen(false);
@@ -2217,6 +2223,7 @@
     window.visualViewport?.addEventListener("resize", handleViewportResize);
     window.addEventListener("beforeunload", persistGame);
 
+    applyMobileLayoutState();
     refreshCanvasLayout();
     loadGame();
     refillBrainrots();
