@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catch a Brain Rot</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page-bg: #102714;
+      --panel: #18361f;
+      --text: #eef7ea;
+      --accent: #f7cf4c;
+      --shadow: rgba(0, 0, 0, 0.28);
+      --mobile-top-gap: 68px;
+      --mobile-bottom-gap: 112px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(120, 180, 90, 0.18), transparent 35%),
+        linear-gradient(180deg, #17351d 0%, #0e2012 100%);
+      color: var(--text);
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    .game-shell {
+      position: relative;
+      width: min(92vw, 920px);
+      padding: 18px;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(30, 55, 34, 0.9), rgba(12, 25, 14, 0.94));
+      box-shadow: 0 24px 60px var(--shadow);
+    }
+
+    .game-header {
+      display: block;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: rgba(238, 247, 234, 0.8);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 4px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background: #5cb54e;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+      touch-action: manipulation;
+    }
+
+    .game-stage {
+      position: relative;
+    }
+
+    .menu-toggle,
+    .mobile-drawer,
+    .drawer-scrim,
+    .mobile-overlay {
+      display: none;
+    }
+
+    .menu-toggle {
+      position: absolute;
+      top: calc(env(safe-area-inset-top) + 12px);
+      right: 14px;
+      z-index: 30;
+      width: 52px;
+      height: 52px;
+      border: 0;
+      border-radius: 16px;
+      background: rgba(18, 34, 20, 0.82);
+      color: #f5f7ef;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      font: 800 28px/1 "Trebuchet MS", "Segoe UI", sans-serif;
+      touch-action: manipulation;
+    }
+
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 24;
+      background: rgba(2, 7, 3, 0.56);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .drawer-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 25;
+      width: min(82vw, 360px);
+      padding: 76px 22px 28px;
+      background: linear-gradient(180deg, rgba(18, 40, 22, 0.98), rgba(9, 18, 11, 0.98));
+      box-shadow: 18px 0 42px rgba(0, 0, 0, 0.35);
+      transform: translateX(-100%);
+      transition: transform 180ms ease;
+      overflow-y: auto;
+    }
+
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #f6fbf0;
+      font: 800 26px/1 "Trebuchet MS", "Segoe UI", sans-serif;
+      touch-action: manipulation;
+    }
+
+    .mobile-drawer h2 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 6vw, 34px);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .mobile-drawer p {
+      margin: 0 0 18px;
+      color: rgba(238, 247, 234, 0.88);
+      line-height: 1.45;
+    }
+
+    .drawer-list {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(238, 247, 234, 0.92);
+      line-height: 1.45;
+    }
+
+    .drawer-list li + li {
+      margin-top: 10px;
+    }
+
+    .mobile-overlay {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 20;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 14px;
+      pointer-events: none;
+    }
+
+    .drop-fab {
+      width: 56px;
+      height: 56px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 232, 146, 0.98), rgba(235, 179, 58, 0.96));
+      color: #1e2318;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+      font: 800 12px/1 "Trebuchet MS", "Segoe UI", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      pointer-events: auto;
+    }
+
+    .virtual-joystick {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      pointer-events: auto;
+    }
+
+    .joystick-base {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.18), transparent 34%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.12), rgba(8, 20, 10, 0.42));
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    .joystick-knob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      margin: -22px 0 0 -22px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255, 232, 146, 0.98), rgba(235, 179, 58, 0.96));
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+      transition: transform 60ms linear;
+    }
+
+    .virtual-joystick.is-active .joystick-knob,
+    .drop-fab:active {
+      filter: brightness(0.94);
+    }
+
+    @media not all and (hover: none) and (pointer: coarse) {
+      .mobile-overlay {
+        display: none !important;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      body {
+        place-items: stretch;
+        padding: 0;
+      }
+
+      .game-shell {
+        width: 100vw;
+        min-height: 100dvh;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: #102714;
+        box-shadow: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .game-header {
+        display: none;
+      }
+
+      .game-stage {
+        width: 100%;
+        height: 100dvh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: var(--mobile-top-gap);
+        box-sizing: border-box;
+      }
+
+      canvas {
+        width: 100vw;
+        height: calc(100dvh - var(--mobile-top-gap) - var(--mobile-bottom-gap));
+        border-width: 0;
+        border-radius: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .mobile-drawer,
+      .drawer-scrim {
+        display: block;
+      }
+
+      .mobile-overlay {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .drop-fab {
+        width: 52px;
+        height: 52px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-shell">
+    <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileDrawer" aria-label="Open game menu">☰</button>
+    <aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+      <button class="drawer-close" id="drawerClose" type="button" aria-label="Close game menu">×</button>
+      <h2>Catch a Brain Rot</h2>
+      <p>Grab roaming brainrots, dodge Ohio Fog, store the good ones, and stack Sigma income while you stay alive.</p>
+      <ul class="drawer-list">
+        <li>Move with the virtual joystick on mobile, or `WASD` / arrow keys on desktop.</li>
+        <li>Run into roaming brainrots to catch them, then carry them into the Sigma Zone.</li>
+        <li>Tap stored lucky blocks to open them, and tap the trade button or press `T` to trade a stored brainrot.</li>
+        <li>Use the circular drop button on mobile or press `Q` on desktop to drop what you are carrying.</li>
+      </ul>
+    </aside>
+    <button class="drawer-scrim" id="drawerScrim" type="button" aria-label="Close game menu"></button>
+    <header class="game-header">
+      <h1>Catch a Brain Rot</h1>
+      <p>Grab roaming brainrots, dodge Ohio Fog, hover the Sigma Zone for stats, trade stored brainrots with T or a tap, and drop with Q or the drop button.</p>
+    </header>
+    <div class="game-stage">
+      <canvas id="game" width="800" height="600" aria-label="Catch a Brain Rot game canvas"></canvas>
+    </div>
+    <div class="mobile-overlay" aria-label="Mobile controls">
+      <button class="drop-fab" id="dropButton" type="button" aria-label="Drop carried brainrot">Drop</button>
+      <div class="virtual-joystick" id="virtualJoystick" aria-label="Move character">
+        <div class="joystick-base" aria-hidden="true"></div>
+        <div class="joystick-knob" id="joystickKnob" aria-hidden="true"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const menuToggle = document.getElementById("menuToggle");
+    const mobileDrawer = document.getElementById("mobileDrawer");
+    const drawerClose = document.getElementById("drawerClose");
+    const drawerScrim = document.getElementById("drawerScrim");
+    const virtualJoystick = document.getElementById("virtualJoystick");
+    const joystickKnob = document.getElementById("joystickKnob");
+    const dropButton = document.getElementById("dropButton");
+    ctx.imageSmoothingEnabled = false;
+
+    let WIDTH = canvas.width;
+    let HEIGHT = canvas.height;
+    let HUD_HEIGHT = 60;
+    const BASE = { x: WIDTH - 244, y: HEIGHT - 196, w: 224, h: 176, slotSize: 40, cols: 3, rows: 2, gapX: 14, gapY: 10, minCols: 3, rightMargin: 20 };
+    const MOBILE_LAYOUT_QUERY = window.matchMedia("(hover: none) and (pointer: coarse)");
+    const MOBILE_STAGE_TOP_GAP = 68;
+    const MOBILE_STAGE_BOTTOM_GAP = 112;
+    const JOYSTICK_MAX_OFFSET = 26;
+    const JOYSTICK_DEADZONE = 0.16;
+
+    const PIXEL_PATTERNS = {
+      hero: [
+        "....BBBB....",
+        "...BAAAAB...",
+        "...AAFFAA...",
+        "...BAAAAB...",
+        "....BAAB....",
+        "...CCCCCC...",
+        "..CCCCCCCC..",
+        "..CCCCCCCC..",
+        "..CCCDDDCC..",
+        "..CCCDDDCC..",
+        "...DDDDDD...",
+        "...DD..DD...",
+        "...DD..DD...",
+        "...EE..EE...",
+        "...EE..EE...",
+        "............"
+      ],
+      mewing: [
+        "....AAAA....",
+        "...AACCAA...",
+        "..AACCCCAA..",
+        "..AAKAAKAA..",
+        "..AACCCCAA..",
+        "...AACCAA...",
+        "....ACCA....",
+        "...AC..CA...",
+        "..AC....CA..",
+        "...A....A...",
+        "............",
+        "............"
+      ],
+      runner: [
+        "...KKKK...",
+        "..KAAAAK..",
+        ".KAAEEAAK.",
+        ".KAABBAAK.",
+        ".KAAAAAAK.",
+        "..KACCAK..",
+        "...KDDK...",
+        "..KD..DK..",
+        ".KD....DK.",
+        ".........."
+      ],
+      cat: [
+        ".K..KK..K.",
+        ".AKKAAKKA.",
+        "KAAAAAAAAK",
+        "KAEFEEFAAK",
+        "KAAAAAAAAK",
+        ".KAAKKAAK.",
+        "..KAAAAK..",
+        "..KD..DK..",
+        ".KD....DK.",
+        ".........."
+      ],
+      toilet: [
+        "...AAAA...",
+        "..ABBBBA..",
+        "..ABBBBA..",
+        "..ABBBBA..",
+        "..AAAAAA..",
+        "...ABBA...",
+        "..AABBAA..",
+        "..ABBBBA..",
+        "..ADDDDA..",
+        ".........."
+      ],
+      octo: [
+        "...AAAA...",
+        "..AACCAA..",
+        ".AEEEEEEA.",
+        ".AACCCCAA.",
+        "..AAAAAA..",
+        ".D.AAAA.D.",
+        "D..AAAA..D",
+        ".D..AA..D.",
+        "..D....D..",
+        ".........."
+      ],
+      monkey: [
+        "...AAAA...",
+        "..AABBAA..",
+        ".AAEEEEAA.",
+        ".AACCCCAA.",
+        "..AAAAAA..",
+        ".DDAAAADD.",
+        "..DAAAAD..",
+        "..D....D..",
+        ".D......D.",
+        ".........."
+      ],
+      coffee: [
+        "...CCCC...",
+        "..CAAAAC..",
+        ".CAEEEEAC.",
+        ".CAAFFAAC.",
+        ".CAAAAACC.",
+        "..CCCCCC..",
+        "..D.CC.D..",
+        ".D..CC..D.",
+        "..D....D..",
+        ".........."
+      ],
+      goose: [
+        "....AA....",
+        "...AEEA...",
+        "..AAAAAA..",
+        ".AACCCCAA.",
+        "AAAKKKKAAA",
+        "..AA..AA..",
+        ".DD....DD.",
+        "..D....D..",
+        ".D......D.",
+        ".........."
+      ],
+      camel: [
+        "...BBBB...",
+        "..BAAAAB..",
+        ".BAEEEEAB.",
+        ".BAAAAABB.",
+        "BBAACCABBB",
+        ".BBAAAABB.",
+        "..DD..DD..",
+        ".DD....DD.",
+        "D........D",
+        ".........."
+      ],
+      croc: [
+        "..AAAAA...",
+        ".AACCCCCA.",
+        "AACEEEEECA",
+        "AACAAAAACA",
+        ".AAAAAAA..",
+        "..AABBBA..",
+        ".DD.AA.DD.",
+        "..D....D..",
+        ".D......D.",
+        ".........."
+      ],
+      elephant: [
+        "...AAAA...",
+        "..AACCAA..",
+        ".AAEEEEAA.",
+        ".AACAAACA.",
+        "..AAAAAA..",
+        ".DAAAAAAAD",
+        ".D..AA..D.",
+        "..D....D..",
+        ".D......D.",
+        ".........."
+      ],
+      mug: [
+        "...AAAA...",
+        "..AEEEEA..",
+        ".AABBBBA..",
+        ".AABBBBAA.",
+        ".AABBBBAA.",
+        "..AAAAAA..",
+        "...ADDA...",
+        "..AD..DA..",
+        ".D......D.",
+        ".........."
+      ],
+      guardian: [
+        "...AAAA...",
+        "..AABBAA..",
+        ".AABEEBAA.",
+        ".AAFFFFAA.",
+        ".AACCCCAA.",
+        "..CCDDCC..",
+        "..CDDDDC..",
+        "..DD..DD..",
+        ".DD....DD.",
+        ".........."
+      ],
+      ravioli: [
+        "..........",
+        "..AAAAAA..",
+        ".AACCCCCA.",
+        ".ACEEEECA.",
+        ".ACCCCCCA.",
+        "..AAAAAA..",
+        "...ADDA...",
+        "..AD..DA..",
+        ".D......D.",
+        ".........."
+      ],
+      potato: [
+        "..........",
+        "...AAAA...",
+        "..AEEEEA..",
+        ".AACCCCAA.",
+        ".AACCCCAA.",
+        "..AAAAAA..",
+        "...ADDA...",
+        "..AD..DA..",
+        ".D....D...",
+        ".........."
+      ],
+      car: [
+        "....AA....",
+        "...ABBA...",
+        "..ACCCCA..",
+        ".ACCCCCCA.",
+        "AACCCCCCAA",
+        ".AABBBBAA.",
+        "..D....D..",
+        ".DD....DD.",
+        "..........",
+        ".........."
+      ],
+      monster: [
+        "...AAAA...",
+        "..AACCAA..",
+        ".ACEEEECA.",
+        ".ACCCCCCA.",
+        ".ACACCCCA.",
+        "..ACCCCCA.",
+        "..ADDDDA..",
+        ".AD....DA.",
+        "D........D",
+        ".........."
+      ],
+      robot: [
+        "...AAAA...",
+        "..ABBBBA..",
+        ".ABEEEEBA.",
+        ".ABCCCCBA.",
+        ".ABCCCCBA.",
+        "..ABBBBA..",
+        "..ADDDDA..",
+        ".AD.AA.DA.",
+        "D..A..A..D",
+        ".........."
+      ],
+      toast: [
+        "..AAAAAA..",
+        ".ACCCCCCCA",
+        ".ACEEEECCA",
+        ".ACCCCCCCA",
+        "..AAAAAA..",
+        "...ADDA...",
+        "..AD..DA..",
+        ".D......D.",
+        "..........",
+        ".........."
+      ],
+      pizza: [
+        "...AAAA...",
+        "..ACCCCA..",
+        ".ACEEEECA.",
+        ".ACCCFCCA.",
+        ".ACFCCCFA.",
+        "..ACCCCA..",
+        "...ADDA...",
+        "..AD..DA..",
+        ".D....D...",
+        ".........."
+      ],
+      shot: [
+        "....AA....",
+        "...ACCA...",
+        "...ACCA...",
+        "..AACCAA..",
+        "..ACEECA..",
+        "..ACCCCA..",
+        "...ADDA...",
+        "..AD..DA..",
+        ".D....D...",
+        ".........."
+      ],
+      blob: [
+        "..........",
+        "...AAAA...",
+        "..AACCAA..",
+        ".ACEEEECA.",
+        ".ACCCCCCA.",
+        ".AACCCCAA.",
+        "..AADDDA..",
+        "...D..D...",
+        "..D....D..",
+        ".........."
+      ],
+      icecream: [
+        "....AA....",
+        "...ACCA...",
+        "..ACEECA..",
+        "..ACCCCA..",
+        "...AAAA...",
+        "..BBBBBB..",
+        ".BBBBBBBB.",
+        "..BDDDDB..",
+        "...D..D...",
+        ".........."
+      ],
+      cake: [
+        "..AAAAAA..",
+        ".AACCCCAA.",
+        ".ACEEEECA.",
+        ".ACCCCCCA.",
+        "..AAAAAA..",
+        "..BBBBBB..",
+        ".BBDDDDBB.",
+        ".BBDDDDBB.",
+        "..DD..DD..",
+        ".........."
+      ],
+      ham: [
+        "..........",
+        "..AAAAAA..",
+        ".AACCCCAA.",
+        ".ACEEEECA.",
+        ".ACCCCCCA.",
+        "..AAAABB..",
+        "...ADDB...",
+        "..AD..DB..",
+        ".D......D.",
+        ".........."
+      ],
+      lucky: [
+        "..CC....CC..",
+        ".CCAAAAAACC.",
+        "CCAAAAAAAACC",
+        "CAADD.ADDAAC",
+        "CAA.DDAA.AAC",
+        "CAAAAAAAAAAC",
+        "CAAE..EE.AAC",
+        ".CCAAEEAACC.",
+        "..CCAAAACC..",
+        "...C....C..."
+      ],
+      predator: [
+        "..K....K..",
+        ".KAAAAAAK.",
+        "KACEEEECAK",
+        "KACFFFFCAK",
+        "KACCCCCCAK",
+        ".KADDDDAK.",
+        "..D.KK.D..",
+        ".D.D..D.D.",
+        "D........D",
+        ".........."
+      ]
+    };
+
+    const HERO_PALETTE = {
+      B: "#3f2616",
+      A: "#f0c79a",
+      F: "#1c1c1c",
+      C: "#3877ff",
+      D: "#2d3f75",
+      E: "#202020"
+    };
+
+    const MEWING_PALETTE = {
+      A: "#efd45d",
+      C: "#fff2a4",
+      K: "#1c1c1c"
+    };
+
+    function makePalette(body, shadow, accent, detail, light = "#fff6d7", extra = "#6f4b2c") {
+      return {
+        K: "#181818",
+        A: body,
+        B: shadow,
+        C: accent,
+        D: detail,
+        E: light,
+        F: extra
+      };
+    }
+
+    function makeSecretPalette(basePalette) {
+      return {
+        ...basePalette,
+        K: "#fff7ff",
+        A: "#ff4fd8",
+        B: "#7b2dff",
+        C: "#73fff3",
+        D: "#ffe66d",
+        E: "#ffffff",
+        F: "#35104f"
+      };
+    }
+
+    const BRAINROT_TYPES = [
+      { id: "tralalero-tralala", label: "Tralalero Tralala", rarity: "Common", weight: 14, pattern: PIXEL_PATTERNS.runner, palette: makePalette("#59c9ff", "#1770d8", "#ffffff", "#ffd14d"), color: "#59c9ff" },
+      { id: "trippi-troppi", label: "Trippi Troppi", rarity: "Uncommon", weight: 10, pattern: PIXEL_PATTERNS.cat, palette: makePalette("#c26cff", "#6d30b5", "#73d4ff", "#ff70bd", "#f2f2ff"), color: "#c26cff" },
+      { id: "spaghetti-tualetti", label: "Spaghetti Tualetti", rarity: "Common", weight: 14, pattern: PIXEL_PATTERNS.toilet, palette: makePalette("#f5f4ef", "#c8c4bb", "#d8b56b", "#bf4646"), color: "#f5f4ef" },
+      { id: "blueberrini-octopussini", label: "Blueberrini Octopussini", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.octo, palette: makePalette("#4a6dff", "#2139a5", "#8fd2ff", "#18306e"), color: "#4a6dff" },
+      { id: "chimpanzini-bananini", label: "Chimpanzini Bananini", rarity: "Uncommon", weight: 10, pattern: PIXEL_PATTERNS.monkey, palette: makePalette("#9a5f2d", "#5d3413", "#f0d74c", "#6f3f19"), color: "#f0d74c" },
+      { id: "ballerina-cappuccina", label: "Ballerina Cappuccina", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.coffee, palette: makePalette("#e7dfd2", "#8d5a33", "#ff9ac7", "#7b4c29"), color: "#ff9ac7" },
+      { id: "bombombini-gusini", label: "Bombombini Gusini", rarity: "Uncommon", weight: 10, pattern: PIXEL_PATTERNS.goose, palette: makePalette("#ffffff", "#bcc6d8", "#f3b21d", "#e84b4b"), color: "#ffffff" },
+      { id: "frigo-camelo", label: "Frigo Camelo", rarity: "Uncommon", weight: 10, pattern: PIXEL_PATTERNS.camel, palette: makePalette("#d0b07d", "#89c8ff", "#f4e3c3", "#87633d"), color: "#89c8ff" },
+      { id: "bombardiro-crocodilo", label: "Bombardiro Crocodilo", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.croc, palette: makePalette("#4dab53", "#2f6c35", "#7b879c", "#d84f4f"), color: "#4dab53" },
+      { id: "lirili-larila", label: "Lirilì Larilà", rarity: "Epic", weight: 4, pattern: PIXEL_PATTERNS.elephant, palette: makePalette("#6db75b", "#3f7e37", "#f6c4dd", "#d2ac7c"), color: "#6db75b" },
+      { id: "cappuccino-assassino", label: "Cappuccino Assassino", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.mug, palette: makePalette("#252525", "#6a452c", "#d64c4c", "#e8e3d8"), color: "#d64c4c" },
+      { id: "tung-tung-sahur", label: "Tung Tung Sahur", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.guardian, palette: makePalette("#8c6137", "#5a341c", "#d8b04c", "#e7ddd1"), color: "#d8b04c" },
+      { id: "rizzoli-ravioli", label: "Rizzoli Ravioli", rarity: "Common", weight: 14, pattern: PIXEL_PATTERNS.ravioli, palette: makePalette("#efcf7b", "#d79e44", "#f34f7a", "#5d3015"), color: "#efcf7b" },
+      { id: "gnocchi-gnocchi-dokie", label: "Gnocchi Gnocchi Dokie", rarity: "Common", weight: 14, pattern: PIXEL_PATTERNS.potato, palette: makePalette("#d6b274", "#9e7844", "#f1dfae", "#7c5932"), color: "#d6b274" },
+      { id: "lasagna-lamborghini", label: "Lasagna Lamborghini", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.car, palette: makePalette("#f1a23a", "#b56617", "#ffe073", "#2e2e2e"), color: "#f1a23a" },
+      { id: "mozzarella-godzilla", label: "Mozzarella Godzilla", rarity: "Legendary", weight: 2, pattern: PIXEL_PATTERNS.monster, palette: makePalette("#f4f2db", "#8fcf4f", "#7ec85e", "#4b8f39"), color: "#8fcf4f" },
+      { id: "tortellini-terminatori", label: "Tortellini Terminatori", rarity: "Epic", weight: 4, pattern: PIXEL_PATTERNS.robot, palette: makePalette("#c8d0db", "#7d8797", "#5fb8ff", "#e84b4b"), color: "#c8d0db" },
+      { id: "bruschetta-bombastica", label: "Bruschetta Bombastica", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.toast, palette: makePalette("#e4a868", "#c97f38", "#ee5648", "#f2cf69"), color: "#ee5648" },
+      { id: "carbonara-camaro", label: "Carbonara Camaro", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.car, palette: makePalette("#ffe09b", "#d5a44f", "#2f2f2f", "#1c1c1c"), color: "#ffe09b" },
+      { id: "fettuccine-ferrari", label: "Fettuccine Ferrari", rarity: "Epic", weight: 4, pattern: PIXEL_PATTERNS.car, palette: makePalette("#ff5548", "#ab2018", "#ffe5ab", "#1c1c1c"), color: "#ff5548" },
+      { id: "zucchini-lamborghini", label: "Zucchini Lamborghini", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.car, palette: makePalette("#72c95b", "#2f8e34", "#d6f07d", "#1c1c1c"), color: "#72c95b" },
+      { id: "panettone-plutonio", label: "Panettone Plutonio", rarity: "Epic", weight: 4, pattern: PIXEL_PATTERNS.cake, palette: makePalette("#d59b52", "#96f058", "#d4ff82", "#4f8f2b"), color: "#96f058" },
+      { id: "calzone-ciclone", label: "Calzone Ciclone", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.pizza, palette: makePalette("#dcad62", "#9d6433", "#d74f4f", "#72c95b"), color: "#d74f4f" },
+      { id: "espresso-eccentrico", label: "Espresso Eccentrico", rarity: "Uncommon", weight: 10, pattern: PIXEL_PATTERNS.shot, palette: makePalette("#8e5b31", "#5b3317", "#e8dbc2", "#ff6d47"), color: "#ff6d47" },
+      { id: "pesto-presto", label: "Pesto Presto", rarity: "Epic", weight: 4, pattern: PIXEL_PATTERNS.blob, palette: makePalette("#67b44d", "#2f7f33", "#d5f46e", "#264f21"), color: "#67b44d" },
+      { id: "gelato-gigante", label: "Gelato Gigante", rarity: "Uncommon", weight: 10, pattern: PIXEL_PATTERNS.icecream, palette: makePalette("#b7efff", "#f6a1c9", "#fff5df", "#7b552e"), color: "#b7efff" },
+      { id: "polpetta-perfetta", label: "Polpetta Perfetta", rarity: "Common", weight: 14, pattern: PIXEL_PATTERNS.blob, palette: makePalette("#a35d34", "#6f3718", "#d94b47", "#f0d2a9"), color: "#a35d34" },
+      { id: "minestrone-mutante", label: "Minestrone Mutante", rarity: "Epic", weight: 4, pattern: PIXEL_PATTERNS.blob, palette: makePalette("#7ac15f", "#446f2d", "#b1ff55", "#8d4f32"), color: "#b1ff55" },
+      { id: "tiramisu-turbo", label: "Tiramisu Turbo", rarity: "Rare", weight: 7, pattern: PIXEL_PATTERNS.cake, palette: makePalette("#9b673d", "#5c3921", "#f1e2c6", "#f8b958"), color: "#f8b958" },
+      { id: "prosciutto-protonico", label: "Prosciutto Protonico", rarity: "Legendary", weight: 2, pattern: PIXEL_PATTERNS.ham, palette: makePalette("#f39ab3", "#c95a76", "#7bd1ff", "#8f3446"), color: "#7bd1ff" },
+      { id: "lucky-block", label: "Lucky Block", rarity: "Lucky", weight: 1, isLuckyBlock: true, pattern: PIXEL_PATTERNS.lucky, palette: makePalette("#f9d54a", "#c58314", "#f5f8ff", "#201f2a", "#fff7c4", "#ff7bb4"), color: "#f9d54a" },
+      { id: "predatory-brainrot", label: "Predatory Brainrot", rarity: "Predator", weight: 3, isPredator: true, pattern: PIXEL_PATTERNS.predator, palette: makePalette("#ef4d49", "#7a1111", "#1b1b1b", "#ffd25c", "#ffe7cf", "#ff8b85"), color: "#ef4d49" }
+    ];
+
+    const LUCKY_BLOCK_TYPE = BRAINROT_TYPES.find((type) => type.isLuckyBlock);
+    const LEGENDARY_REWARD_TYPES = BRAINROT_TYPES.filter((type) => type.rarity === "Legendary");
+    const SECRET_REWARD_TYPES = BRAINROT_TYPES.filter((type) => !type.isLuckyBlock && !type.isPredator);
+
+    const RARITY_COLORS = {
+      Common: "#d9e7d1",
+      Uncommon: "#7de07b",
+      Rare: "#67b1ff",
+      Epic: "#d485ff",
+      Legendary: "#ffca59",
+      Secret: "#ff4fd8",
+      Lucky: "#ffe56e",
+      Predator: "#ff5c57"
+    };
+
+    const RARITY_STATS = {
+      Common: { points: 100, pps: 1, tradePps: 1, catchInset: 3, fleeDistance: 0, fleeSpeed: 0 },
+      Uncommon: { points: 150, pps: 2, tradePps: 2, catchInset: 5, fleeDistance: 72, fleeSpeed: 92 },
+      Rare: { points: 250, pps: 4, tradePps: 4, catchInset: 7, fleeDistance: 98, fleeSpeed: 118 },
+      Epic: { points: 400, pps: 7, tradePps: 7, catchInset: 9, fleeDistance: 122, fleeSpeed: 142 },
+      Legendary: { points: 700, pps: 12, tradePps: 12, catchInset: 11, fleeDistance: 146, fleeSpeed: 168 },
+      Secret: { points: 1500, pps: 20, tradePps: 20, catchInset: 12, fleeDistance: 174, fleeSpeed: 210 },
+      Lucky: { points: 0, pps: 0, tradePps: 0, catchInset: 11, fleeDistance: 160, fleeSpeed: 186 },
+      Predator: { points: 0, pps: 0, tradePps: 0, catchInset: 18, fleeDistance: 0, fleeSpeed: 200 }
+    };
+
+    const BRAINROT_TARGET_COUNT = 5;
+    const FOG_LIMIT = 4;
+    const SECRET_RARITY_CHANCE = 0.012;
+    const BRAINROT_DESPAWN_MIN = 12000;
+    const BRAINROT_DESPAWN_MAX = 22000;
+    const LUCKY_BLOCK_MIN_SCORE_INTERVAL = 5000;
+    const LUCKY_BLOCK_PPS_SECONDS = 150;
+    const SAVE_KEY = "catch-a-brainrot-save-v1";
+    const SIGMA_UPGRADE_THRESHOLDS = [1000, 3000, 6500, 12000, 20000];
+
+    const keys = new Set();
+    const state = {
+      isCarrying: false,
+      currentScore: 0,
+      activePowerup: "None",
+      currentMultiplier: 1,
+      safeDeliveries: 0,
+      nextMewSpawnAt: 15000,
+      nextFogSpawnAt: 4000,
+      moveLockedUntil: 0,
+      speedBoostUntil: 0,
+      mewing: null,
+      fogs: [],
+      popups: [],
+      storedBrainrots: [],
+      carriedBrainrot: null,
+      dropQueued: false,
+      passiveScoreBuffer: 0,
+      tradePpsBonus: 0,
+      luckyBlocksAwarded: 0,
+      luckyBlockProgress: 0,
+      touchMoveX: 0,
+      touchMoveY: 0,
+      predatorRaidLockUntil: 0,
+      selectedStoredIndex: -1,
+      mouseX: 0,
+      mouseY: 0,
+      mouseInside: false
+    };
+
+    const player = {
+      x: 52,
+      y: 100,
+      w: 32,
+      h: 32,
+      baseSpeed: 190,
+      facing: 1
+    };
+
+    let brainrots = [];
+    let lastTime = 0;
+    let saveTimer = 0;
+    let joystickPointerId = null;
+
+    function randomRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function rectsOverlap(a, b) {
+      return (
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y
+      );
+    }
+
+    function pointInRect(x, y, rect) {
+      return x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h;
+    }
+
+    function syncPointerPosition(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      state.mouseX = ((clientX - rect.left) / rect.width) * WIDTH;
+      state.mouseY = ((clientY - rect.top) / rect.height) * HEIGHT;
+      state.mouseInside = true;
+    }
+
+    function isMobileLayout() {
+      return MOBILE_LAYOUT_QUERY.matches;
+    }
+
+    function setDrawerOpen(isOpen) {
+      mobileDrawer.classList.toggle("open", isOpen);
+      drawerScrim.classList.toggle("open", isOpen);
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      mobileDrawer.setAttribute("aria-hidden", String(!isOpen));
+      drawerScrim.setAttribute("aria-hidden", String(!isOpen));
+      document.body.classList.toggle("drawer-open", isOpen);
+    }
+
+    function resetJoystick() {
+      joystickPointerId = null;
+      state.touchMoveX = 0;
+      state.touchMoveY = 0;
+      virtualJoystick.classList.remove("is-active");
+      joystickKnob.style.transform = "translate(0px, 0px)";
+    }
+
+    function updateJoystickFromPointer(clientX, clientY) {
+      const rect = virtualJoystick.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const rawX = clientX - centerX;
+      const rawY = clientY - centerY;
+      const distance = Math.hypot(rawX, rawY);
+      const clampedDistance = Math.min(distance, JOYSTICK_MAX_OFFSET);
+      const nx = distance > 0 ? rawX / distance : 0;
+      const ny = distance > 0 ? rawY / distance : 0;
+      const normalizedDistance = clampedDistance / JOYSTICK_MAX_OFFSET;
+      const activeDistance = normalizedDistance < JOYSTICK_DEADZONE ? 0 : normalizedDistance;
+
+      state.touchMoveX = nx * activeDistance;
+      state.touchMoveY = ny * activeDistance;
+      joystickKnob.style.transform = `translate(${state.touchMoveX * JOYSTICK_MAX_OFFSET}px, ${state.touchMoveY * JOYSTICK_MAX_OFFSET}px)`;
+      virtualJoystick.classList.toggle("is-active", activeDistance > 0);
+    }
+
+    function makeRect(x, y, w, h) {
+      return { x, y, w, h };
+    }
+
+    function getBaseSlots() {
+      return BASE.cols * BASE.rows;
+    }
+
+    function getSigmaColsForScore(score) {
+      return BASE.minCols + SIGMA_UPGRADE_THRESHOLDS.filter((threshold) => score >= threshold).length;
+    }
+
+    function getNextSigmaUpgradeScore() {
+      return SIGMA_UPGRADE_THRESHOLDS.find((threshold) => state.currentScore < threshold) || null;
+    }
+
+    function refreshSigmaZoneLayout(showPopup = false) {
+      const previousCols = BASE.cols;
+      BASE.cols = getSigmaColsForScore(state.currentScore);
+      if (isMobileLayout()) {
+        const horizontalPadding = 18;
+        BASE.gapX = WIDTH <= 420 ? 6 : 8;
+        BASE.gapY = WIDTH <= 420 ? 6 : 8;
+        const maxSlotSize = WIDTH <= 420 ? 30 : 34;
+        const minSlotSize = 24;
+        const availableSlotWidth = WIDTH - horizontalPadding * 2 - 62 - (BASE.cols - 1) * BASE.gapX;
+        BASE.slotSize = clamp(Math.floor(availableSlotWidth / BASE.cols), minSlotSize, maxSlotSize);
+        BASE.h = 86 + BASE.rows * BASE.slotSize + (BASE.rows - 1) * BASE.gapY;
+        BASE.w = 62 + BASE.cols * BASE.slotSize + (BASE.cols - 1) * BASE.gapX;
+        BASE.x = Math.round((WIDTH - BASE.w) / 2);
+        BASE.y = HEIGHT - BASE.h - 8;
+      } else {
+        BASE.slotSize = 40;
+        BASE.gapX = 14;
+        BASE.gapY = 10;
+        BASE.h = 176;
+        BASE.w = 62 + BASE.cols * BASE.slotSize + (BASE.cols - 1) * BASE.gapX;
+        BASE.x = WIDTH - BASE.w - BASE.rightMargin;
+        BASE.y = HEIGHT - BASE.h - 20;
+      }
+
+      if (showPopup && BASE.cols > previousCols) {
+        addPopup("SIGMA +2 SLOTS", BASE.x + BASE.w / 2, BASE.y - 12, "#fff08a");
+      }
+    }
+
+    function refreshCanvasLayout() {
+      if (isMobileLayout()) {
+        WIDTH = Math.max(320, Math.floor(window.innerWidth));
+        HEIGHT = Math.max(240, Math.floor(window.innerHeight - MOBILE_STAGE_TOP_GAP - MOBILE_STAGE_BOTTOM_GAP));
+        HUD_HEIGHT = 72;
+      } else {
+        WIDTH = 800;
+        HEIGHT = 600;
+        HUD_HEIGHT = 60;
+      }
+
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+      refreshSigmaZoneLayout();
+      player.x = clamp(player.x, 0, WIDTH - player.w);
+      player.y = clamp(player.y, HUD_HEIGHT, HEIGHT - player.h);
+
+      for (const brainrot of brainrots) {
+        brainrot.x = clamp(brainrot.x, 0, WIDTH - brainrot.w);
+        brainrot.y = clamp(brainrot.y, HUD_HEIGHT, HEIGHT - brainrot.h);
+        if (rectsOverlap(brainrot, BASE)) {
+          pushOutOfBase(brainrot);
+        }
+      }
+
+      if (state.carriedBrainrot) {
+        updateCarriedBrainrot();
+      }
+
+      state.fogs = state.fogs.map((fog) => ({
+        ...fog,
+        x: clamp(fog.x, -fog.w, WIDTH),
+        y: clamp(fog.y, HUD_HEIGHT, HEIGHT - fog.h)
+      }));
+
+      if (state.mewing) {
+        state.mewing.x = clamp(state.mewing.x, 0, WIDTH - state.mewing.w);
+        state.mewing.y = clamp(state.mewing.y, HUD_HEIGHT, HEIGHT - state.mewing.h);
+      }
+    }
+
+    function serializeStoredBrainrot(type) {
+      return {
+        id: type.id,
+        rarity: type.rarity
+      };
+    }
+
+    function hydrateStoredBrainrot(savedType) {
+      if (!savedType || typeof savedType.id !== "string") {
+        return null;
+      }
+
+      const baseType = BRAINROT_TYPES.find((type) => type.id === savedType.id);
+      if (!baseType) {
+        return null;
+      }
+
+      if (savedType.rarity === "Secret") {
+        return {
+          ...baseType,
+          rarity: "Secret",
+          color: RARITY_COLORS.Secret,
+          palette: makeSecretPalette(baseType.palette)
+        };
+      }
+
+      return baseType;
+    }
+
+    function persistGame() {
+      try {
+        localStorage.setItem(
+          SAVE_KEY,
+          JSON.stringify({
+            currentScore: state.currentScore,
+            tradePpsBonus: state.tradePpsBonus,
+            luckyBlocksAwarded: state.luckyBlocksAwarded,
+            luckyBlockProgress: state.luckyBlockProgress,
+            storedBrainrots: state.storedBrainrots.map(serializeStoredBrainrot)
+          })
+        );
+      } catch (error) {
+        // Ignore storage failures so the game still runs.
+      }
+    }
+
+    function queuePersistGame() {
+      if (saveTimer) {
+        return;
+      }
+
+      saveTimer = window.setTimeout(() => {
+        saveTimer = 0;
+        persistGame();
+      }, 250);
+    }
+
+    function loadGame() {
+      try {
+        const rawSave = localStorage.getItem(SAVE_KEY);
+        if (!rawSave) {
+          refreshSigmaZoneLayout();
+          return;
+        }
+
+        const parsedSave = JSON.parse(rawSave);
+        state.currentScore = Number.isFinite(parsedSave.currentScore) ? Math.max(0, Math.floor(parsedSave.currentScore)) : 0;
+        state.tradePpsBonus = Number.isFinite(parsedSave.tradePpsBonus) ? Math.max(0, Math.floor(parsedSave.tradePpsBonus)) : 0;
+        state.luckyBlocksAwarded = Number.isFinite(parsedSave.luckyBlocksAwarded)
+          ? Math.max(0, Math.floor(parsedSave.luckyBlocksAwarded))
+          : Math.floor(state.currentScore / LUCKY_BLOCK_MIN_SCORE_INTERVAL);
+        state.luckyBlockProgress = Number.isFinite(parsedSave.luckyBlockProgress)
+          ? Math.max(0, Math.floor(parsedSave.luckyBlockProgress))
+          : state.currentScore % LUCKY_BLOCK_MIN_SCORE_INTERVAL;
+        refreshSigmaZoneLayout();
+        state.storedBrainrots = Array.isArray(parsedSave.storedBrainrots)
+          ? parsedSave.storedBrainrots.map(hydrateStoredBrainrot).filter(Boolean).slice(0, getBaseSlots())
+          : [];
+      } catch (error) {
+        refreshSigmaZoneLayout();
+      }
+    }
+
+    function addScore(amount) {
+      if (!Number.isFinite(amount) || amount === 0) {
+        return;
+      }
+
+      state.currentScore += amount;
+      state.luckyBlockProgress += amount;
+      refreshSigmaZoneLayout(true);
+      awardLuckyBlocksForScore();
+      queuePersistGame();
+    }
+
+    function createSecretType(type) {
+      return {
+        ...type,
+        rarity: "Secret",
+        color: RARITY_COLORS.Secret,
+        palette: makeSecretPalette(type.palette)
+      };
+    }
+
+    function configureBrainrotFromType(brainrot, type) {
+      const rarityStats = getRarityStats(type.rarity);
+      brainrot.type = type;
+      brainrot.points = rarityStats.points;
+      brainrot.catchInset = rarityStats.catchInset;
+      brainrot.fleeDistance = rarityStats.fleeDistance;
+      brainrot.fleeSpeed = rarityStats.fleeSpeed;
+      return brainrot;
+    }
+
+    function chooseLuckyRewardType() {
+      if (Math.random() < 0.35) {
+        const secretBaseType = SECRET_REWARD_TYPES[Math.floor(Math.random() * SECRET_REWARD_TYPES.length)];
+        return createSecretType(secretBaseType);
+      }
+
+      return LEGENDARY_REWARD_TYPES[Math.floor(Math.random() * LEGENDARY_REWARD_TYPES.length)];
+    }
+
+    function awardLuckyBlocksForScore(now = performance.now()) {
+      let luckyBlockTarget = getLuckyBlockScoreTarget();
+      while (state.luckyBlockProgress >= luckyBlockTarget) {
+        state.luckyBlockProgress -= luckyBlockTarget;
+        state.luckyBlocksAwarded += 1;
+        brainrots.push(createBrainrotFromType(LUCKY_BLOCK_TYPE, now));
+        addPopup("LUCKY BLOCK SPAWNED", WIDTH / 2, HUD_HEIGHT + 24, RARITY_COLORS.Lucky);
+        luckyBlockTarget = getLuckyBlockScoreTarget();
+      }
+    }
+
+    function spawnStoredBrainrotIntoWorld(type, now, sourceX, sourceY) {
+      const released = createBrainrotFromType(type, now);
+      released.x = clamp(sourceX - released.w / 2 + randomRange(-18, 18), 0, WIDTH - released.w);
+      released.y = clamp(sourceY - released.h / 2 + randomRange(-18, 18), HUD_HEIGHT, HEIGHT - released.h);
+      released.vx = randomRange(-115, 115);
+      released.vy = randomRange(-115, 115);
+      released.pickupLockUntil = now + 900;
+      resetBrainrotLifetime(released, now);
+      if (rectsOverlap(released, BASE)) {
+        pushOutOfBase(released);
+      }
+      brainrots.push(released);
+      return released;
+    }
+
+    function openLuckyBlock(index) {
+      const stored = state.storedBrainrots[index];
+      if (!stored || !stored.isLuckyBlock) {
+        return false;
+      }
+
+      const rewardType = chooseLuckyRewardType();
+      state.storedBrainrots[index] = rewardType;
+      state.selectedStoredIndex = index;
+      queuePersistGame();
+      addPopup("LUCKY OPENED", BASE.x + BASE.w / 2, BASE.y - 12, RARITY_COLORS.Lucky);
+      addPopup(rewardType.label.toUpperCase(), BASE.x + BASE.w / 2, BASE.y + BASE.h - 42, RARITY_COLORS[rewardType.rarity] || rewardType.color);
+      updatePointerCursor();
+      return true;
+    }
+
+    function raidSigmaZone(now, sourceX, sourceY) {
+      if (!state.storedBrainrots.length) {
+        addPopup("SIGMA EMPTY", player.x + player.w / 2, player.y - 18, "#ffd27a");
+        return false;
+      }
+
+      const releasedIndex = Math.floor(Math.random() * state.storedBrainrots.length);
+      const releasedType = state.storedBrainrots.splice(releasedIndex, 1)[0];
+      normalizeSelectedStoredIndex();
+      spawnStoredBrainrotIntoWorld(releasedType, now, sourceX, sourceY);
+      queuePersistGame();
+      addPopup("SIGMA RAID", player.x + player.w / 2, player.y - 30, RARITY_COLORS.Predator);
+      addPopup(releasedType.label.toUpperCase(), player.x + player.w / 2, player.y - 12, RARITY_COLORS[releasedType.rarity] || releasedType.color);
+      return true;
+    }
+
+    function chooseBrainrotType() {
+      const totalWeight = BRAINROT_TYPES.reduce((sum, type) => sum + type.weight, 0);
+      let roll = Math.random() * totalWeight;
+      for (const type of BRAINROT_TYPES) {
+        roll -= type.weight;
+        if (roll <= 0) {
+          return type;
+        }
+      }
+      return BRAINROT_TYPES[BRAINROT_TYPES.length - 1];
+    }
+
+    function maybeSecretBrainrotType(type) {
+      if (type.isLuckyBlock || type.isPredator || Math.random() >= SECRET_RARITY_CHANCE) {
+        return type;
+      }
+
+      return createSecretType(type);
+    }
+
+    function getRarityStats(rarity) {
+      return RARITY_STATS[rarity] || RARITY_STATS.Common;
+    }
+
+    function spawnPoint(padding = 42, w = 32, h = 32) {
+      let x = 0;
+      let y = 0;
+      let attempts = 0;
+
+      do {
+        x = randomRange(padding, WIDTH - padding - w);
+        y = randomRange(HUD_HEIGHT + padding, HEIGHT - padding - h);
+        attempts += 1;
+      } while (
+        attempts < 40 &&
+        (rectsOverlap(makeRect(x, y, w, h), BASE) ||
+          rectsOverlap(makeRect(x, y, w, h), makeRect(player.x - 40, player.y - 40, player.w + 80, player.h + 80)))
+      );
+
+      return { x, y };
+    }
+
+    function resetBrainrotLifetime(brainrot, now = performance.now()) {
+      brainrot.despawnAt = now + randomRange(BRAINROT_DESPAWN_MIN, BRAINROT_DESPAWN_MAX);
+      return brainrot;
+    }
+
+    function createBrainrot(now = performance.now()) {
+      return createBrainrotFromType(maybeSecretBrainrotType(chooseBrainrotType()), now);
+    }
+
+    function createBrainrotFromType(type, now = performance.now()) {
+      const point = spawnPoint(48, 32, 32);
+      const angle = randomRange(0, Math.PI * 2);
+      const speed = randomRange(48, 84) + getRarityStats(type.rarity).fleeSpeed * 0.12;
+      return resetBrainrotLifetime(configureBrainrotFromType({
+        x: point.x,
+        y: point.y,
+        w: 32,
+        h: 32,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        bob: randomRange(0, Math.PI * 2),
+        pickupLockUntil: 0
+      }, type), now);
+    }
+
+    function refillBrainrots(now = performance.now()) {
+      while (brainrots.length < BRAINROT_TARGET_COUNT) {
+        brainrots.push(createBrainrot(now));
+      }
+    }
+
+    function createMewing() {
+      const point = spawnPoint(48, 32, 32);
+      return {
+        x: point.x,
+        y: point.y,
+        w: 32,
+        h: 32
+      };
+    }
+
+    function createFog() {
+      const size = 92;
+      const fromLeft = Math.random() > 0.5;
+      return {
+        x: fromLeft ? -size : WIDTH + size,
+        y: randomRange(HUD_HEIGHT + 20, HEIGHT - size - 12),
+        w: size,
+        h: size,
+        vx: fromLeft ? randomRange(120, 170) : -randomRange(120, 170)
+      };
+    }
+
+    function playerRect() {
+      return makeRect(player.x, player.y, player.w, player.h);
+    }
+
+    function brainrotCatchRect(brainrot) {
+      const inset = brainrot.catchInset || 0;
+      return makeRect(
+        brainrot.x + inset,
+        brainrot.y + inset,
+        Math.max(6, brainrot.w - inset * 2),
+        Math.max(6, brainrot.h - inset * 2)
+      );
+    }
+
+    function addPopup(text, x, y, color = "#ffffff") {
+      state.popups.push({ text, x, y, color, life: 1 });
+    }
+
+    function getSigmaSlotRect(index) {
+      const row = Math.floor(index / BASE.cols);
+      const col = index % BASE.cols;
+      return makeRect(
+        BASE.x + 18 + col * (BASE.slotSize + BASE.gapX),
+        BASE.y + 48 + row * (BASE.slotSize + BASE.gapY),
+        BASE.slotSize,
+        BASE.slotSize
+      );
+    }
+
+    function getTradeButtonRect() {
+      return makeRect(BASE.x + 18, BASE.y + BASE.h - 28, BASE.w - 36, 18);
+    }
+
+    function getBrainrotEconomy(type) {
+      const rarityStats = getRarityStats(type.rarity);
+      return {
+        points: rarityStats.points,
+        pps: rarityStats.pps,
+        tradePps: rarityStats.tradePps
+      };
+    }
+
+    function getSigmaPpsTotal() {
+      return state.storedBrainrots.reduce((sum, type) => sum + getBrainrotEconomy(type).pps, 0) + state.tradePpsBonus;
+    }
+
+    function getLuckyBlockScoreTarget() {
+      const scaledTarget = Math.ceil((getSigmaPpsTotal() * LUCKY_BLOCK_PPS_SECONDS) / 250) * 250;
+      return Math.max(LUCKY_BLOCK_MIN_SCORE_INTERVAL, scaledTarget);
+    }
+
+    function canTradeStoredBrainrot(type) {
+      return !!type && !type.isLuckyBlock && !type.isPredator;
+    }
+
+    function normalizeSelectedStoredIndex() {
+      state.selectedStoredIndex = state.storedBrainrots[state.selectedStoredIndex] ? state.selectedStoredIndex : state.storedBrainrots.length - 1;
+    }
+
+    function getHoveredStoredIndex() {
+      if (!state.mouseInside) {
+        return -1;
+      }
+
+      for (let index = 0; index < getBaseSlots(); index += 1) {
+        if (pointInRect(state.mouseX, state.mouseY, getSigmaSlotRect(index))) {
+          return index;
+        }
+      }
+
+      return -1;
+    }
+
+    function getHoveredWorldBrainrot() {
+      if (!state.mouseInside) {
+        return null;
+      }
+
+      const hoveredEntities = [];
+      if (state.carriedBrainrot) {
+        hoveredEntities.push(state.carriedBrainrot);
+      }
+      for (let index = brainrots.length - 1; index >= 0; index -= 1) {
+        hoveredEntities.push(brainrots[index]);
+      }
+
+      for (const entity of hoveredEntities) {
+        const hoverRect = makeRect(entity.x - 4, entity.y - 14, 38, 48);
+        if (pointInRect(state.mouseX, state.mouseY, hoverRect)) {
+          return entity;
+        }
+      }
+
+      return null;
+    }
+
+    function updatePointerCursor() {
+      const hoveredSlotIndex = getHoveredStoredIndex();
+      const hoveredStored = hoveredSlotIndex >= 0 ? state.storedBrainrots[hoveredSlotIndex] : null;
+      const canTrade = canTradeStoredBrainrot(state.storedBrainrots[state.selectedStoredIndex]);
+      const overTradeButton = canTrade && state.mouseInside && pointInRect(state.mouseX, state.mouseY, getTradeButtonRect());
+      canvas.style.cursor = hoveredStored || overTradeButton ? "pointer" : "default";
+    }
+
+    function storeBrainrot(type) {
+      if (state.storedBrainrots.length >= getBaseSlots()) {
+        return false;
+      }
+      state.storedBrainrots.push(type);
+      queuePersistGame();
+      return true;
+    }
+
+    function tradeStoredBrainrot(index = state.selectedStoredIndex) {
+      const selected = state.storedBrainrots[index];
+      if (!canTradeStoredBrainrot(selected)) {
+        if (selected && selected.isLuckyBlock) {
+          addPopup("CLICK TO OPEN", BASE.x + BASE.w / 2, BASE.y + BASE.h - 42, RARITY_COLORS.Lucky);
+        }
+        return;
+      }
+
+      const economy = getBrainrotEconomy(selected);
+      state.tradePpsBonus += economy.tradePps;
+      state.storedBrainrots.splice(index, 1);
+      normalizeSelectedStoredIndex();
+      addPopup(`TRADED +${economy.tradePps}/s`, BASE.x + BASE.w / 2, BASE.y + BASE.h - 42, RARITY_COLORS[selected.rarity] || selected.color);
+      queuePersistGame();
+      updatePointerCursor();
+    }
+
+    function deliverBrainrot() {
+      const awarded = state.carriedBrainrot.points * state.currentMultiplier;
+      const deliveredType = state.carriedBrainrot.type;
+      const deliveredEconomy = getBrainrotEconomy(deliveredType);
+      addScore(awarded);
+      const stored = storeBrainrot(deliveredType);
+      if (awarded > 0) {
+        addPopup(`+${awarded}`, BASE.x + BASE.w / 2, BASE.y + 20, "#ffe88c");
+      }
+      if (stored) {
+        addPopup(
+          deliveredType.isLuckyBlock ? "CLICK SLOT TO OPEN" : `SIGMA +${deliveredEconomy.pps}/s`,
+          BASE.x + BASE.w / 2,
+          BASE.y + 40,
+          RARITY_COLORS[deliveredType.rarity] || deliveredType.color
+        );
+      } else {
+        addPopup("SIGMA ZONE FULL", BASE.x + BASE.w / 2, BASE.y + 40, "#ffb861");
+      }
+
+      if (state.currentMultiplier > 1) {
+        state.currentMultiplier = 1;
+        state.safeDeliveries = 0;
+      } else {
+        state.safeDeliveries += 1;
+        if (state.safeDeliveries >= 3) {
+          state.currentMultiplier = 2;
+          state.safeDeliveries = 0;
+          addPopup("RIZZ x2 READY", WIDTH / 2, 96, "#fff08a");
+        }
+      }
+
+      state.isCarrying = false;
+      state.carriedBrainrot = null;
+      updatePointerCursor();
+      refillBrainrots();
+    }
+
+    function dropCarriedBrainrot(now, popupText = "DROPPED", popupColor = "#f6e598") {
+      if (!state.carriedBrainrot) {
+        return;
+      }
+
+      const dropped = state.carriedBrainrot;
+      const throwDirection = player.facing || 1;
+      dropped.x = clamp(player.x + throwDirection * 34, 0, WIDTH - dropped.w);
+      dropped.y = clamp(player.y + 8, HUD_HEIGHT, HEIGHT - dropped.h);
+      dropped.vx = throwDirection * randomRange(55, 95);
+      dropped.vy = randomRange(-30, 30);
+      dropped.pickupLockUntil = now + 500;
+      resetBrainrotLifetime(dropped, now);
+
+      if (rectsOverlap(dropped, BASE)) {
+        pushOutOfBase(dropped);
+      }
+
+      brainrots.push(dropped);
+      state.carriedBrainrot = null;
+      state.isCarrying = false;
+      addPopup(popupText, player.x + player.w / 2, player.y - 14, popupColor);
+    }
+
+    function hitHazard(now) {
+      dropCarriedBrainrot(now, "FOG DROP", "#ffd27a");
+      state.moveLockedUntil = now + 2000;
+      state.safeDeliveries = 0;
+      state.currentMultiplier = 1;
+      state.activePowerup = "Stunned";
+      state.fogs = [];
+      addPopup("OHIO STUN", player.x + player.w / 2, player.y - 8, "#d9dde2");
+    }
+
+    function pushOutOfBase(entity) {
+      if (!rectsOverlap(entity, BASE)) {
+        return;
+      }
+
+      const overlapLeft = entity.x + entity.w - BASE.x;
+      const overlapRight = BASE.x + BASE.w - entity.x;
+      const overlapTop = entity.y + entity.h - BASE.y;
+      const overlapBottom = BASE.y + BASE.h - entity.y;
+      const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+      if (minOverlap === overlapLeft) {
+        entity.x = BASE.x - entity.w;
+      } else if (minOverlap === overlapRight) {
+        entity.x = BASE.x + BASE.w;
+      } else if (minOverlap === overlapTop) {
+        entity.y = BASE.y - entity.h;
+      } else {
+        entity.y = BASE.y + BASE.h;
+      }
+    }
+
+    function updateRoamingBrainrots(deltaSeconds) {
+      for (const brainrot of brainrots) {
+        const brainrotCenterX = brainrot.x + brainrot.w / 2;
+        const brainrotCenterY = brainrot.y + brainrot.h / 2;
+        const playerCenterX = player.x + player.w / 2;
+        const playerCenterY = player.y + player.h / 2;
+        const awayX = brainrotCenterX - playerCenterX;
+        const awayY = brainrotCenterY - playerCenterY;
+        const distance = Math.hypot(awayX, awayY);
+
+        if (brainrot.type.isPredator && distance > 0.001) {
+          const chaseSpeed = brainrot.fleeSpeed * (0.75 + Math.min(distance / 180, 0.7));
+          brainrot.vx = (-awayX / distance) * chaseSpeed;
+          brainrot.vy = (-awayY / distance) * chaseSpeed;
+        } else if (brainrot.fleeDistance > 0 && distance < brainrot.fleeDistance && distance > 0.001) {
+          const fleeScale = 1 - distance / brainrot.fleeDistance;
+          const fleeSpeed = brainrot.fleeSpeed * (0.65 + fleeScale);
+          brainrot.vx = (awayX / distance) * fleeSpeed;
+          brainrot.vy = (awayY / distance) * fleeSpeed;
+        }
+
+        brainrot.bob += deltaSeconds * 6;
+        brainrot.x += brainrot.vx * deltaSeconds;
+        brainrot.y += brainrot.vy * deltaSeconds;
+
+        if (brainrot.x <= 0 || brainrot.x + brainrot.w >= WIDTH) {
+          brainrot.x = clamp(brainrot.x, 0, WIDTH - brainrot.w);
+          brainrot.vx *= -1;
+        }
+
+        if (brainrot.y <= HUD_HEIGHT || brainrot.y + brainrot.h >= HEIGHT) {
+          brainrot.y = clamp(brainrot.y, HUD_HEIGHT, HEIGHT - brainrot.h);
+          brainrot.vy *= -1;
+        }
+
+        if (rectsOverlap(brainrot, BASE)) {
+          pushOutOfBase(brainrot);
+          if (brainrot.x <= BASE.x || brainrot.x + brainrot.w >= BASE.x + BASE.w) {
+            brainrot.vx *= -1;
+          }
+          if (brainrot.y <= BASE.y || brainrot.y + brainrot.h >= BASE.y + BASE.h) {
+            brainrot.vy *= -1;
+          }
+        }
+      }
+    }
+
+    function updateCarriedBrainrot() {
+      if (!state.carriedBrainrot) {
+        return;
+      }
+      state.carriedBrainrot.x = player.x + 18;
+      state.carriedBrainrot.y = player.y - 10;
+    }
+
+    function update(now, deltaSeconds) {
+      if (now >= state.nextMewSpawnAt) {
+        state.mewing = createMewing();
+        state.nextMewSpawnAt = now + 15000;
+      }
+
+      if (state.fogs.length < FOG_LIMIT && now >= state.nextFogSpawnAt) {
+        state.fogs.push(createFog());
+        state.nextFogSpawnAt = now + randomRange(3500, 6500);
+      }
+
+      state.fogs = state.fogs.filter((fog) => {
+        fog.x += fog.vx * deltaSeconds;
+        return !(fog.x + fog.w < -120 || fog.x > WIDTH + 120);
+      });
+
+      const isStunned = now < state.moveLockedUntil;
+      const hasSpeedBoost = now < state.speedBoostUntil;
+
+      if (isStunned) {
+        state.activePowerup = "Stunned";
+      } else if (hasSpeedBoost) {
+        state.activePowerup = `Mewing x2 ${Math.ceil((state.speedBoostUntil - now) / 1000)}s`;
+      } else {
+        state.activePowerup = "None";
+      }
+
+      if (!isStunned) {
+        let dx = 0;
+        let dy = 0;
+
+        if (keys.has("arrowleft") || keys.has("a")) dx -= 1;
+        if (keys.has("arrowright") || keys.has("d")) dx += 1;
+        if (keys.has("arrowup") || keys.has("w")) dy -= 1;
+        if (keys.has("arrowdown") || keys.has("s")) dy += 1;
+        dx += state.touchMoveX;
+        dy += state.touchMoveY;
+
+        if (dx !== 0 || dy !== 0) {
+          const length = Math.hypot(dx, dy);
+          const speed = player.baseSpeed * (hasSpeedBoost ? 2 : 1);
+          const nextRect = {
+            x: player.x + (dx / length) * speed * deltaSeconds,
+            y: player.y + (dy / length) * speed * deltaSeconds,
+            w: player.w,
+            h: player.h
+          };
+
+          player.x = nextRect.x;
+          player.y = nextRect.y;
+          player.facing = dx < 0 ? -1 : dx > 0 ? 1 : player.facing;
+        }
+      }
+
+      player.x = clamp(player.x, 0, WIDTH - player.w);
+      player.y = clamp(player.y, HUD_HEIGHT, HEIGHT - player.h);
+
+      const brainrotsBeforeDespawn = brainrots.length;
+      brainrots = brainrots.filter((brainrot) => now < brainrot.despawnAt);
+      if (brainrots.length < brainrotsBeforeDespawn) {
+        refillBrainrots(now);
+      }
+
+      updateRoamingBrainrots(deltaSeconds);
+      updateCarriedBrainrot();
+
+      if (now >= state.predatorRaidLockUntil) {
+        const predatorIndex = brainrots.findIndex(
+          (brainrot) => brainrot.type.isPredator && rectsOverlap(playerRect(), brainrot)
+        );
+        if (predatorIndex >= 0) {
+          state.predatorRaidLockUntil = now + 1800;
+          raidSigmaZone(now, brainrots[predatorIndex].x + 16, brainrots[predatorIndex].y + 16);
+          brainrots.splice(predatorIndex, 1);
+          refillBrainrots(now);
+        }
+      }
+
+      state.passiveScoreBuffer += getSigmaPpsTotal() * deltaSeconds;
+      const passiveAward = Math.floor(state.passiveScoreBuffer);
+      if (passiveAward > 0) {
+        addScore(passiveAward);
+        state.passiveScoreBuffer -= passiveAward;
+      }
+
+      if (state.dropQueued) {
+        dropCarriedBrainrot(now);
+        state.dropQueued = false;
+      }
+
+      if (!state.isCarrying) {
+        const pickedIndex = brainrots.findIndex(
+          (brainrot) => !brainrot.type.isPredator && now >= brainrot.pickupLockUntil && rectsOverlap(playerRect(), brainrotCatchRect(brainrot))
+        );
+        if (pickedIndex >= 0) {
+          state.carriedBrainrot = brainrots.splice(pickedIndex, 1)[0];
+          if (state.carriedBrainrot.type.isLuckyBlock) {
+            addPopup("LUCKY BLOCK", player.x + player.w / 2, player.y - 24, RARITY_COLORS.Lucky);
+            addPopup("STORE IT TO OPEN", player.x + player.w / 2, player.y - 8, RARITY_COLORS.Lucky);
+          } else {
+            addPopup("CAUGHT", player.x + player.w / 2, player.y - 12, state.carriedBrainrot.type.color);
+          }
+          state.carriedBrainrot.vx = 0;
+          state.carriedBrainrot.vy = 0;
+          state.isCarrying = true;
+          updateCarriedBrainrot();
+        }
+      }
+
+      if (state.isCarrying && rectsOverlap(playerRect(), BASE)) {
+        deliverBrainrot();
+      }
+
+      if (state.mewing && rectsOverlap(playerRect(), state.mewing)) {
+        state.speedBoostUntil = now + 5000;
+        state.mewing = null;
+        state.activePowerup = "Mewing x2";
+        addPopup("BYE BYE", player.x + player.w / 2, player.y - 16, "#ffffff");
+      }
+
+      if (now >= state.moveLockedUntil && state.fogs.some((fog) => rectsOverlap(playerRect(), fog))) {
+        hitHazard(now);
+      }
+
+      state.popups = state.popups.filter((popup) => {
+        popup.life -= deltaSeconds;
+        popup.y -= 22 * deltaSeconds;
+        return popup.life > 0;
+      });
+    }
+
+    function drawPixelSprite(sprite, palette, x, y, scale = 2, flip = false) {
+      const width = sprite[0].length;
+
+      for (let row = 0; row < sprite.length; row += 1) {
+        for (let col = 0; col < width; col += 1) {
+          const sourceCol = flip ? width - 1 - col : col;
+          const code = sprite[row][sourceCol];
+          const color = palette[code];
+          if (!color) continue;
+          ctx.fillStyle = color;
+          ctx.fillRect(x + col * scale, y + row * scale, scale, scale);
+        }
+      }
+    }
+
+    function drawFittedText(text, x, y, maxWidth, startSize, minSize = 10) {
+      let size = startSize;
+      while (size > minSize) {
+        ctx.font = `bold ${size}px Trebuchet MS`;
+        if (ctx.measureText(text).width <= maxWidth) {
+          break;
+        }
+        size -= 1;
+      }
+      ctx.fillText(text, x, y);
+    }
+
+    function rarityBadgeText(rarity) {
+      const labels = {
+        Common: "C",
+        Uncommon: "U",
+        Rare: "R",
+        Epic: "E",
+        Legendary: "L",
+        Secret: "S",
+        Lucky: "?",
+        Predator: "!"
+      };
+      return labels[rarity] || "?";
+    }
+
+    function drawGrass() {
+      ctx.fillStyle = "#62bc53";
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      for (let y = HUD_HEIGHT; y < HEIGHT; y += 24) {
+        for (let x = 0; x < WIDTH; x += 24) {
+          ctx.fillStyle = (x / 24 + y / 24) % 2 === 0 ? "#5bb24d" : "#67c159";
+          ctx.fillRect(x, y, 24, 24);
+        }
+      }
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+      for (let i = 0; i < 80; i += 1) {
+        const bladeX = (i * 53) % WIDTH;
+        const bladeY = HUD_HEIGHT + ((i * 37) % (HEIGHT - HUD_HEIGHT));
+        ctx.fillRect(bladeX, bladeY, 3, 12);
+        ctx.fillRect(bladeX + 4, bladeY + 4, 3, 10);
+      }
+    }
+
+    function drawBase() {
+      const compactBase = isMobileLayout();
+      const slotSpriteScale = compactBase ? (BASE.slotSize <= 26 ? 1.4 : 1.65) : 2;
+      const slotSpriteInsetX = compactBase ? Math.max(4, Math.floor((BASE.slotSize - 18) / 2)) : 10;
+      const slotSpriteInsetY = compactBase ? 5 : 8;
+      ctx.fillStyle = "#7d5c19";
+      ctx.fillRect(BASE.x, BASE.y, BASE.w, BASE.h);
+      ctx.fillStyle = "#f3cf5a";
+      ctx.fillRect(BASE.x + 6, BASE.y + 6, BASE.w - 12, BASE.h - 12);
+      ctx.fillStyle = "#c1942a";
+      ctx.fillRect(BASE.x + 10, BASE.y + 34, BASE.w - 20, BASE.h - 44);
+
+      ctx.fillStyle = "#382500";
+      ctx.font = compactBase ? "bold 14px Trebuchet MS" : "bold 16px Trebuchet MS";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("THE SIGMA ZONE", BASE.x + BASE.w / 2, BASE.y + 18);
+      ctx.font = compactBase ? "bold 11px Trebuchet MS" : "bold 12px Trebuchet MS";
+      ctx.fillText(`${state.storedBrainrots.length}/${getBaseSlots()} SLOTS`, BASE.x + BASE.w / 2, BASE.y + 34);
+
+      const nextUpgrade = getNextSigmaUpgradeScore();
+      ctx.font = compactBase ? "bold 9px Trebuchet MS" : "bold 10px Trebuchet MS";
+      ctx.fillText(
+        nextUpgrade ? `NEXT +2 @ ${nextUpgrade}` : "SIGMA ZONE MAXED",
+        BASE.x + BASE.w / 2,
+        BASE.y + BASE.h - 58
+      );
+
+      for (let row = 0; row < BASE.rows; row += 1) {
+        for (let col = 0; col < BASE.cols; col += 1) {
+          const index = row * BASE.cols + col;
+          const slotRect = getSigmaSlotRect(index);
+          const stored = state.storedBrainrots[index];
+          const rarityColor = stored ? (RARITY_COLORS[stored.rarity] || stored.color) : "rgba(90, 69, 18, 0.45)";
+          const isSelected = state.selectedStoredIndex === index;
+          const isHovered = getHoveredStoredIndex() === index && stored;
+          ctx.fillStyle = rarityColor;
+          ctx.fillRect(slotRect.x - 2, slotRect.y - 2, slotRect.w + 4, slotRect.h + 4);
+          ctx.fillStyle = stored ? "#f7edbc" : "#f5e8a2";
+          ctx.fillRect(slotRect.x, slotRect.y, slotRect.w, slotRect.h);
+
+          if (stored) {
+            drawPixelSprite(stored.pattern, stored.palette, slotRect.x + slotSpriteInsetX, slotRect.y + slotSpriteInsetY, slotSpriteScale);
+            ctx.fillStyle = "rgba(20, 20, 20, 0.76)";
+            ctx.fillRect(slotRect.x + 4, slotRect.y + slotRect.h - 12, slotRect.w - 8, 8);
+            ctx.fillStyle = rarityColor;
+            ctx.font = "bold 8px Trebuchet MS";
+            ctx.fillText(
+              stored.isLuckyBlock ? "OPEN" : `+${getBrainrotEconomy(stored).pps}/s`,
+              slotRect.x + slotRect.w / 2,
+              slotRect.y + slotRect.h - 8
+            );
+            if (isSelected || isHovered) {
+              ctx.strokeStyle = isSelected ? "#fff4a8" : "#ffffff";
+              ctx.lineWidth = isSelected ? 3 : 2;
+              ctx.strokeRect(slotRect.x - 4, slotRect.y - 4, slotRect.w + 8, slotRect.h + 8);
+            }
+          } else {
+            ctx.fillStyle = "rgba(90, 69, 18, 0.24)";
+            ctx.fillRect(slotRect.x + 8, slotRect.y + 8, BASE.slotSize - 16, BASE.slotSize - 16);
+          }
+        }
+      }
+
+      const selected = state.storedBrainrots[state.selectedStoredIndex];
+      const buttonRect = getTradeButtonRect();
+      ctx.font = "bold 10px Trebuchet MS";
+      ctx.fillStyle = "#4f3301";
+      drawFittedText(
+        selected ? selected.label.toUpperCase() : "CLICK A STORED BRAINROT TO SELECT",
+        BASE.x + BASE.w / 2,
+        BASE.y + BASE.h - 40,
+        BASE.w - 28,
+        10,
+        7
+      );
+
+      ctx.fillStyle = selected ? (RARITY_COLORS[selected.rarity] || selected.color) : "rgba(86, 61, 14, 0.55)";
+      ctx.fillRect(buttonRect.x, buttonRect.y, buttonRect.w, buttonRect.h);
+      ctx.fillStyle = "#201300";
+      ctx.font = "bold 11px Trebuchet MS";
+      ctx.fillText(
+        !selected ? "TRADE LOCKED" : selected.isLuckyBlock ? "CLICK SLOT TO OPEN" : `TRADE FOR +${getBrainrotEconomy(selected).tradePps}/s`,
+        buttonRect.x + buttonRect.w / 2,
+        buttonRect.y + buttonRect.h / 2 + 1
+      );
+    }
+
+    function drawPlayer() {
+      drawPixelSprite(PIXEL_PATTERNS.hero, HERO_PALETTE, player.x + 4, player.y, 2, player.facing < 0);
+
+      if (performance.now() < state.moveLockedUntil) {
+        ctx.strokeStyle = "#f0f0f0";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(player.x - 3, player.y - 3, player.w + 6, player.h + 6);
+      }
+    }
+
+    function drawBrainrot(entity) {
+      const floatOffset = state.carriedBrainrot === entity ? 0 : Math.sin(entity.bob || 0) * 2;
+      const rarityColor = RARITY_COLORS[entity.type.rarity] || "#ffffff";
+      ctx.fillStyle = rarityColor;
+      ctx.globalAlpha = entity.type.rarity === "Secret" ? 0.3 : 0.18;
+      ctx.fillRect(entity.x - 4, entity.y - 4 + floatOffset, 38, 38);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = rarityColor;
+      ctx.lineWidth = entity.type.rarity === "Secret" ? 3 : 2;
+      ctx.strokeRect(entity.x - 2, entity.y - 2 + floatOffset, 34, 34);
+      drawPixelSprite(entity.type.pattern, entity.type.palette, entity.x + 1, entity.y + floatOffset + 1, 3);
+
+      if (state.carriedBrainrot !== entity) {
+        ctx.fillStyle = "#11210f";
+        ctx.fillRect(entity.x + 9, entity.y - 14 + floatOffset, 16, 12);
+        ctx.strokeStyle = rarityColor;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(entity.x + 9, entity.y - 14 + floatOffset, 16, 12);
+        ctx.fillStyle = rarityColor;
+        ctx.font = "bold 10px Trebuchet MS";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(rarityBadgeText(entity.type.rarity), entity.x + 17, entity.y - 8 + floatOffset);
+      }
+    }
+
+    function drawMewing() {
+      if (!state.mewing) return;
+      drawPixelSprite(PIXEL_PATTERNS.mewing, MEWING_PALETTE, state.mewing.x + 4, state.mewing.y + 4, 2);
+      ctx.fillStyle = "#fff5ad";
+      ctx.font = "bold 10px Trebuchet MS";
+      ctx.textAlign = "center";
+      ctx.fillText("MEW", state.mewing.x + 16, state.mewing.y - 4);
+    }
+
+    function drawFog() {
+      for (const fog of state.fogs) {
+        ctx.fillStyle = "rgba(150, 150, 150, 0.72)";
+        ctx.beginPath();
+        ctx.arc(fog.x + fog.w / 2, fog.y + fog.h / 2, fog.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.76)";
+        ctx.font = "bold 13px Trebuchet MS";
+        ctx.textAlign = "center";
+        ctx.fillText("OHIO FOG", fog.x + fog.w / 2, fog.y + fog.h / 2 + 4);
+      }
+    }
+
+    function drawHud(now) {
+      ctx.fillStyle = "rgba(8, 18, 9, 0.58)";
+      ctx.fillRect(0, 0, WIDTH, HUD_HEIGHT);
+
+      const inventory = state.isCarrying ? state.carriedBrainrot.type.label : "Empty";
+      const rarity = state.isCarrying ? state.carriedBrainrot.type.rarity : "None";
+      let buffLabel = state.activePowerup;
+      if (now < state.moveLockedUntil) {
+        buffLabel = `Stunned ${Math.ceil((state.moveLockedUntil - now) / 1000)}s`;
+      }
+
+      if (WIDTH < 620) {
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 17px Trebuchet MS";
+        ctx.fillText(`Score ${state.currentScore}`, 12, 18);
+        ctx.font = "bold 15px Trebuchet MS";
+        ctx.fillText(`Sigma +${getSigmaPpsTotal()}/s`, 12, 38);
+        ctx.fillStyle = "#dfeedd";
+        ctx.font = "bold 11px Trebuchet MS";
+        ctx.fillText("Carry", 12, 58);
+        ctx.fillStyle = state.isCarrying ? state.carriedBrainrot.type.color : "#ffffff";
+        drawFittedText(`${inventory} • ${rarity}`, 50, 58, WIDTH - 62, 11, 8);
+
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 15px Trebuchet MS";
+        ctx.fillText(`Rizz x${state.currentMultiplier}`, WIDTH - 12, 18);
+        ctx.fillStyle = "#dfeedd";
+        drawFittedText(buffLabel, WIDTH - 12, 38, Math.max(120, WIDTH * 0.48), 11, 8);
+        return;
+      }
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 20px Trebuchet MS";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`Score: ${state.currentScore}`, 18, 22);
+      ctx.font = "bold 17px Trebuchet MS";
+      ctx.fillText(`Sigma: +${getSigmaPpsTotal()}/s`, 180, 22);
+      ctx.font = "bold 20px Trebuchet MS";
+      ctx.fillText(`Active Buff: ${buffLabel}`, 18, 44);
+      ctx.fillText(`Rizz: x${state.currentMultiplier}`, 620, 44);
+      ctx.fillStyle = "#dfeedd";
+      ctx.font = "bold 13px Trebuchet MS";
+      ctx.fillText("Inventory:", 430, 16);
+      ctx.fillStyle = state.isCarrying ? state.carriedBrainrot.type.color : "#ffffff";
+      drawFittedText(inventory, 430, 30, 180, 13, 9);
+      ctx.fillStyle = "#dfeedd";
+      ctx.fillText("Rarity:", 430, 46);
+      ctx.fillStyle = RARITY_COLORS[rarity] || "#ffffff";
+      drawFittedText(rarity, 482, 46, 118, 13, 10);
+      ctx.fillStyle = "#dfeedd";
+      ctx.font = "bold 11px Trebuchet MS";
+      ctx.fillText("Drop: Q or Tap", 700, 16);
+      ctx.fillText("Trade: T or Tap", 700, 30);
+
+      const legend = [
+        ["C", "Common"],
+        ["U", "Uncommon"],
+        ["R", "Rare"],
+        ["E", "Epic"],
+        ["L", "Legendary"],
+        ["S", "Secret"]
+      ];
+      let legendX = 620;
+      for (const [badge, rarityName] of legend) {
+        const color = RARITY_COLORS[rarityName];
+        ctx.fillStyle = color;
+        ctx.fillRect(legendX, 8, 10, 10);
+        ctx.fillStyle = "#dfeedd";
+        ctx.font = "bold 10px Trebuchet MS";
+        ctx.fillText(badge, legendX + 14, 13);
+        legendX += 24;
+      }
+    }
+
+    function drawPopups() {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "bold 20px Trebuchet MS";
+
+      for (const popup of state.popups) {
+        ctx.globalAlpha = Math.max(0, popup.life);
+        ctx.fillStyle = popup.color;
+        ctx.fillText(popup.text, popup.x, popup.y);
+      }
+
+      ctx.globalAlpha = 1;
+    }
+
+    function drawTooltip() {
+      const hoveredSlotIndex = getHoveredStoredIndex();
+      const hoveredStored = hoveredSlotIndex >= 0 ? state.storedBrainrots[hoveredSlotIndex] : null;
+      const hoveredWorld = hoveredStored ? null : getHoveredWorldBrainrot();
+      const hoveredType = hoveredStored || (hoveredWorld ? hoveredWorld.type : null);
+
+      if (!hoveredType) {
+        return;
+      }
+
+      const lines = hoveredType.isPredator
+        ? [
+            hoveredType.label,
+            "Rarity: Predator",
+            "Threat: Hunts the player",
+            "On hit: ejects 1 Sigma brainrot"
+          ]
+        : hoveredType.isLuckyBlock
+        ? [
+            hoveredType.label,
+            "Rarity: Lucky",
+            "Reward: Legendary or Secret",
+            "Store it, then click to open"
+          ]
+        : (() => {
+            const economy = getBrainrotEconomy(hoveredType);
+            return [
+              hoveredType.label,
+              `Rarity: ${hoveredType.rarity}`,
+              `Catch Score: +${economy.points}`,
+              `Sigma Income: +${economy.pps}/s`,
+              `Trade Boost: +${economy.tradePps}/s`
+            ];
+          })();
+
+      ctx.save();
+      ctx.font = "bold 11px Trebuchet MS";
+      let width = 0;
+      for (const line of lines) {
+        width = Math.max(width, ctx.measureText(line).width);
+      }
+      const boxWidth = width + 18;
+      const boxHeight = lines.length * 14 + 12;
+      const boxX = clamp(state.mouseX + 14, 10, WIDTH - boxWidth - 10);
+      const boxY = clamp(state.mouseY - boxHeight - 10, HUD_HEIGHT + 8, HEIGHT - boxHeight - 8);
+
+      ctx.fillStyle = "rgba(15, 24, 14, 0.94)";
+      ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+      ctx.strokeStyle = RARITY_COLORS[hoveredType.rarity] || hoveredType.color || "#ffffff";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      for (let index = 0; index < lines.length; index += 1) {
+        ctx.fillStyle = index === 0 ? (RARITY_COLORS[hoveredType.rarity] || hoveredType.color || "#ffffff") : "#f1f5ea";
+        ctx.fillText(lines[index], boxX + 9, boxY + 7 + index * 14);
+      }
+      ctx.restore();
+    }
+
+    function render(now) {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      drawGrass();
+      drawBase();
+      drawMewing();
+      drawFog();
+      for (const brainrot of brainrots) {
+        drawBrainrot(brainrot);
+      }
+      if (state.carriedBrainrot) {
+        drawBrainrot(state.carriedBrainrot);
+      }
+      drawPlayer();
+      drawHud(now);
+      drawPopups();
+      drawTooltip();
+    }
+
+    function tick(now) {
+      if (!lastTime) {
+        lastTime = now;
+      }
+
+      const deltaSeconds = Math.min((now - lastTime) / 1000, 0.033);
+      lastTime = now;
+
+      update(now, deltaSeconds);
+      render(now);
+      requestAnimationFrame(tick);
+    }
+
+    function handleCanvasActivation() {
+      const hoveredSlotIndex = getHoveredStoredIndex();
+      if (hoveredSlotIndex >= 0) {
+        if (openLuckyBlock(hoveredSlotIndex)) {
+          return;
+        }
+        state.selectedStoredIndex = state.storedBrainrots[hoveredSlotIndex] ? hoveredSlotIndex : -1;
+        updatePointerCursor();
+        return;
+      }
+
+      if (
+        state.selectedStoredIndex >= 0 &&
+        pointInRect(state.mouseX, state.mouseY, getTradeButtonRect())
+      ) {
+        tradeStoredBrainrot();
+      }
+    }
+
+    window.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(key)) {
+        event.preventDefault();
+        keys.add(key);
+      }
+      if (key === "q") {
+        event.preventDefault();
+        state.dropQueued = true;
+      }
+      if (key === "t") {
+        event.preventDefault();
+        tradeStoredBrainrot();
+      }
+    });
+
+    window.addEventListener("keyup", (event) => {
+      keys.delete(event.key.toLowerCase());
+    });
+
+    window.addEventListener("blur", () => {
+      keys.clear();
+      resetJoystick();
+    });
+
+    canvas.addEventListener("mousemove", (event) => {
+      syncPointerPosition(event.clientX, event.clientY);
+      updatePointerCursor();
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+      state.mouseInside = false;
+      updatePointerCursor();
+    });
+
+    canvas.addEventListener("click", (event) => {
+      syncPointerPosition(event.clientX, event.clientY);
+      handleCanvasActivation();
+    });
+
+    menuToggle.addEventListener("click", () => {
+      setDrawerOpen(!mobileDrawer.classList.contains("open"));
+    });
+
+    drawerClose.addEventListener("click", () => {
+      setDrawerOpen(false);
+    });
+
+    drawerScrim.addEventListener("click", () => {
+      setDrawerOpen(false);
+    });
+
+    virtualJoystick.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      joystickPointerId = event.pointerId;
+      virtualJoystick.setPointerCapture?.(event.pointerId);
+      updateJoystickFromPointer(event.clientX, event.clientY);
+    });
+
+    virtualJoystick.addEventListener("pointermove", (event) => {
+      if (event.pointerId !== joystickPointerId) {
+        return;
+      }
+      event.preventDefault();
+      updateJoystickFromPointer(event.clientX, event.clientY);
+    });
+
+    const releaseJoystick = (event) => {
+      if (event?.pointerId !== undefined && joystickPointerId !== null && event.pointerId !== joystickPointerId) {
+        return;
+      }
+      if (event?.pointerId !== undefined && virtualJoystick.hasPointerCapture?.(event.pointerId)) {
+        virtualJoystick.releasePointerCapture(event.pointerId);
+      }
+      resetJoystick();
+    };
+
+    virtualJoystick.addEventListener("pointerup", releaseJoystick);
+    virtualJoystick.addEventListener("pointercancel", releaseJoystick);
+    virtualJoystick.addEventListener("lostpointercapture", releaseJoystick);
+
+    dropButton.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      state.dropQueued = true;
+    });
+
+    const handleViewportResize = () => {
+      refreshCanvasLayout();
+      if (!isMobileLayout() && mobileDrawer.classList.contains("open")) {
+        setDrawerOpen(false);
+      }
+      updatePointerCursor();
+    };
+
+    window.addEventListener("resize", handleViewportResize);
+    window.visualViewport?.addEventListener("resize", handleViewportResize);
+    window.addEventListener("beforeunload", persistGame);
+
+    refreshCanvasLayout();
+    loadGame();
+    refillBrainrots();
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>
