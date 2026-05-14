@@ -10,32 +10,40 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="page-shell">
+  <div class="page-shell" id="lobbyView">
     <header class="topbar">
       <div>
-        <p class="eyebrow">Prototype Loadout</p>
+        <p class="eyebrow">Battle Royale Prototype</p>
         <h1>Royale</h1>
       </div>
-      <a class="portal-link" href="../">Back to Creek Games</a>
+      <div class="topbar-actions">
+        <div class="coins-pill">
+          <span>Coins</span>
+          <strong id="coinsCount">0</strong>
+        </div>
+        <a class="portal-link" href="../">Back to Creek Games</a>
+      </div>
     </header>
 
-    <main class="layout">
-      <section class="hero-panel">
-        <div class="hero-copy">
-          <p class="hero-label">Royale Prototype</p>
-          <h2>Default loadouts, emotes, and the first island mode are now wired in.</h2>
-          <p>
-            This is the first pass for a browser battle royale setup: a starter locker,
-            emote testing, and a first island mode where you collect health and guns,
-            then outlast AI skins until the round ends.
-          </p>
-        </div>
+    <nav class="tabbar" aria-label="Royale sections">
+      <button class="tab-button active" type="button" data-tab="play">Play</button>
+      <button class="tab-button" type="button" data-tab="locker">Locker</button>
+      <button class="tab-button" type="button" data-tab="shop">Shop</button>
+    </nav>
 
-        <div class="preview-card">
+    <section class="tab-panel active" id="playTab">
+      <div class="play-layout">
+        <section class="panel preview-panel">
+          <div class="hero-copy">
+            <p class="hero-label">Chosen Skin</p>
+            <h2 id="playSkinName">Default Ranger</h2>
+            <p id="playSkinTagline">Balanced starter outfit for first-drop matches.</p>
+          </div>
+
           <div class="preview-stage" id="skinPreview" aria-live="polite">
             <div class="stage-sun"></div>
             <div class="stage-ground"></div>
-            <div class="emote-banner" id="emotePreviewLabel">Emote: Dance Master</div>
+            <div class="emote-banner" id="emotePreviewLabel">Emote Ready</div>
             <div class="avatar-wrap">
               <svg class="avatar-svg" viewBox="0 0 320 420" aria-hidden="true">
                 <ellipse class="avatar-shadow" cx="160" cy="374" rx="88" ry="22"></ellipse>
@@ -54,88 +62,107 @@
               </svg>
             </div>
           </div>
+        </section>
 
-          <div class="equipped-card">
-            <p class="section-label">Equipped</p>
-            <div class="equipped-row">
-              <div>
-                <h3 id="equippedSkinName">Default Ranger</h3>
-                <p id="equippedSkinTagline">Balanced starter outfit for first-drop matches.</p>
-              </div>
-              <span class="rarity-pill" id="equippedSkinRarity">Common</span>
+        <aside class="panel play-emotes-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Equipped Emotes</p>
+              <h2>Quick Emote Bar</h2>
             </div>
+            <p class="section-copy">These are the four emotes from your locker. Use them here, but equip them in Locker.</p>
+          </div>
+          <div class="quick-emote-list" id="playEmoteButtons"></div>
+          <section class="loadout-card">
+            <p class="section-label">Loadout</p>
             <dl class="skin-stats">
               <div>
                 <dt>Set</dt>
-                <dd id="equippedSkinSet">Launch Crew</dd>
+                <dd id="playSkinSet">Launch Crew</dd>
               </div>
               <div>
                 <dt>Theme</dt>
-                <dd id="equippedSkinTheme">Scout green + amber trim</dd>
+                <dd id="playSkinTheme">Scout green + amber trim</dd>
               </div>
               <div>
-                <dt>Status</dt>
-                <dd>Unlocked by default</dd>
-              </div>
-              <div>
-                <dt>Emote</dt>
-                <dd id="equippedEmoteName">Dance Master</dd>
+                <dt>Rarity</dt>
+                <dd id="playSkinRarity">Common</dd>
               </div>
             </dl>
-            <button class="emote-trigger" id="playEmoteButton" type="button">Do Dance Master</button>
-          </div>
-        </div>
-      </section>
-
-      <aside class="locker-panel">
-        <section class="locker-section">
-          <div class="locker-head">
-            <p class="section-label">Locker</p>
-            <h2>Skins</h2>
-          </div>
-          <div class="skin-grid" id="skinGrid"></div>
-        </section>
-
-        <section class="locker-section">
-          <div class="locker-head">
-            <p class="section-label">Locker</p>
-            <h2>Emotes</h2>
-          </div>
-          <div class="emote-grid" id="emoteGrid"></div>
-        </section>
-
-        <section class="roadmap-card">
-          <p class="section-label">Next Up</p>
-          <ul>
-            <li>Additional unlockable skins</li>
-            <li>Animation states for idle, movement, and emotes</li>
-            <li>Inventory and match UI</li>
-          </ul>
-        </section>
-      </aside>
-    </main>
-
-    <section class="modes-panel">
-      <div class="modes-head">
-        <div>
-          <p class="section-label">Games</p>
-          <h2>Royale Modes</h2>
-        </div>
-        <p class="modes-subtitle">Each mode defines the map, loot flow, opponents, and win condition.</p>
+          </section>
+        </aside>
       </div>
-      <div class="mode-grid" id="modeGrid"></div>
+
+      <section class="panel games-panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Games</p>
+            <h2>Play Modes</h2>
+          </div>
+          <p class="section-copy">Launch a game card to open the match screen. Each match starts with a 3 second countdown.</p>
+        </div>
+        <div class="mode-grid" id="modeGrid"></div>
+      </section>
     </section>
 
-    <section class="match-panel" id="matchPanel" hidden>
-      <div class="modes-head">
-        <div>
-          <p class="section-label">Playtest</p>
-          <h2 id="matchTitle">Royale Island</h2>
-        </div>
-        <p class="modes-subtitle" id="matchStatus">Press play to drop in.</p>
-      </div>
+    <section class="tab-panel" id="lockerTab" hidden>
+      <div class="locker-layout">
+        <section class="panel locker-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Locker</p>
+              <h2>Skins</h2>
+            </div>
+            <p class="section-copy">Choose the skin that shows up in Play and in your matches.</p>
+          </div>
+          <div class="skin-grid" id="lockerSkinGrid"></div>
+        </section>
 
-      <div class="match-stage-shell">
+        <section class="panel locker-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Locker</p>
+              <h2>Emotes</h2>
+            </div>
+            <p class="section-copy">Equip four total emotes. Select a slot, then assign any emote below.</p>
+          </div>
+          <div class="emote-slots" id="equippedEmoteSlots"></div>
+          <div class="emote-grid" id="lockerEmoteGrid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="shopTab" hidden>
+      <section class="panel shop-panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Shop</p>
+            <h2>Buy Skins</h2>
+          </div>
+          <p class="section-copy">Earn coins from matches. Wins pay more, but placement and eliminations both matter.</p>
+        </div>
+        <div class="shop-grid" id="shopGrid"></div>
+      </section>
+    </section>
+  </div>
+
+  <section class="match-screen" id="matchScreen" hidden>
+    <header class="topbar match-topbar">
+      <div>
+        <p class="eyebrow">Live Match</p>
+        <h1 id="matchTitle">Royale Island</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="coins-pill">
+          <span>Coins</span>
+          <strong id="matchCoinsCount">0</strong>
+        </div>
+        <button class="portal-link button-link" id="leaveMatchButton" type="button">Back to Lobby</button>
+      </div>
+    </header>
+
+    <div class="match-shell">
+      <section class="panel match-stage-card">
         <div class="match-stats">
           <article class="match-stat">
             <p class="mode-label">Health</p>
@@ -143,45 +170,57 @@
           </article>
           <article class="match-stat">
             <p class="mode-label">Gun</p>
-            <strong id="matchGun">None</strong>
+            <strong id="matchGun">Pistol</strong>
           </article>
           <article class="match-stat">
             <p class="mode-label">Ammo</p>
-            <strong id="matchAmmo">--</strong>
+            <strong id="matchAmmo">0</strong>
           </article>
           <article class="match-stat">
             <p class="mode-label">AI Skins Left</p>
-            <strong id="matchEnemies">0</strong>
+            <strong id="matchEnemies">15</strong>
+          </article>
+          <article class="match-stat">
+            <p class="mode-label">Eliminations</p>
+            <strong id="matchElims">0</strong>
           </article>
         </div>
 
         <div class="game-shell-card">
-          <canvas class="game-canvas" id="gameCanvas" width="960" height="540" tabindex="0" aria-label="Royale Island gameplay arena"></canvas>
+          <canvas class="game-canvas" id="gameCanvas" width="1280" height="760" tabindex="0" aria-label="Royale Island gameplay arena"></canvas>
           <div class="game-overlay" id="gameOverlay">
-            <p class="mode-label">Controls</p>
-            <h3 id="overlayTitle">Drop Into Royale Island</h3>
-            <p id="overlayBody">Press Play Royale Island to spawn in. Move with WASD or arrow keys, aim with the mouse, and click or press Space to fire. Walk over guns and health to pick them up.</p>
+            <p class="mode-label" id="overlayKicker">Countdown</p>
+            <h2 id="overlayTitle">3</h2>
+            <p id="overlayBody">Get ready to drop.</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="match-bottom">
+      <aside class="panel match-sidebar">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Status</p>
+            <h2 id="matchStatus">Launching match...</h2>
+          </div>
+          <p class="section-copy">Use the map cover, keep moving, and let the AI skins fight each other when you can.</p>
+        </div>
+
         <article class="controls-card">
-          <p class="section-label">How To Play</p>
+          <p class="section-label">Controls</p>
           <ul class="controls-list">
-            <li>Move with `WASD` or arrow keys.</li>
+            <li>Move with WASD or arrow keys.</li>
             <li>Aim with the mouse.</li>
-            <li>Click or press `Space` to shoot.</li>
-            <li>Walk over loot to grab guns and health.</li>
-            <li>Clear every AI skin to win the round.</li>
+            <li>Click or press Space to shoot.</li>
+            <li>Walk over guns, ammo, and health pickups.</li>
+            <li>Use obstacles for cover while AI skins fight.</li>
           </ul>
-          <button class="mode-play-button" id="restartMatchButton" type="button">Restart Round</button>
+          <button class="mode-play-button" id="restartMatchButton" type="button">Restart Match</button>
         </article>
 
         <div class="match-log" id="matchLog" aria-live="polite"></div>
-      </div>
-    </section>
-  </div>
+      </aside>
+    </div>
+  </section>
 
   <script src="script.js"></script>
 </body>
