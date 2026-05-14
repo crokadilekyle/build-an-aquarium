@@ -619,6 +619,28 @@ h1 {
   transform: scale(0.96);
 }
 
+.event-toggle {
+  width: 100%;
+  border: 1px solid rgba(11, 28, 63, 0.14);
+  background: linear-gradient(180deg, #fff7e8, #ffe1b0);
+  color: #7a3100;
+  font-weight: 800;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(122, 49, 0, 0.12);
+}
+
+.event-toggle.active {
+  background: linear-gradient(180deg, #eff6ff, #c9e3ff);
+  color: #0b3f79;
+  border-color: rgba(12, 93, 179, 0.24);
+}
+
+.event-toggle:active {
+  transform: translateY(1px);
+}
+
 .shop-row {
   display: flex;
   flex-direction: column;
@@ -797,6 +819,12 @@ h1 {
 }
 
 .meta { font-size: 13px; color: #1f3558; margin: 2px 0 6px; }
+.trade-meta {
+  font-size: 12px;
+  color: #8a2500;
+  font-weight: 800;
+  margin: -1px 0 6px;
+}
 .owned { font-size: 12px; color: #1f3558; font-weight: 700; }
 
 .buy-btn {
@@ -830,6 +858,24 @@ h1 {
 .shop-backdrop.visible {
   opacity: 1;
   pointer-events: auto;
+}
+
+.memorial-flag {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(11, 28, 63, 0.14);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.16);
+  z-index: 40;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
 }
 
 @media (max-width: 640px) {

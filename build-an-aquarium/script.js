@@ -9,6 +9,8 @@ const shopClose = document.getElementById('shopClose');
 const shopBackdrop = document.getElementById('shopBackdrop');
 const resetGame = document.getElementById('resetGame');
 const crabTestBtn = document.getElementById('crabTestBtn');
+const memorialToggle = document.getElementById('memorialToggle');
+const memorialFlag = document.getElementById('memorialFlag');
 const tacoTimerEl = document.getElementById('tacoTimer');
 const crabTimerEl = document.getElementById('crabTimer');
 const mainSection = document.querySelector('.main');
@@ -51,6 +53,8 @@ const luckyEggSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1
 const tacoSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f32e.svg';
 const crabSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f980.svg';
 const tacoTurtleSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 120'><ellipse cx='102' cy='72' rx='58' ry='34' fill='%238a5a30'/><ellipse cx='164' cy='72' rx='22' ry='18' fill='%23966a3f'/><circle cx='172' cy='67' r='3.2' fill='%231b1b1b'/><ellipse cx='70' cy='98' rx='13' ry='8' fill='%23754a25'/><ellipse cx='102' cy='104' rx='13' ry='8' fill='%23754a25'/><ellipse cx='133' cy='99' rx='13' ry='8' fill='%23754a25'/><path d='M58 62 q44 -52 88 0 l-44 34z' fill='%23e2b354' stroke='%23ba8a38' stroke-width='4'/><path d='M73 57 q30 -28 58 0' fill='none' stroke='%23b4642c' stroke-width='5' stroke-linecap='round'/><circle cx='84' cy='58' r='4' fill='%23d33f49'/><circle cx='96' cy='62' r='4' fill='%23d33f49'/><circle cx='110' cy='58' r='4' fill='%23d33f49'/><path d='M72 55 q18 -12 36 0 q18 -12 36 0' fill='none' stroke='%2353a84f' stroke-width='4' stroke-linecap='round'/></svg>`;
+const flagfinSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 120'><defs><clipPath id='body'><path d='M28 60c0-22 22-40 67-40h42c24 0 43 18 43 40s-19 40-43 40H95C50 100 28 82 28 60z'/></clipPath></defs><g clip-path='url(%23body)'><rect width='220' height='120' fill='%23fff'/><rect y='0' width='220' height='10' fill='%23c62828'/><rect y='20' width='220' height='10' fill='%23c62828'/><rect y='40' width='220' height='10' fill='%23c62828'/><rect y='60' width='220' height='10' fill='%23c62828'/><rect y='80' width='220' height='10' fill='%23c62828'/><rect y='100' width='220' height='10' fill='%23c62828'/><rect width='90' height='56' fill='%231e3a8a'/><circle cx='24' cy='16' r='4' fill='%23fff'/><circle cx='48' cy='16' r='4' fill='%23fff'/><circle cx='72' cy='16' r='4' fill='%23fff'/><circle cx='36' cy='30' r='4' fill='%23fff'/><circle cx='60' cy='30' r='4' fill='%23fff'/><circle cx='24' cy='44' r='4' fill='%23fff'/><circle cx='48' cy='44' r='4' fill='%23fff'/><circle cx='72' cy='44' r='4' fill='%23fff'/></g><path d='M28 60c0-22 22-40 67-40h42c24 0 43 18 43 40s-19 40-43 40H95C50 100 28 82 28 60z' fill='none' stroke='%230f172a' stroke-width='5'/><polygon points='180,60 214,34 214,86' fill='%23ef4444' stroke='%230f172a' stroke-width='5' stroke-linejoin='round'/><circle cx='82' cy='55' r='8' fill='%23fff'/><circle cx='84' cy='53' r='4' fill='%230f172a'/><circle cx='88' cy='50' r='2' fill='%23fff' opacity='0.85'/><path d='M43 56q-10 6 0 12' stroke='%230f172a' stroke-width='4' fill='none' stroke-linecap='round'/></svg>`;
+const starfishSvg = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2b50.svg';
 
 const fishList = [
   { id: 'guppy', name: 'Guppy', cost: 10, cps: 0.1, stockCap: 10, restockAt: 200, img: 'https://img.icons8.com/color/256/fish.png' },
@@ -62,6 +66,8 @@ const fishList = [
   { id: 'jelly', name: 'Jelly', cost: 1500, cps: 24, stockCap: 4, restockAt: 2600, img: 'https://img.icons8.com/color/256/jellyfish.png' },
   { id: 'shark', name: 'Shark', cost: 4000, cps: 65, stockCap: 3, restockAt: 6500, img: 'https://img.icons8.com/color/256/shark.png' },
   { id: 'gumfin', name: 'Gum Fin', cost: 5000, cps: 20, stockCap: 2, restockAt: 8000, img: gumFinSvg, locked: true, defaultLocked: true },
+  { id: 'flagfin', name: 'Flagfin', cost: 10000, cps: 30, stockCap: 0, restockAt: 0, img: flagfinSvg, memorialEvent: true, unlimited: true, tradeIns: [{ id: 'tacoturtle', count: 1 }, { id: 'puffer', count: 1 }] },
+  { id: 'starfish', name: 'Starfish', cost: 15000, cps: 35, stockCap: 0, restockAt: 0, img: starfishSvg, memorialEvent: true, unlimited: true, tradeIns: [{ id: 'crab', count: 1 }, { id: 'gumfin', count: 1 }] },
   { id: 'luckyegg', name: 'Lucky Egg', cost: 1000, cps: 0, stockCap: 0, restockAt: 0, img: luckyEggSvg, locked: true, defaultLocked: true, isEgg: true }
 ];
 
@@ -75,7 +81,8 @@ function createDefaultState() {
     mutationDone: false,
     luckyEggEventDone: false,
     tacoMilestone: 0,
-    crabEventDone: false
+    crabEventDone: false,
+    memorialDayEventActive: false
   };
 }
 
@@ -111,6 +118,7 @@ function loadState() {
     defaults.mutationDone = Boolean(saved.mutationDone);
     defaults.luckyEggEventDone = Boolean(saved.luckyEggEventDone);
     defaults.crabEventDone = Boolean(saved.crabEventDone);
+    defaults.memorialDayEventActive = Boolean(saved.memorialDayEventActive);
     const savedTacoMilestone = Number(saved.tacoMilestone);
     if (Number.isFinite(savedTacoMilestone) && savedTacoMilestone >= 0) {
       defaults.tacoMilestone = Math.floor(savedTacoMilestone / TACO_EVENT_SHARK_STEP) * TACO_EVENT_SHARK_STEP;
@@ -132,7 +140,8 @@ function persistNow() {
       mutationDone: state.mutationDone,
       luckyEggEventDone: state.luckyEggEventDone,
       tacoMilestone: state.tacoMilestone,
-      crabEventDone: state.crabEventDone
+      crabEventDone: state.crabEventDone,
+      memorialDayEventActive: state.memorialDayEventActive
     }));
   } catch (error) {
     // Ignore storage quota/privacy mode errors.
@@ -245,14 +254,21 @@ function makeCard(fish) {
     `;
     return card;
   }
+  const tradeMarkup = fish.tradeIns?.length
+    ? `<div class="trade-meta">Trade in: ${fish.tradeIns.map(item => {
+        const requiredFish = fishList.find(candidate => candidate.id === item.id);
+        return `${item.count} ${requiredFish?.name ?? item.id}`;
+      }).join(' + ')}</div>`
+    : '';
   card.innerHTML = `
     <img src="${fish.img}" alt="${fish.name}">
     <div>
       <h3>${fish.name}</h3>
       <div class="meta">Cost: ${fish.cost} | +${fish.cps}/s</div>
-      <div class="meta" id="stock-${fish.id}">Stock: ${state.stock[fish.id] ?? fish.stockCap}</div>
+      <div class="meta" id="stock-${fish.id}">${fish.unlimited ? 'Stock: Event Only' : `Stock: ${state.stock[fish.id] ?? fish.stockCap}`}</div>
+      ${tradeMarkup}
       <div class="owned" id="owned-${fish.id}">Owned: 0</div>
-      <button class="buy-btn" data-id="${fish.id}">Buy</button>
+      <button class="buy-btn" data-id="${fish.id}">${fish.tradeIns?.length ? 'Trade + Buy' : 'Buy'}</button>
     </div>
   `;
   return card;
@@ -260,10 +276,28 @@ function makeCard(fish) {
 
 function rebuildShop() {
   shopRow.innerHTML = '';
-  fishList.filter(f => !f.locked).forEach(fish => {
+  fishList.filter(fish => !fish.locked && (!fish.memorialEvent || state.memorialDayEventActive)).forEach(fish => {
     const card = makeCard(fish);
     shopRow.appendChild(card);
   });
+}
+
+function getTradeRequirementStatus(fish) {
+  if (!fish.tradeIns?.length) return true;
+  return fish.tradeIns.every(item => (state.owned[item.id] ?? 0) >= item.count);
+}
+
+function setMemorialDayEventActive(active) {
+  state.memorialDayEventActive = active;
+  if (memorialToggle) {
+    memorialToggle.setAttribute('aria-pressed', String(active));
+    memorialToggle.classList.toggle('active', active);
+    memorialToggle.textContent = `Memorial Day Event: ${active ? 'On' : 'Off'}`;
+  }
+  if (memorialFlag) memorialFlag.hidden = !active;
+  rebuildShop();
+  updateAffordability();
+  queuePersist();
 }
 
 function updateAffordability() {
@@ -275,14 +309,23 @@ function updateAffordability() {
       btn.textContent = luckyEggHatching ? 'Hatching...' : 'Open Egg';
       return;
     }
-    const inStock = (state.stock[fish.id] ?? 0) > 0;
-    btn.disabled = !inStock || state.coins < fish.cost;
-    btn.textContent = inStock ? 'Buy' : `Restock at ${fish.restockAt}`;
+    const hasTradeFish = getTradeRequirementStatus(fish);
+    const inStock = fish.unlimited || (state.stock[fish.id] ?? 0) > 0;
+    btn.disabled = !inStock || state.coins < fish.cost || !hasTradeFish;
+    if (!inStock) {
+      btn.textContent = `Restock at ${fish.restockAt}`;
+    } else if (!hasTradeFish) {
+      btn.textContent = 'Need Trade Fish';
+    } else if (fish.tradeIns?.length) {
+      btn.textContent = 'Trade + Buy';
+    } else {
+      btn.textContent = 'Buy';
+    }
   });
   fishList.forEach(fish => {
     if (fish.isEgg) return;
     const stockEl = document.getElementById(`stock-${fish.id}`);
-    if (stockEl) stockEl.textContent = `Stock: ${state.stock[fish.id] ?? 0}`;
+    if (stockEl) stockEl.textContent = fish.unlimited ? 'Stock: Event Only' : `Stock: ${state.stock[fish.id] ?? 0}`;
     const ownedEl = document.getElementById(`owned-${fish.id}`);
     if (ownedEl) ownedEl.textContent = `Owned: ${state.owned[fish.id] ?? 0}`;
   });
@@ -791,6 +834,7 @@ function addFishToTank(fish) {
   img.src = fish.img;
   img.alt = fish.name;
   img.draggable = false;
+  img.dataset.fishId = fish.id;
   img.className = `swimmer${fish.cps >= 20 ? ' fast' : ''}`;
   const base = Math.max(60, Math.min(140, 70 + fish.cps * 1.5));
   img.style.width = `${base}px`;
@@ -813,6 +857,12 @@ function addFishToTank(fish) {
     if (evt.propertyName === 'transform') swim(img);
   });
   requestAnimationFrame(() => swim(img));
+}
+
+function removeFishFromTank(fishId, count = 1) {
+  if (!tank || count <= 0) return;
+  const swimmers = [...tank.querySelectorAll(`img[data-fish-id="${fishId}"]`)];
+  swimmers.slice(0, count).forEach(swimmer => swimmer.remove());
 }
 
 function unlockFish(fishId) {
@@ -939,13 +989,23 @@ function buyFish(id) {
     queuePersist();
     return;
   }
-  if ((state.stock[id] ?? 0) <= 0) return;
+  if (!fish.unlimited && (state.stock[id] ?? 0) <= 0) return;
+  if (!getTradeRequirementStatus(fish)) return;
   state.coins -= fish.cost;
+  fish.tradeIns?.forEach(item => {
+    state.owned[item.id] -= item.count;
+    removeFishFromTank(item.id, item.count);
+    const tradedOwnedEl = document.getElementById(`owned-${item.id}`);
+    if (tradedOwnedEl) tradedOwnedEl.textContent = `Owned: ${state.owned[item.id]}`;
+  });
   state.owned[id] += 1;
   if (id === 'shark') maybeStartTacoTimeEvent();
-  state.stock[id] = (state.stock[id] ?? 0) - 1;
+  if (!fish.unlimited) {
+    state.stock[id] = (state.stock[id] ?? 0) - 1;
+  }
   recalcCps();
-  document.getElementById(`owned-${id}`).textContent = `Owned: ${state.owned[id]}`;
+  const ownedEl = document.getElementById(`owned-${id}`);
+  if (ownedEl) ownedEl.textContent = `Owned: ${state.owned[id]}`;
   addFishToTank(fish);
   maybeStartCrabEvent();
   renderStats();
@@ -1001,6 +1061,12 @@ if (crabTestBtn) {
   });
 }
 
+if (memorialToggle) {
+  memorialToggle.addEventListener('click', () => {
+    setMemorialDayEventActive(!state.memorialDayEventActive);
+  });
+}
+
 if (resetGame) {
   resetGame.addEventListener('click', () => {
     const confirmed = window.confirm('Start over and erase saved shells and fish progress?');
@@ -1016,6 +1082,7 @@ if (resetGame) {
     state.luckyEggEventDone = false;
     state.tacoMilestone = 0;
     state.crabEventDone = false;
+    state.memorialDayEventActive = false;
     luckyEggHatching = false;
     endTacoTimeEvent();
     endCrabEvent(false);
@@ -1026,6 +1093,7 @@ if (resetGame) {
     rebuildShop();
     renderStats();
     updateAffordability();
+    setMemorialDayEventActive(false);
     setShopOpen(false);
   });
 }
@@ -1051,6 +1119,7 @@ setInterval(() => {
   fishList.forEach(fish => {
     if (fish.isEgg) return;
     if (fish.locked) return;
+    if (fish.unlimited) return;
     if ((state.stock[fish.id] ?? 0) > 0) return;
     if (state.coins >= fish.restockAt) {
       state.stock[fish.id] = fish.stockCap || 0;
@@ -1080,6 +1149,7 @@ renderStats();
 updateAffordability();
 renderTacoTimer();
 renderCrabTimer();
+setMemorialDayEventActive(state.memorialDayEventActive);
 
 window.addEventListener('beforeunload', () => {
   if (saveTimer) {
