@@ -1,0 +1,490 @@
+:root {
+  --sky-top: #8fd9ff;
+  --sky-bottom: #fff2b9;
+  --asphalt: #2d3642;
+  --asphalt-glow: #4d5f78;
+  --grass: #7ac95e;
+  --grass-dark: #4c963f;
+  --panel: rgba(9, 19, 31, 0.78);
+  --panel-border: rgba(255, 255, 255, 0.18);
+  --panel-soft: rgba(255, 255, 255, 0.08);
+  --text-main: #f7fbff;
+  --text-soft: rgba(247, 251, 255, 0.72);
+  --accent: #ff7f32;
+  --accent-soft: #ffb453;
+  --cyan: #68f5ff;
+  --shadow: 0 22px 60px rgba(3, 11, 19, 0.34);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  overflow: hidden;
+  color: var(--text-main);
+  font-family: "Rajdhani", system-ui, sans-serif;
+  background:
+    radial-gradient(60rem 26rem at 0% 0%, rgba(255, 255, 255, 0.28), transparent 60%),
+    linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 12, 17, 0.12), transparent 35%),
+    linear-gradient(0deg, rgba(8, 12, 17, 0.14), transparent 45%);
+}
+
+#gameCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.hud-shell {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hud-panel,
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: "Bungee", "Rajdhani", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 0.95;
+}
+
+.hud-panel {
+  width: 100%;
+  border-radius: 16px;
+  padding: 8px 10px;
+  pointer-events: auto;
+}
+
+.hud-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, auto)) minmax(180px, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.hud-row-secondary {
+  grid-template-columns: unset;
+  margin-top: 0;
+}
+
+.hud-label {
+  display: block;
+  color: var(--text-soft);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.hud-row > div {
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hud-row strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prompt {
+  margin: 0;
+  min-width: 0;
+  padding: 0 8px;
+  color: var(--text-main);
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-button,
+.icon-button,
+.tab,
+.action-button {
+  font: inherit;
+  border: 0;
+  cursor: pointer;
+}
+
+.menu-button {
+  position: static;
+  width: auto;
+  min-width: 64px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent-soft), var(--accent));
+  color: #201104;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 10px 20px rgba(255, 127, 50, 0.28);
+  pointer-events: auto;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  padding: 32px 20px;
+  background: rgba(3, 8, 13, 0.6);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.menu-panel,
+.starter-panel {
+  width: min(980px, 100%);
+  max-height: min(90vh, 900px);
+  overflow: auto;
+  border-radius: 28px;
+  padding: 22px;
+}
+
+.starter-panel {
+  width: min(860px, 100%);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.icon-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.tab-strip {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.tab {
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-main);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tab.active {
+  background: linear-gradient(180deg, rgba(104, 245, 255, 0.9), rgba(63, 208, 221, 0.9));
+  color: #06212b;
+}
+
+.tab-panel {
+  display: none;
+  margin-top: 18px;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.current-car-card,
+.garage-card,
+.shop-card,
+.guide-card {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.current-car-card {
+  padding: 18px;
+}
+
+.current-car-header,
+.starter-card-header,
+.collection-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.tier-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #07141d;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stat-block {
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stat-block span {
+  display: block;
+  color: var(--text-soft);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stat-block strong {
+  font-size: 24px;
+}
+
+.collection-list,
+.starter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.garage-card,
+.shop-card,
+.starter-card {
+  padding: 16px;
+}
+
+.car-swatch {
+  width: 100%;
+  height: 90px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  overflow: hidden;
+  margin: 14px 0;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+}
+
+.car-swatch::before {
+  content: "";
+  position: absolute;
+  width: 58%;
+  height: 34px;
+  left: 21%;
+  top: 28px;
+  border-radius: 999px 999px 16px 16px;
+  background: var(--car-color, #ddd);
+  box-shadow: inset 0 -10px 0 rgba(0, 0, 0, 0.16);
+}
+
+.car-swatch::after {
+  content: "";
+  position: absolute;
+  width: 30%;
+  height: 8px;
+  left: 35%;
+  top: 39px;
+  border-radius: 999px;
+  background: var(--car-accent, rgba(255, 255, 255, 0.2));
+}
+
+.card-copy {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 17px;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.price {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.action-button {
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--accent-soft), var(--accent));
+  color: #1a1005;
+  font-weight: 700;
+  box-shadow: 0 12px 24px rgba(255, 127, 50, 0.22);
+}
+
+.action-button.alt {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  box-shadow: none;
+}
+
+.action-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shop-summary,
+.guide-card {
+  padding: 18px;
+}
+
+.shop-summary p,
+.starter-copy,
+.guide-card li {
+  font-size: 18px;
+  color: var(--text-soft);
+}
+
+.shop-balance {
+  margin: 10px 0 0;
+}
+
+.guide-card ul {
+  margin: 14px 0 0;
+  padding-left: 20px;
+}
+
+.starter-overlay {
+  z-index: 30;
+}
+
+.starter-card {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.starter-card p {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .hud-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .prompt {
+    grid-column: 1 / span 2;
+  }
+
+  .menu-button {
+    justify-self: end;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hud-shell {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+  }
+
+  .hud-panel {
+    padding: 6px;
+  }
+
+  .hud-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .hud-row > div {
+    padding: 4px 6px;
+  }
+
+  .hud-row strong {
+    font-size: 14px;
+  }
+
+  .prompt,
+  .starter-copy,
+  .shop-summary p {
+    font-size: 12px;
+  }
+
+  .prompt {
+    grid-column: 1 / -1;
+    padding: 2px 4px 0;
+  }
+
+  .overlay {
+    padding: 14px;
+  }
+
+  .menu-panel,
+  .starter-panel {
+    padding: 16px;
+    border-radius: 24px;
+  }
+}

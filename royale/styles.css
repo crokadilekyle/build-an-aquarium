@@ -327,11 +327,107 @@ p {
   place-items: end center;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.preview-piko {
+  --piko-body: #7dd9ff;
+  --piko-face: #dff8ff;
+  --piko-accent: #1f66d1;
+  position: absolute;
+  left: calc(50% - 118px);
+  bottom: 112px;
+  width: 84px;
+  height: 96px;
+  z-index: 0;
+  pointer-events: none;
+  transform: rotate(-8deg);
+}
+
+.preview-piko-body {
+  position: absolute;
+  inset: 8px 10px 6px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--piko-body) 88%, white 12%), var(--piko-body));
+  box-shadow: 0 16px 24px rgba(0, 0, 0, 0.22);
+}
+
+.preview-piko-face {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 18px;
+  height: 26px;
+  border-radius: 14px;
+  background: var(--piko-face);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.preview-piko-face span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #13233f;
+}
+
+.preview-piko-feet {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -6px;
+  height: 12px;
+}
+
+.preview-piko-feet::before,
+.preview-piko-feet::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 16px;
+  height: 10px;
+  border-radius: 6px;
+  background: var(--piko-accent);
+}
+
+.preview-piko-feet::before {
+  left: 4px;
+}
+
+.preview-piko-feet::after {
+  right: 4px;
+}
+
+.preview-piko-topper {
+  position: absolute;
+  left: 28px;
+  top: -8px;
+  width: 18px;
+  height: 14px;
+  border-radius: 8px 8px 4px 4px;
+  background: var(--piko-accent);
+}
+
+.preview-piko[data-variant="king"] .preview-piko-topper {
+  left: 20px;
+  top: -15px;
+  width: 34px;
+  height: 20px;
+  border-radius: 0;
+  background: #ffe27a;
+  clip-path: polygon(0 100%, 0 48%, 18% 48%, 28% 0, 42% 48%, 50% 24%, 58% 48%, 72% 0, 82% 48%, 100% 48%, 100% 100%);
+}
+
 .avatar-svg {
   width: min(100%, 420px);
   height: auto;
   filter: drop-shadow(0 26px 26px rgba(0, 0, 0, 0.26));
   transform-origin: center bottom;
+  position: relative;
+  z-index: 1;
 }
 
 .avatar-shadow {
@@ -490,6 +586,30 @@ p {
   background: linear-gradient(135deg, var(--swatch-primary), var(--swatch-secondary));
 }
 
+.bundle-swatch {
+  position: relative;
+  background:
+    linear-gradient(135deg, var(--swatch-primary) 0 45%, var(--swatch-secondary) 45% 68%, var(--swatch-tertiary) 68% 100%);
+}
+
+.bundle-swatch::after {
+  content: attr(data-bundle-count);
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(9, 13, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
 .emote-icon {
   display: grid;
   place-items: center;
@@ -532,6 +652,12 @@ p {
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.bundle-includes {
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .games-panel,
@@ -769,6 +895,43 @@ p {
   animation: crown-spin-arm 450ms ease-in-out 4 alternate;
 }
 
+.preview-stage.is-emoting[data-emote-move="lucid-dreams"] .avatar-svg {
+  animation: lucid-dreams-body 1500ms ease-in-out 1;
+}
+
+.preview-stage.is-emoting[data-emote-move="lucid-dreams"] .avatar-arm {
+  transform-origin: center 24%;
+  animation: lucid-dreams-arm 750ms ease-in-out 2 alternate;
+}
+
+.preview-stage.is-emoting[data-emote-move="copines"] .avatar-svg {
+  animation: copines-body 320ms ease-in-out 6 alternate;
+}
+
+.preview-stage.is-emoting[data-emote-move="copines"] .avatar-leg {
+  transform-origin: center top;
+  animation: copines-leg 320ms ease-in-out 6 alternate;
+}
+
+.preview-stage.is-emoting[data-emote-move="goaaal"] .avatar-svg {
+  animation: goaaal-body 520ms ease-in-out 3;
+}
+
+.preview-stage.is-emoting[data-emote-move="goaaal"] .avatar-leg {
+  transform-origin: center top;
+  animation: goaaal-leg 520ms ease-in-out 3;
+}
+
+.preview-stage.is-emoting[data-emote-move="abbstraction"] .avatar-svg {
+  animation: abbstraction-body 140ms steps(2, jump-none) 12;
+}
+
+.preview-stage.is-emoting[data-emote-move="abbstraction"] .avatar-head,
+.preview-stage.is-emoting[data-emote-move="abbstraction"] .avatar-visor,
+.preview-stage.is-emoting[data-emote-move="abbstraction"] .avatar-accent {
+  animation: abbstraction-flash 140ms steps(2, jump-none) 12;
+}
+
 @keyframes dance-master-bounce {
   from { transform: translateY(0) rotate(-2deg) scale(1); }
   to { transform: translateY(-12px) rotate(2deg) scale(1.02); }
@@ -841,6 +1004,52 @@ p {
 @keyframes crown-spin-arm {
   from { transform: rotate(-8deg); }
   to { transform: rotate(24deg); }
+}
+
+@keyframes lucid-dreams-body {
+  0% { transform: translateY(0) rotate(-2deg) scale(1); }
+  50% { transform: translateY(-18px) rotate(2deg) scale(1.04); }
+  100% { transform: translateY(0) rotate(-1deg) scale(1); }
+}
+
+@keyframes lucid-dreams-arm {
+  from { transform: rotate(-16deg); }
+  to { transform: rotate(16deg); }
+}
+
+@keyframes copines-body {
+  from { transform: translateX(-12px) rotate(-3deg) scale(1); }
+  to { transform: translateX(12px) rotate(3deg) scale(1.02); }
+}
+
+@keyframes copines-leg {
+  from { transform: rotate(-8deg); }
+  to { transform: rotate(10deg); }
+}
+
+@keyframes goaaal-body {
+  0% { transform: translateX(0) rotate(0deg) scale(1); }
+  35% { transform: translateX(-8px) rotate(-6deg) scale(1.02); }
+  70% { transform: translateX(18px) rotate(8deg) scale(1.04); }
+  100% { transform: translateX(0) rotate(0deg) scale(1); }
+}
+
+@keyframes goaaal-leg {
+  0% { transform: rotate(-4deg); }
+  35% { transform: rotate(-16deg); }
+  70% { transform: rotate(22deg); }
+  100% { transform: rotate(-4deg); }
+}
+
+@keyframes abbstraction-body {
+  0% { transform: translate(-10px, -2px) rotate(-5deg) scale(0.98); }
+  50% { transform: translate(10px, 4px) rotate(5deg) scale(1.04); }
+  100% { transform: translate(-6px, -4px) rotate(-2deg) scale(1); }
+}
+
+@keyframes abbstraction-flash {
+  from { filter: brightness(1) saturate(1); }
+  to { filter: brightness(1.55) saturate(1.4); }
 }
 
 @media (max-width: 1080px) {

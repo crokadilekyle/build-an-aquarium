@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Race Chase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <canvas id="gameCanvas" aria-label="Race Chase game view"></canvas>
+
+  <div class="hud-shell">
+    <section class="hud-panel">
+      <div class="hud-row">
+        <div>
+          <span class="hud-label">Money</span>
+          <strong id="moneyValue">$0</strong>
+        </div>
+        <div>
+          <span class="hud-label">Current Car</span>
+          <strong id="carValue">None</strong>
+        </div>
+        <div>
+          <span class="hud-label">Objective</span>
+          <strong id="objectiveValue">Choose a starter car</strong>
+        </div>
+        <div>
+          <span class="hud-label">Speed</span>
+          <strong id="speedValue">0 mph</strong>
+        </div>
+        <div>
+          <span class="hud-label">Race</span>
+          <strong id="raceValue">Not racing</strong>
+        </div>
+        <p class="prompt" id="promptText">Choose your first common car to start driving.</p>
+        <button class="menu-button" id="menuButton" type="button">Menu</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="overlay hidden" id="menuOverlay" aria-hidden="true">
+    <div class="panel menu-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Garage Control</p>
+          <h2>Car Menu</h2>
+        </div>
+        <button class="icon-button" id="closeMenuButton" type="button" aria-label="Close menu">×</button>
+      </div>
+
+      <div class="tab-strip" role="tablist" aria-label="Menu sections">
+        <button class="tab active" data-tab="garage" type="button">Garage</button>
+        <button class="tab" data-tab="shop" type="button">Shop</button>
+        <button class="tab" data-tab="guide" type="button">Guide</button>
+      </div>
+
+      <section class="tab-panel active" id="tab-garage">
+        <div class="current-car-card" id="currentCarCard"></div>
+        <div class="collection-list" id="garageList"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-shop">
+        <div class="shop-summary">
+          <p>Every car price is tied to its tier. Better tiers cost more and push harder on races.</p>
+          <p class="shop-balance">Cash on hand: <strong id="shopMoneyValue">$0</strong></p>
+        </div>
+        <div class="collection-list" id="shopList"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-guide">
+        <div class="guide-card">
+          <h3>How To Play</h3>
+          <ul>
+            <li>Drive with <strong>WASD</strong> or the arrow keys.</li>
+            <li>Follow the glowing target ring to earn delivery money.</li>
+            <li>Pull into race gates and press <strong>E</strong> to start a timed race.</li>
+            <li>Race payout depends on placement. Faster tiers help, but good driving matters.</li>
+            <li>Open the menu any time to view your car, equip owned cars, or buy more.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="overlay starter-overlay" id="starterOverlay" aria-hidden="false">
+    <div class="panel starter-panel">
+      <p class="eyebrow">Starter Garage</p>
+      <h2>Pick Your First Common Car</h2>
+      <p class="starter-copy">Your first common car is free. The other cars can be bought later with race and delivery money.</p>
+      <div class="starter-grid" id="starterGrid"></div>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>

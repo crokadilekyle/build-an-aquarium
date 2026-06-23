@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alongus Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <canvas id="gameCanvas" aria-label="Alongus practice mode"></canvas>
+
+  <div class="hud-shell">
+    <section class="hud-card">
+      <p class="eyebrow">Practice Mode</p>
+      <h1>Alongus</h1>
+      <div class="hud-grid">
+        <div class="stat-card">
+          <span class="label">Room</span>
+          <strong id="roomValue">Dock</strong>
+        </div>
+        <div class="stat-card">
+          <span class="label">Task</span>
+          <strong id="taskValue">Boot ship systems</strong>
+        </div>
+        <div class="stat-card">
+          <span class="label">Status</span>
+          <strong id="statusValue">Exploring</strong>
+        </div>
+        <div class="stat-card">
+          <span class="label">Chickin Wings</span>
+          <strong id="currencyValue">0</strong>
+        </div>
+      </div>
+      <p class="prompt" id="promptText">Move with WASD or arrows. Press E near glowing stations.</p>
+      <div class="legend">
+        <span><i class="dot player-dot"></i>You</span>
+        <span><i class="dot task-dot"></i>Task</span>
+        <span><i class="dot vision-dot"></i>Vision radius</span>
+      </div>
+      <div class="hud-actions">
+        <div class="action-buttons">
+          <button class="closet-button" id="closetButton" type="button">Customize</button>
+          <button class="closet-button alt-button" id="shopButton" type="button">Shop</button>
+        </div>
+        <span class="outfit-summary" id="outfitSummary">Red • No hat</span>
+      </div>
+      <section class="closet-panel hidden" id="closetPanel" aria-label="Character customization">
+        <div class="closet-section">
+          <span class="label">Color</span>
+          <div class="option-grid swatch-grid" id="colorOptions"></div>
+        </div>
+        <div class="closet-section">
+          <span class="label">Hat</span>
+          <div class="option-grid hat-grid" id="hatOptions"></div>
+        </div>
+      </section>
+      <section class="shop-panel hidden" id="shopPanel" aria-label="Hat shop">
+        <div class="closet-section">
+          <span class="label">Hat Shop</span>
+          <div class="shop-items" id="shopItems"></div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <div class="meeting-overlay hidden" id="meetingOverlay" aria-hidden="true">
+    <section class="meeting-card" aria-label="Body report meeting">
+      <p class="eyebrow">Emergency Report</p>
+      <h2>Body Reported</h2>
+      <p class="meeting-copy" id="meetingSummary">A crewmate was found down.</p>
+      <div class="meeting-stats">
+        <div class="meeting-stat">
+          <span class="label">Location</span>
+          <strong id="meetingRoomValue">Unknown</strong>
+        </div>
+        <div class="meeting-stat">
+          <span class="label">Reporter</span>
+          <strong id="meetingReporterValue">You</strong>
+        </div>
+      </div>
+      <p class="meeting-note" id="meetingNote">Vote for who you think did it. The crew will vote once you lock in your choice.</p>
+      <div class="meeting-candidates" id="meetingCandidates"></div>
+      <div class="meeting-actions">
+        <button class="meeting-button alt" id="meetingSkipButton" type="button">Skip Vote</button>
+        <button class="meeting-button hidden" id="meetingContinueButton" type="button">Continue</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="task-overlay hidden" id="taskOverlay" aria-hidden="true">
+    <section class="task-card" aria-label="Typing task">
+      <div class="task-card-header">
+        <div>
+          <p class="eyebrow">Ship Task</p>
+          <h2 id="taskPanelTitle">Boot ship systems</h2>
+        </div>
+        <button class="task-close hidden" id="taskCloseButton" type="button" aria-label="Close completed task">X</button>
+      </div>
+      <div class="task-card-grid">
+        <div class="task-stat">
+          <span class="label">Room</span>
+          <strong id="taskPanelRoomValue">Mess Hall</strong>
+        </div>
+        <div class="task-stat">
+          <span class="label">Progress</span>
+          <strong id="taskPanelProgressValue">1 / 2</strong>
+        </div>
+        <div class="task-stat">
+          <span class="label">Keys</span>
+          <strong>asdfjkl;</strong>
+        </div>
+      </div>
+      <p class="task-card-copy">Complete each typing line exactly. Any wrong key restarts only the current line.</p>
+      <div class="task-sequence" id="taskSequenceValue" aria-live="polite"></div>
+      <div class="task-typed" id="taskTypedValue">Start typing...</div>
+      <p class="task-feedback" id="taskFeedback">Type the highlighted sequence to begin.</p>
+    </section>
+  </div>
+</body>
+<script src="./script.js"></script>
+</html>

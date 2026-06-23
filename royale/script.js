@@ -125,6 +125,265 @@ const skinDefs = [
       boots: "#f2cf42",
       shadow: "rgba(4, 23, 34, 0.32)"
     }
+  },
+  {
+    id: "deadpool",
+    name: "Deadpool",
+    rarity: "Icon",
+    set: "Merc Bundle",
+    theme: "Crimson tactical suit + black panel trim",
+    tagline: "Fourth-wall chaos in a clean red-and-black battle fit.",
+    cost: 0,
+    hiddenFromShop: true,
+    palette: {
+      body: "#b81928",
+      accent: "#17181d",
+      head: "#b81928",
+      hair: "#17181d",
+      boots: "#111217",
+      shadow: "rgba(21, 8, 10, 0.34)"
+    }
+  },
+  {
+    id: "wolverine",
+    name: "Wolverine",
+    rarity: "Icon",
+    set: "Merc Bundle",
+    theme: "Mustard armor + cobalt strike lines",
+    tagline: "Heavy-hitter colors built for close-range island fights.",
+    cost: 0,
+    hiddenFromShop: true,
+    palette: {
+      body: "#d3a11d",
+      accent: "#2550b8",
+      head: "#f2c97d",
+      hair: "#1a2337",
+      boots: "#2550b8",
+      shadow: "rgba(17, 17, 23, 0.28)"
+    }
+  },
+  {
+    id: "pomni",
+    name: "Pomni",
+    rarity: "Icon",
+    set: "TADC Bundle",
+    theme: "Jester red + blue with bright circus gold",
+    tagline: "A panic-powered circus look with loud colors and sharper contrast.",
+    cost: 0,
+    hiddenFromShop: true,
+    palette: {
+      body: "#be2336",
+      accent: "#2d57d7",
+      head: "#f7ddbf",
+      hair: "#1d1d26",
+      boots: "#f0be3d",
+      shadow: "rgba(17, 9, 16, 0.3)"
+    }
+  },
+  {
+    id: "jax",
+    name: "Jax",
+    rarity: "Icon",
+    set: "TADC Bundle",
+    theme: "Violet rogue fit + muted carnival trim",
+    tagline: "A smug digital troublemaker palette built around deep purple and charcoal.",
+    cost: 0,
+    hiddenFromShop: true,
+    palette: {
+      body: "#7f5acb",
+      accent: "#2b213d",
+      head: "#d8b08f",
+      hair: "#1a1625",
+      boots: "#2b213d",
+      shadow: "rgba(12, 8, 19, 0.28)"
+    }
+  },
+  {
+    id: "caine",
+    name: "Caine",
+    rarity: "Icon",
+    set: "TADC Bundle",
+    theme: "Ringmaster crimson + gold spotlight accents",
+    tagline: "A showrunner-style circus bundle skin with bright stage-command colors.",
+    cost: 0,
+    hiddenFromShop: true,
+    palette: {
+      body: "#8f1d2f",
+      accent: "#f0b843",
+      head: "#f3dfcf",
+      hair: "#16161d",
+      boots: "#16161d",
+      shadow: "rgba(16, 9, 12, 0.3)"
+    }
+  },
+  {
+    id: "piko-water",
+    name: "Water Piko",
+    rarity: "Epic",
+    set: "Piko Collection",
+    theme: "Ocean cyan + deep current blue",
+    tagline: "A clean aquatic Piko variant with bright wave-tone armor.",
+    cost: 0,
+    hiddenFromShop: true,
+    piko: { variant: "water", body: "#7dd9ff", face: "#dff8ff", accent: "#1f66d1" },
+    palette: {
+      body: "#1f9edc",
+      accent: "#124bb2",
+      head: "#bde7ff",
+      hair: "#0f2d6e",
+      boots: "#124bb2",
+      shadow: "rgba(8, 19, 46, 0.28)"
+    }
+  },
+  {
+    id: "piko-fire",
+    name: "Fire Piko",
+    rarity: "Epic",
+    set: "Piko Collection",
+    theme: "Inferno red + ember orange",
+    tagline: "A hot-drop Piko fit built around flame tones and bright heat accents.",
+    cost: 0,
+    hiddenFromShop: true,
+    piko: { variant: "fire", body: "#ff8f3a", face: "#ffe7cf", accent: "#cf2c1d" },
+    palette: {
+      body: "#d9342b",
+      accent: "#ff9432",
+      head: "#ffd0a3",
+      hair: "#70160f",
+      boots: "#8f1e14",
+      shadow: "rgba(42, 9, 7, 0.3)"
+    }
+  },
+  {
+    id: "piko-spirite",
+    name: "Spirite Piko",
+    rarity: "Epic",
+    set: "Piko Collection",
+    theme: "Ghost mint + spectral violet",
+    tagline: "A floaty Piko variant with soft spirit glow and dusk trims.",
+    cost: 0,
+    hiddenFromShop: true,
+    piko: { variant: "spirite", body: "#9af7e8", face: "#efffff", accent: "#7b62f7" },
+    palette: {
+      body: "#87f2da",
+      accent: "#8b6fff",
+      head: "#e4fff8",
+      hair: "#3f337e",
+      boots: "#5c49b4",
+      shadow: "rgba(18, 26, 43, 0.26)"
+    }
+  },
+  {
+    id: "piko-magma",
+    name: "Magma Piko",
+    rarity: "Epic",
+    set: "Piko Collection",
+    theme: "Volcanic black + molten lava seams",
+    tagline: "A heavier Piko style with bright magma cracks across dark plating.",
+    cost: 0,
+    hiddenFromShop: true,
+    piko: { variant: "magma", body: "#3f2623", face: "#ffd5aa", accent: "#ff6128" },
+    palette: {
+      body: "#2f1c1a",
+      accent: "#ff5a1f",
+      head: "#f0bb8d",
+      hair: "#130e12",
+      boots: "#1b1418",
+      shadow: "rgba(10, 6, 8, 0.34)"
+    }
+  },
+  {
+    id: "piko-lucid",
+    name: "Lucid Piko",
+    rarity: "Epic",
+    set: "Piko Collection",
+    theme: "Dream pink + neon blue haze",
+    tagline: "A surreal Piko palette with softer glow tones and late-night contrast.",
+    cost: 0,
+    hiddenFromShop: true,
+    piko: { variant: "lucid", body: "#ff97d6", face: "#fff1fb", accent: "#69c5ff" },
+    palette: {
+      body: "#ff63b6",
+      accent: "#61c6ff",
+      head: "#ffe3fb",
+      hair: "#3f2e78",
+      boots: "#2a5fb9",
+      shadow: "rgba(23, 14, 45, 0.28)"
+    }
+  },
+  {
+    id: "piko-king",
+    name: "King Piko",
+    rarity: "Legendary",
+    set: "Piko Collection",
+    theme: "Royal gold + velvet crimson trim",
+    tagline: "The crown-tier Piko with bright regal plating and heavier contrast.",
+    cost: 0,
+    hiddenFromShop: true,
+    piko: { variant: "king", body: "#f0c14a", face: "#fff1cc", accent: "#8a1736" },
+    palette: {
+      body: "#d4a62d",
+      accent: "#7d1532",
+      head: "#f4ddab",
+      hair: "#4f1124",
+      boots: "#5a1025",
+      shadow: "rgba(30, 16, 7, 0.3)"
+    }
+  }
+];
+
+const bundleDefs = [
+  {
+    id: "deadpool-wolverine-bundle",
+    name: "Deadpool + Wolverine Bundle",
+    rarity: "Bundle",
+    set: "Merc Bundle",
+    theme: "Dual drop with crimson stealth and adamantium gold",
+    tagline: "Unlock both Deadpool and Wolverine together in one shop pickup.",
+    cost: 1200,
+    unlockSkinIds: ["deadpool", "wolverine"],
+    swatch: {
+      primary: "#b81928",
+      secondary: "#17181d",
+      tertiary: "#d3a11d"
+    }
+  },
+  {
+    id: "tadc-bundle",
+    name: "TADC Bundle",
+    rarity: "Bundle",
+    set: "Digital Circus",
+    theme: "Three circus drop skins with bright glitch-show energy",
+    tagline: "Unlock Pomni, Jax, and Caine together in one digital circus pack.",
+    cost: 1650,
+    unlockSkinIds: ["pomni", "jax", "caine"],
+    swatch: {
+      primary: "#be2336",
+      secondary: "#2d57d7",
+      tertiary: "#7f5acb"
+    }
+  },
+  {
+    id: "piko-bundle",
+    name: "Piko Bundle",
+    rarity: "Bundle",
+    set: "Piko Collection",
+    theme: "Six elemental and rare Piko variants in one full locker drop",
+    tagline: "Unlock Water, Fire, Spirite, Magma, Lucid, and King Piko together.",
+    cost: 2600,
+    unlockSkinIds: [
+      "piko-water",
+      "piko-fire",
+      "piko-spirite",
+      "piko-magma",
+      "piko-lucid",
+      "piko-king"
+    ],
+    swatch: {
+      primary: "#1f9edc",
+      secondary: "#ff5a1f",
+      tertiary: "#d4a62d"
+    }
   }
 ];
 
@@ -134,7 +393,11 @@ const emotes = [
   { id: "laser-shuffle", name: "Laser Shuffle", rarity: "Epic", set: "Neon Night", tagline: "Fast footwork and sharp arm cuts like a club spotlight hit.", icon: "✦", move: "laser-shuffle" },
   { id: "meteor-clap", name: "Meteor Clap", rarity: "Epic", set: "Impact Series", tagline: "A heavy stomp-and-clap combo with arena-finisher energy.", icon: "☄", move: "meteor-clap" },
   { id: "glitch-wiggle", name: "Glitch Wiggle", rarity: "Rare", set: "Signal Break", tagline: "A twitchy loop that feels like the lobby just desynced.", icon: "≈", move: "glitch-wiggle" },
-  { id: "crown-spin", name: "Crown Spin", rarity: "Icon", set: "Victory Circuit", tagline: "A showy spin with a final pose for last-player standing moments.", icon: "♛", move: "crown-spin" }
+  { id: "crown-spin", name: "Crown Spin", rarity: "Icon", set: "Victory Circuit", tagline: "A showy spin with a final pose for last-player standing moments.", icon: "♛", move: "crown-spin" },
+  { id: "lucid-dreams", name: "Lucid Dreams", rarity: "Icon", set: "Dream Signal", tagline: "A slow float-and-sway emote with sleepy late-night energy.", icon: "☾", move: "lucid-dreams" },
+  { id: "copines", name: "Copines", rarity: "Epic", set: "Club Loop", tagline: "A smooth side-to-side rhythm emote with a softer dance bounce.", icon: "♡", move: "copines" },
+  { id: "goaaal", name: "Goaaal!", rarity: "Epic", set: "Stadium Break", tagline: "A huge celebration kick with striker energy after the final shot.", icon: "⚽", move: "goaaal" },
+  { id: "abbstraction", name: "Abbstraction", rarity: "Icon", set: "Signal Break", tagline: "A warped abstract emote that snaps through jagged glitch poses.", icon: "▣", move: "abbstraction" }
 ];
 
 const modes = [
@@ -395,8 +658,12 @@ const state = {
 
 const getSkinById = (id) => skinDefs.find((skin) => skin.id === id) ?? skinDefs[0];
 const getEmoteById = (id) => emotes.find((emote) => emote.id === id) ?? emotes[0];
-const getUnlockedSkins = () => skinDefs.filter((skin) => unlockedSkinIds.has(skin.id) || skin.defaultUnlocked);
-const getShopSkins = () => skinDefs.filter((skin) => !(unlockedSkinIds.has(skin.id) || skin.defaultUnlocked));
+const getPikoBySkinId = (id) => getSkinById(id).piko ?? null;
+const isSkinUnlocked = (skin) => unlockedSkinIds.has(skin.id) || skin.defaultUnlocked;
+const isBundleUnlocked = (bundle) => bundle.unlockSkinIds.every((skinId) => unlockedSkinIds.has(skinId));
+const getUnlockedSkins = () => skinDefs.filter((skin) => isSkinUnlocked(skin));
+const getShopSkins = () => skinDefs.filter((skin) => !skin.hiddenFromShop && !isSkinUnlocked(skin));
+const getShopBundles = () => bundleDefs.filter((bundle) => !isBundleUnlocked(bundle));
 
 const persistProfile = () => {
   writeJSON(STORAGE_KEYS.unlockedSkins, [...unlockedSkinIds]);
@@ -412,6 +679,52 @@ const setOverlay = (kicker, title, body, visible) => {
   gameOverlay.hidden = !visible;
 };
 
+const ensurePreviewPiko = () => {
+  const avatarWrap = skinPreview.querySelector(".avatar-wrap");
+  if (!avatarWrap) {
+    return null;
+  }
+
+  let previewPiko = avatarWrap.querySelector(".preview-piko");
+  if (!previewPiko) {
+    previewPiko = document.createElement("div");
+    previewPiko.className = "preview-piko hidden";
+    previewPiko.setAttribute("aria-hidden", "true");
+    previewPiko.innerHTML = `
+      <div class="preview-piko-body">
+        <div class="preview-piko-face">
+          <span></span>
+          <span></span>
+        </div>
+        <div class="preview-piko-feet"></div>
+        <div class="preview-piko-topper"></div>
+      </div>
+    `;
+    avatarWrap.append(previewPiko);
+  }
+
+  return previewPiko;
+};
+
+const applyPreviewPiko = (skin) => {
+  const previewPiko = ensurePreviewPiko();
+  if (!previewPiko) {
+    return;
+  }
+
+  if (!skin.piko) {
+    previewPiko.classList.add("hidden");
+    previewPiko.dataset.variant = "";
+    return;
+  }
+
+  previewPiko.classList.remove("hidden");
+  previewPiko.dataset.variant = skin.piko.variant;
+  previewPiko.style.setProperty("--piko-body", skin.piko.body);
+  previewPiko.style.setProperty("--piko-face", skin.piko.face);
+  previewPiko.style.setProperty("--piko-accent", skin.piko.accent);
+};
+
 const applyPreviewSkin = () => {
   const skin = getSkinById(state.equippedSkinId);
   skinPreview.style.setProperty("--skin-body", skin.palette.body);
@@ -425,9 +738,12 @@ const applyPreviewSkin = () => {
   playSkinSet.textContent = skin.set;
   playSkinTheme.textContent = skin.theme;
   playSkinRarity.textContent = skin.rarity;
+  applyPreviewPiko(skin);
 
   if (state.match?.player) {
+    state.match.player.skinId = skin.id;
     state.match.player.palette = skin.palette;
+    state.match.player.piko = skin.piko ?? null;
   }
 };
 
@@ -638,7 +954,7 @@ const renderLockerEmotes = () => {
 const buySkin = (skinId) => {
   const skin = getSkinById(skinId);
 
-  if (state.coins < skin.cost || unlockedSkinIds.has(skin.id)) {
+  if (state.coins < skin.cost || isSkinUnlocked(skin)) {
     return;
   }
 
@@ -648,12 +964,26 @@ const buySkin = (skinId) => {
   renderAll();
 };
 
+const buyBundle = (bundleId) => {
+  const bundle = bundleDefs.find((entry) => entry.id === bundleId);
+
+  if (!bundle || state.coins < bundle.cost || isBundleUnlocked(bundle)) {
+    return;
+  }
+
+  state.coins -= bundle.cost;
+  bundle.unlockSkinIds.forEach((skinId) => unlockedSkinIds.add(skinId));
+  persistProfile();
+  renderAll();
+};
+
 const renderShop = () => {
   shopGrid.innerHTML = "";
 
   const lockedSkins = getShopSkins();
+  const lockedBundles = getShopBundles();
 
-  if (lockedSkins.length === 0) {
+  if (lockedSkins.length === 0 && lockedBundles.length === 0) {
     const card = document.createElement("article");
     card.className = "shop-card";
     card.innerHTML = `
@@ -665,6 +995,46 @@ const renderShop = () => {
     shopGrid.append(card);
     return;
   }
+
+  lockedBundles.forEach((bundle) => {
+    const card = document.createElement("article");
+    card.className = "shop-card";
+
+    const swatch = document.createElement("div");
+    swatch.className = "skin-swatch bundle-swatch";
+    swatch.dataset.bundleCount = `${bundle.unlockSkinIds.length}x`;
+    swatch.style.setProperty("--swatch-primary", bundle.swatch.primary);
+    swatch.style.setProperty("--swatch-secondary", bundle.swatch.secondary);
+    swatch.style.setProperty("--swatch-tertiary", bundle.swatch.tertiary);
+
+    const copy = document.createElement("div");
+    copy.className = "skin-copy";
+    copy.innerHTML = `
+      <h3>${bundle.name}</h3>
+      <p>${bundle.tagline}</p>
+      <div class="skin-meta">
+        <span class="rarity-pill">${bundle.rarity}</span>
+        <span class="skin-chip">${bundle.set}</span>
+        <span class="skin-chip">${bundle.cost} Coins</span>
+      </div>
+      <p class="bundle-includes">Includes: ${bundle.unlockSkinIds.map((skinId) => getSkinById(skinId).name).join(" + ")}</p>
+    `;
+
+    const actions = document.createElement("div");
+    actions.className = "shop-actions";
+
+    const button = document.createElement("button");
+    button.className = "buy-button";
+    button.type = "button";
+    button.textContent = state.coins >= bundle.cost ? `Buy ${bundle.name}` : `${bundle.cost} Coins`;
+    button.disabled = state.coins < bundle.cost;
+    button.addEventListener("click", () => buyBundle(bundle.id));
+
+    actions.append(button);
+    copy.append(actions);
+    card.append(swatch, copy);
+    shopGrid.append(card);
+  });
 
   lockedSkins.forEach((skin) => {
     const card = document.createElement("article");
@@ -827,8 +1197,10 @@ const createEnemy = (mode, playerSpawn, index) => {
 
   return {
     id: `enemy-${index + 1}`,
+    skinId: skin.id,
     name: skin.name,
     palette: skin.palette,
+    piko: skin.piko ?? null,
     x: spawn.x,
     y: spawn.y,
     angle: 0,
@@ -977,6 +1349,7 @@ const launchMode = (modeId) => {
     playerElims: 0,
     player: {
       id: "player",
+      skinId: state.equippedSkinId,
       x: playerSpawn.x,
       y: playerSpawn.y,
       radius: PLAYER_RADIUS,
@@ -987,7 +1360,8 @@ const launchMode = (modeId) => {
       weapon: "Pistol",
       ammo: 26,
       fireCooldown: 0,
-      palette: getSkinById(state.equippedSkinId).palette
+      palette: getSkinById(state.equippedSkinId).palette,
+      piko: getPikoBySkinId(state.equippedSkinId)
     },
     enemies: Array.from({ length: mode.enemies }, (_, index) => createEnemy(mode, playerSpawn, index)),
     pickups: createPickups(mode, playerSpawn),
@@ -1316,6 +1690,71 @@ const drawRoundedRect = (ctx, x, y, width, height, radius) => {
   ctx.closePath();
 };
 
+const drawPikoCompanion = (ctx, radius, piko) => {
+  if (!piko) {
+    return;
+  }
+
+  const size = radius * 1.08;
+
+  ctx.save();
+  ctx.translate(-radius * 1.34, -radius * 0.54);
+  ctx.rotate(-0.12);
+
+  ctx.fillStyle = "rgba(0, 0, 0, 0.18)";
+  ctx.beginPath();
+  ctx.ellipse(size * 0.12, size * 1.02, size * 0.56, size * 0.22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = piko.body;
+  drawRoundedRect(ctx, -size * 0.42, -size * 0.44, size * 0.84, size * 0.9, size * 0.2);
+  ctx.fill();
+
+  ctx.fillStyle = piko.face;
+  drawRoundedRect(ctx, -size * 0.26, -size * 0.2, size * 0.52, size * 0.36, size * 0.14);
+  ctx.fill();
+
+  ctx.fillStyle = "#13233f";
+  ctx.beginPath();
+  ctx.arc(-size * 0.1, -size * 0.03, size * 0.045, 0, Math.PI * 2);
+  ctx.arc(size * 0.1, -size * 0.03, size * 0.045, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = "#13233f";
+  ctx.lineWidth = Math.max(1.2, radius * 0.06);
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.1, size * 0.1);
+  ctx.quadraticCurveTo(0, size * 0.17, size * 0.1, size * 0.1);
+  ctx.stroke();
+
+  ctx.fillStyle = piko.accent;
+  drawRoundedRect(ctx, -size * 0.46, -size * 0.18, size * 0.12, size * 0.42, size * 0.08);
+  ctx.fill();
+
+  if (piko.variant === "king") {
+    ctx.fillStyle = "#ffe27a";
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.22, -size * 0.46);
+    ctx.lineTo(-size * 0.1, -size * 0.68);
+    ctx.lineTo(0, -size * 0.48);
+    ctx.lineTo(size * 0.1, -size * 0.68);
+    ctx.lineTo(size * 0.22, -size * 0.46);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.fillStyle = piko.accent;
+    drawRoundedRect(ctx, -size * 0.12, -size * 0.56, size * 0.24, size * 0.16, size * 0.08);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = piko.accent;
+  drawRoundedRect(ctx, -size * 0.28, size * 0.42, size * 0.16, size * 0.12, size * 0.05);
+  drawRoundedRect(ctx, size * 0.12, size * 0.42, size * 0.16, size * 0.12, size * 0.05);
+  ctx.fill();
+  ctx.restore();
+};
+
 const drawCharacter = (ctx, entity, radius, angle, palette, label, healthRatio) => {
   ctx.save();
   ctx.translate(entity.x, entity.y);
@@ -1324,6 +1763,7 @@ const drawCharacter = (ctx, entity, radius, angle, palette, label, healthRatio) 
   ctx.beginPath();
   ctx.ellipse(0, radius + 8, radius + 7, radius * 0.55, 0, 0, Math.PI * 2);
   ctx.fill();
+  drawPikoCompanion(ctx, radius, entity.piko);
   ctx.fillStyle = palette.body;
   ctx.beginPath();
   ctx.arc(0, 0, radius, 0, Math.PI * 2);
