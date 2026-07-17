@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dance Master</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Random Routine Rhythm Game</p>
+        <h1>Dance Master</h1>
+        <p class="subtitle">Like a surprise dance battle: every time you play, one of four routines gets picked for you.</p>
+      </div>
+      <a class="portal-link" href="../">Back to Creek Games</a>
+    </header>
+
+    <main class="game-layout">
+      <section class="stage-panel">
+        <div class="stage-header">
+          <div>
+            <p class="panel-label">Current Pick</p>
+            <h2 id="routineName">Press Start</h2>
+          </div>
+          <button class="primary-button" id="startButton" type="button">Start Random Routine</button>
+        </div>
+
+        <div class="stats-row">
+          <article class="stat-card">
+            <span>Score</span>
+            <strong id="scoreValue">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>AI Score</span>
+            <strong id="aiScoreValue">--</strong>
+            <small class="stat-subcopy" id="aiScoreLabel">No rival selected</small>
+          </article>
+          <article class="stat-card">
+            <span>Combo</span>
+            <strong id="comboValue">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Accuracy</span>
+            <strong id="accuracyValue">100%</strong>
+          </article>
+          <article class="stat-card">
+            <span>Best</span>
+            <strong id="bestValue">0</strong>
+          </article>
+        </div>
+
+        <section class="dance-floor" aria-label="Dance Master play field">
+          <div class="floor-lights floor-lights-left"></div>
+          <div class="floor-lights floor-lights-right"></div>
+
+          <div class="spotlight">
+            <div class="dancer" id="dancer" aria-hidden="true">
+              <div class="dancer-head"></div>
+              <div class="dancer-torso"></div>
+              <div class="dancer-arm dancer-arm-left"></div>
+              <div class="dancer-arm dancer-arm-right"></div>
+              <div class="dancer-leg dancer-leg-left"></div>
+              <div class="dancer-leg dancer-leg-right"></div>
+            </div>
+          </div>
+
+          <div class="progress-shell">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+
+          <div class="judgement" id="judgement">Ready</div>
+
+          <div class="lane-grid" id="laneGrid">
+            <div class="target-line"></div>
+            <div class="lane lane-left" data-lane="0">
+              <div class="lane-label">Left</div>
+            </div>
+            <div class="lane lane-up" data-lane="1">
+              <div class="lane-label">Up</div>
+            </div>
+            <div class="lane lane-down" data-lane="2">
+              <div class="lane-label">Down</div>
+            </div>
+            <div class="lane lane-right" data-lane="3">
+              <div class="lane-label">Right</div>
+            </div>
+          </div>
+
+          <div class="overlay show" id="overlay">
+            <p class="overlay-kicker" id="overlayKicker">Stage Select</p>
+            <h3 id="overlayTitle">Dance Master</h3>
+            <p id="overlayBody">Hit Start and the game will randomly choose one of four routines.</p>
+          </div>
+        </section>
+
+        <div class="mobile-controls" aria-label="Touch controls">
+          <button class="control-button lane-left" type="button" data-lane="0">Left</button>
+          <button class="control-button lane-up" type="button" data-lane="1">Up</button>
+          <button class="control-button lane-down" type="button" data-lane="2">Down</button>
+          <button class="control-button lane-right" type="button" data-lane="3">Right</button>
+        </div>
+      </section>
+
+      <aside class="info-panel">
+        <section class="panel-card">
+          <p class="panel-label">Randomizer Pool</p>
+          <h2>Four Routines</h2>
+          <div class="routine-list" id="routineList"></div>
+        </section>
+
+        <section class="panel-card">
+          <p class="panel-label">AI Rivals</p>
+          <h2>Best Scores</h2>
+          <article class="ai-profile-card" id="featuredAiProfile" aria-live="polite">
+            <div class="ai-profile-avatar" id="featuredAiAvatar">AI</div>
+            <div class="ai-profile-copy">
+              <p class="ai-profile-label">Featured Rival</p>
+              <h3 id="featuredAiName">Waiting For A Pick</h3>
+              <p class="ai-profile-skin" id="featuredAiSkin">Spin a routine to reveal the current top AI profile.</p>
+            </div>
+            <div class="ai-profile-score">
+              <span>Top Score</span>
+              <strong id="featuredAiScore">--</strong>
+            </div>
+          </article>
+          <div class="leaderboard-summary">
+            <article class="summary-pill">
+              <span>Top AI</span>
+              <strong id="targetScoreValue">--</strong>
+            </article>
+            <article class="summary-pill">
+              <span>Your Best</span>
+              <strong id="playerRecordValue">--</strong>
+            </article>
+          </div>
+          <p class="leaderboard-status" id="leaderboardStatus">Pick a routine to see which AI dancer owns the floor.</p>
+          <div class="leaderboard-list" id="leaderboardList"></div>
+        </section>
+
+        <section class="panel-card">
+          <p class="panel-label">Controls</p>
+          <h2>How To Play</h2>
+          <ul class="tips-list">
+            <li>Use the arrow keys or W A S D.</li>
+            <li>On phones or tablets, tap the four lane buttons.</li>
+            <li>Keep your timing close to the target line for bigger points.</li>
+            <li>Each new run picks a random routine from the full set of four.</li>
+          </ul>
+        </section>
+
+        <section class="panel-card">
+          <p class="panel-label">Routine Notes</p>
+          <h2 id="routineTag">Waiting For A Pick</h2>
+          <p class="routine-copy" id="routineDescription">The selected routine details will show here after the randomizer lands.</p>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

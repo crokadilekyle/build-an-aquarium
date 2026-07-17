@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creek Bricks Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="profile">
+  <header class="site-header">
+    <div class="shell header-shell">
+      <a class="brand" href="./">Creek Bricks</a>
+      <nav class="main-nav" aria-label="Creek Bricks">
+        <a href="./">Discover</a>
+        <a href="./games.html">Games</a>
+        <a href="./profile.html">Profile</a>
+        <a href="./create.html">Create</a>
+      </nav>
+      <a class="header-action" href="./create.html">Build Now</a>
+    </div>
+  </header>
+
+  <main class="shell page-stack">
+    <section class="profile-hero">
+      <div class="profile-avatar">KB</div>
+      <div class="profile-copy">
+        <p class="eyebrow">Player Profile</p>
+        <h1>KyleBuilder</h1>
+        <p>Brickworld creator, aquarium maxer, and Piko chaser. Building Creek games into one shared platform.</p>
+        <div class="profile-tags">
+          <span>Joined 2026</span>
+          <span>Builder Rank</span>
+          <span>Arcade Creator</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-stats" id="profileStats"></section>
+
+    <section class="profile-layout">
+      <div class="profile-panel">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Favorites</p>
+            <h2>Saved Worlds</h2>
+          </div>
+        </div>
+        <div class="favorite-list" id="favoriteList"></div>
+      </div>
+
+      <div class="profile-panel">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Badges</p>
+            <h2>Recent Unlocks</h2>
+          </div>
+        </div>
+        <div class="badge-list">
+          <article class="badge-card">
+            <strong>Brick Starter</strong>
+            <p>Published the first Creek Bricks creator profile.</p>
+          </article>
+          <article class="badge-card">
+            <strong>Piko Runner</strong>
+            <p>Caught multiple Pikos in Creek Games 3D.</p>
+          </article>
+          <article class="badge-card">
+            <strong>Tank Builder</strong>
+            <p>Finished the aquarium mission set and upgraded the tank.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

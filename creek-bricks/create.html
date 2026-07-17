@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creek Bricks Creator Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="create">
+  <header class="site-header">
+    <div class="shell header-shell">
+      <a class="brand" href="./">Creek Bricks</a>
+      <nav class="main-nav" aria-label="Creek Bricks">
+        <a href="./">Discover</a>
+        <a href="./games.html">Games</a>
+        <a href="./profile.html">Profile</a>
+        <a href="./create.html">Create</a>
+      </nav>
+      <a class="header-action" href="./create.html">Build Now</a>
+    </div>
+  </header>
+
+  <main class="shell page-stack">
+    <section class="page-hero">
+      <p class="eyebrow">Creator Dashboard</p>
+      <h1>Build Studio</h1>
+      <p>Track your worlds, plan updates, and push new Creek Bricks experiences into the platform catalog.</p>
+    </section>
+
+    <section class="dashboard-stats">
+      <article class="dash-card">
+        <span>Published Worlds</span>
+        <strong>4</strong>
+      </article>
+      <article class="dash-card">
+        <span>Total Visits</span>
+        <strong>176,540</strong>
+      </article>
+      <article class="dash-card">
+        <span>Followers</span>
+        <strong>8,214</strong>
+      </article>
+      <article class="dash-card">
+        <span>Revenue Coins</span>
+        <strong>248,000</strong>
+      </article>
+    </section>
+
+    <section class="dashboard-layout">
+      <div class="dashboard-panel">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Your Games</p>
+            <h2>Experience Health</h2>
+          </div>
+        </div>
+        <div class="dashboard-game-list" id="dashboardGameList"></div>
+      </div>
+
+      <div class="dashboard-panel">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Roadmap</p>
+            <h2>Next Updates</h2>
+          </div>
+        </div>
+        <div class="roadmap-list">
+          <article>
+            <strong>Creek Games 3D</strong>
+            <p>Add more 3D brick missions, better prompts, and richer movement feedback.</p>
+          </article>
+          <article>
+            <strong>Dance Master</strong>
+            <p>Expand AI rivals into unlockable crews and profile-linked performance boards.</p>
+          </article>
+          <article>
+            <strong>Build an Aquarium</strong>
+            <p>Connect profile badges and builder pets back into the main platform economy.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creek Bricks Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="games">
+  <header class="site-header">
+    <div class="shell header-shell">
+      <a class="brand" href="./">Creek Bricks</a>
+      <nav class="main-nav" aria-label="Creek Bricks">
+        <a href="./">Discover</a>
+        <a href="./games.html">Games</a>
+        <a href="./profile.html">Profile</a>
+        <a href="./create.html">Create</a>
+      </nav>
+      <a class="header-action" href="./create.html">Build Now</a>
+    </div>
+  </header>
+
+  <main class="shell page-stack">
+    <section class="page-hero">
+      <p class="eyebrow">Catalog</p>
+      <h1>Games</h1>
+      <p>Every playable Creek Bricks experience in one feed. Brickworlds, racers, rhythm games, clickers, and weird prototypes all live here.</p>
+    </section>
+
+    <section class="filter-bar">
+      <button class="filter-chip active" type="button" data-filter="all">All</button>
+      <button class="filter-chip" type="button" data-filter="3d">3D</button>
+      <button class="filter-chip" type="button" data-filter="arcade">Arcade</button>
+      <button class="filter-chip" type="button" data-filter="builder">Builder</button>
+      <button class="filter-chip" type="button" data-filter="world">World</button>
+    </section>
+
+    <section class="catalog-grid" id="catalogGrid"></section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

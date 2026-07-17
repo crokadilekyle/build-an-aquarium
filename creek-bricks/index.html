@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creek Bricks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <div class="shell header-shell">
+      <a class="brand" href="./">Creek Bricks</a>
+      <nav class="main-nav" aria-label="Creek Bricks">
+        <a href="./">Discover</a>
+        <a href="./games.html">Games</a>
+        <a href="./profile.html">Profile</a>
+        <a href="./create.html">Create</a>
+      </nav>
+      <a class="header-action" href="./create.html">Build Now</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Brick Game Platform</p>
+          <h1>Creek Bricks</h1>
+          <p class="hero-text">A Roblox-style site for Creek-made brick worlds, goofy missions, creator pages, live stats, and one-click play across the entire project.</p>
+          <div class="hero-actions">
+            <a class="primary-link" href="./games.html">Browse Games</a>
+            <a class="secondary-link" href="./create.html">Open Creator Dashboard</a>
+          </div>
+          <div class="hero-stats">
+            <article>
+              <span>Experiences</span>
+              <strong id="heroGameCount">0</strong>
+            </article>
+            <article>
+              <span>Total Visits</span>
+              <strong id="heroVisitCount">0</strong>
+            </article>
+            <article>
+              <span>Creators</span>
+              <strong>4</strong>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-stage">
+          <div class="stage-card featured-stage">
+            <p class="stage-label">Featured Brickworld</p>
+            <h2>Creek Games 3D</h2>
+            <p>Run around a real 3D brick world with Steal the Piko, Build a House, Build an Aquarium, and bonus ring runs.</p>
+            <a class="play-link" href="../creek-games-3d/">Launch 3D World</a>
+          </div>
+          <div class="brick-cluster" aria-hidden="true">
+            <span class="brick brick-a"></span>
+            <span class="brick brick-b"></span>
+            <span class="brick brick-c"></span>
+            <span class="brick brick-d"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Trending</p>
+          <h2>Popular Experiences</h2>
+        </div>
+        <a class="inline-link" href="./games.html">See all games</a>
+      </div>
+      <div class="game-grid" id="featuredGames"></div>
+    </section>
+
+    <section class="section shell split-section">
+      <div class="split-card">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Creators</p>
+            <h2>Top Builders</h2>
+          </div>
+        </div>
+        <div class="creator-list" id="creatorList"></div>
+      </div>
+
+      <div class="split-card">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Platform</p>
+            <h2>What You Can Do</h2>
+          </div>
+        </div>
+        <div class="feature-stack">
+          <article>
+            <strong>Play</strong>
+            <p>Jump into Creek games from one shared platform with visits, likes, and tags.</p>
+          </article>
+          <article>
+            <strong>Create</strong>
+            <p>Manage worlds, track missions, and plan updates from a brick-style creator dashboard.</p>
+          </article>
+          <article>
+            <strong>Collect</strong>
+            <p>Show off favorite games, badges, creator stats, and featured builds on your profile.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Updates</p>
+          <h2>Builder News</h2>
+        </div>
+      </div>
+      <div class="news-grid">
+        <article class="news-card">
+          <span class="news-tag">Live Now</span>
+          <h3>Creek Games 3D opened its first mission world</h3>
+          <p>Steal the Piko, build a brick house, and grow an aquarium inside one shared 3D map.</p>
+        </article>
+        <article class="news-card">
+          <span class="news-tag">Creator Tools</span>
+          <h3>Dashboards now highlight visits, likes, and game health</h3>
+          <p>Every creator page can track top experiences, recent updates, and featured worlds.</p>
+        </article>
+        <article class="news-card">
+          <span class="news-tag">Next Up</span>
+          <h3>More brick minigames can plug into the platform</h3>
+          <p>The site structure is ready for new worlds, profile pages, badges, and expanded discovery.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
