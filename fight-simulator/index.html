@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fight Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="setup-screen" id="setupScreen">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Fight Night Prototype</p>
+          <h1>Fight Simulator</h1>
+          <p class="lead">Build a quick match, lock in the arena, and start throwing hands.</p>
+        </div>
+        <a class="portal-link" href="../">Back to Creek Games</a>
+      </header>
+
+      <div class="setup-shell">
+        <div class="setup-progress" aria-label="Quick match setup progress">
+          <div class="progress-step is-active" data-progress-step="fighter">
+            <span class="progress-number">1</span>
+            <strong>Fighter</strong>
+          </div>
+          <div class="progress-step" data-progress-step="opponent">
+            <span class="progress-number">2</span>
+            <strong>Opponent</strong>
+          </div>
+          <div class="progress-step" data-progress-step="venue">
+            <span class="progress-number">3</span>
+            <strong>Venue</strong>
+          </div>
+          <div class="progress-step" data-progress-step="overview">
+            <span class="progress-number">4</span>
+            <strong>Overview</strong>
+          </div>
+        </div>
+
+        <div class="stage-frame" id="setupStageFrame">
+          <section class="panel setup-stage selection-panel" data-stage="fighter">
+            <div class="section-heading">
+              <div>
+                <p class="section-label">Step 1</p>
+                <h2>Choose Your Fighter</h2>
+              </div>
+              <p class="section-copy">Pick the fighter you control in the match. After you lock that in, the opponent screen will come up next.</p>
+            </div>
+            <div class="selection-grid fighter-grid" id="fighterGrid" aria-label="Choose your fighter"></div>
+          </section>
+
+          <section class="panel setup-stage selection-panel" data-stage="opponent" hidden>
+            <div class="section-heading">
+              <div>
+                <p class="section-label">Step 2</p>
+                <h2>Choose Opponent</h2>
+              </div>
+              <button class="stage-nav-button" type="button" data-jump-stage="fighter">Back</button>
+            </div>
+            <p class="section-copy">Choose the CPU fighter. Mirror matches are locked out for now, so your own fighter card is disabled here.</p>
+            <div class="selection-grid fighter-grid" id="opponentGrid" aria-label="Choose opponent"></div>
+          </section>
+
+          <section class="panel setup-stage selection-panel" data-stage="venue" hidden>
+            <div class="section-heading">
+              <div>
+                <p class="section-label">Step 3</p>
+                <h2>Choose Venue</h2>
+              </div>
+              <button class="stage-nav-button" type="button" data-jump-stage="opponent">Back</button>
+            </div>
+            <p class="section-copy">Pick the arena for the match. The venue changes the visual style and presentation of the fight scene.</p>
+            <div class="selection-grid venue-grid" id="venueGrid" aria-label="Choose venue"></div>
+          </section>
+
+          <section class="panel setup-stage overview-stage" data-stage="overview" hidden>
+            <div class="section-heading">
+              <div>
+                <p class="section-label">Step 4</p>
+                <h2>Fight Overview</h2>
+              </div>
+              <button class="stage-nav-button" type="button" data-jump-stage="venue">Back</button>
+            </div>
+
+            <div class="overview-layout">
+              <div class="overview-main">
+                <div class="matchup-card" id="matchupCard">
+                  <div class="matchup-fighter" id="summaryPlayer">
+                    <span class="matchup-role">Player</span>
+                    <strong>Select a fighter</strong>
+                    <p>Speed, power, and gas tank will change how the match feels.</p>
+                  </div>
+                  <div class="versus-pill">VS</div>
+                  <div class="matchup-fighter" id="summaryOpponent">
+                    <span class="matchup-role">CPU</span>
+                    <strong>Select an opponent</strong>
+                    <p>The CPU will use the same stat profile as the card you choose.</p>
+                  </div>
+                </div>
+
+                <section class="venue-summary" id="venueSummary">
+                  <p class="section-label">Venue</p>
+                  <strong>Pick an arena</strong>
+                  <p>Each venue uses a different color palette, crowd lighting, and mat design.</p>
+                </section>
+
+                <section class="controls-card">
+                  <p class="section-label">Edit Picks</p>
+                  <div class="edit-row">
+                    <button class="stage-nav-button compact-button" type="button" data-jump-stage="fighter">Change Fighter</button>
+                    <button class="stage-nav-button compact-button" type="button" data-jump-stage="opponent">Change Opponent</button>
+                    <button class="stage-nav-button compact-button" type="button" data-jump-stage="venue">Change Venue</button>
+                  </div>
+                  <p class="setup-message" id="setupMessage">Choose your fighter, your opponent, and a venue.</p>
+                </section>
+              </div>
+
+              <aside class="overview-side">
+                <section class="controls-card">
+                  <p class="section-label">Controls</p>
+                  <ul class="controls-list">
+                    <li>Move with <strong>A</strong> and <strong>D</strong>.</li>
+                    <li>Throw a jab with <strong>F</strong>, a heavy with <strong>Shift + F</strong>, and a kick with <strong>G</strong>.</li>
+                    <li>Hold <strong>E</strong> to block incoming strikes.</li>
+                  </ul>
+                </section>
+
+                <div class="launch-actions">
+                  <button class="start-button" id="startButton" type="button" disabled>Start Fight</button>
+                  <button class="secondary-button" id="watchButton" type="button" disabled>Watch Fight</button>
+                </div>
+              </aside>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="fight-screen" id="fightScreen" hidden>
+      <header class="topbar match-topbar">
+        <div>
+          <p class="eyebrow">Live Fight</p>
+          <h1 id="fightTitle">Quick Match</h1>
+          <p class="lead" id="fightVenueLine">Arena loading...</p>
+        </div>
+        <button class="portal-link action-link" id="backToSetupButton" type="button">New Quick Match</button>
+      </header>
+
+      <div class="fight-layout">
+        <section class="panel arena-panel">
+          <div class="hud-row">
+            <article class="hud-card">
+              <p class="hud-label">Player</p>
+              <strong id="playerHudName">Fighter</strong>
+              <div class="bar-stack">
+                <div class="meter">
+                  <span class="meter-fill health-fill" id="playerHealthFill"></span>
+                </div>
+                <div class="meter">
+                  <span class="meter-fill stamina-fill" id="playerStaminaFill"></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="hud-center">
+              <p class="hud-label">Round 1</p>
+              <strong id="roundTimer">99</strong>
+              <span class="status-chip" id="statusChip">Fight Ready</span>
+            </article>
+
+            <article class="hud-card hud-card-right">
+              <p class="hud-label">CPU</p>
+              <strong id="cpuHudName">Fighter</strong>
+              <div class="bar-stack">
+                <div class="meter">
+                  <span class="meter-fill health-fill" id="cpuHealthFill"></span>
+                </div>
+                <div class="meter">
+                  <span class="meter-fill stamina-fill" id="cpuStaminaFill"></span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="arena-shell" id="arenaShell">
+            <div class="arena-stage" id="arenaStage" aria-label="Fight arena">
+              <div class="scene-mount" id="sceneMount" aria-hidden="true"></div>
+
+              <div class="fight-overlay" id="fightOverlay" aria-live="polite">
+                <p class="overlay-kicker" id="overlayKicker">Fight Ready</p>
+                <h2 id="overlayTitle">3</h2>
+                <p id="overlayBody">Touch gloves and get ready.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel fight-sidebar">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Status</p>
+              <h2 id="fightStatusHeading">Opening bell incoming</h2>
+            </div>
+            <p class="section-copy" id="fightStatusCopy">The fighter with better range control and stamina management usually takes the first version of this mode.</p>
+          </div>
+
+          <section class="controls-card">
+            <p class="section-label">Actions</p>
+            <div class="button-stack">
+              <button class="secondary-button" id="restartFightButton" type="button">Restart Match</button>
+              <button class="secondary-button" id="returnToLobbyButton" type="button">Back To Setup</button>
+            </div>
+          </section>
+
+          <section class="log-card">
+            <p class="section-label">Fight Log</p>
+            <div class="fight-log" id="fightLog" aria-live="polite"></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
