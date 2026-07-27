@@ -79,7 +79,8 @@ const FIGHTERS = [
     record: "19-3",
     tagline: "Long-range striker with clean entries and quick exits.",
     palette: { primary: "#39a4db", secondary: "#dff7ff", skin: "#9d6d4d" },
-    stats: { health: 102, stamina: 114, power: 74, speed: 90, chin: 72 }
+    stats: { health: 102, stamina: 114, power: 74, speed: 90, chin: 72 },
+    hair: { style: "dreads", color: "#211813" }
   },
   {
     id: "devin-rowe",
@@ -140,6 +141,117 @@ const FIGHTERS = [
     tagline: "Measured pressure, sharp counters, and the kind of timing that breaks rhythm.",
     palette: { primary: "#8d2f2f", secondary: "#efe5de", skin: "#8f6347" },
     stats: { health: 116, stamina: 111, power: 87, speed: 81, chin: 88 }
+  },
+  {
+    id: "maya-vale",
+    name: "Maya Vale",
+    nickname: "Ice Wire",
+    weightClass: "Women's Flyweight",
+    record: "18-2",
+    tagline: "Calm footwork, sharp counters, and a very clean jab game.",
+    palette: { primary: "#3d74d6", secondary: "#dde8ff", skin: "#a9785f" },
+    stats: { health: 102, stamina: 118, power: 72, speed: 91, chin: 77 }
+  },
+  {
+    id: "talia-cross",
+    name: "Talia Cross",
+    nickname: "Crimson Storm",
+    weightClass: "Women's Bantamweight",
+    record: "21-5",
+    tagline: "Aggressive combinations and a pace that keeps piling on pressure.",
+    palette: { primary: "#c33f49", secondary: "#ffe1df", skin: "#8e6047" },
+    stats: { health: 108, stamina: 112, power: 81, speed: 86, chin: 79 }
+  },
+  {
+    id: "nina-quade",
+    name: "Nina Quade",
+    nickname: "Deadlock",
+    weightClass: "Women's Strawweight",
+    record: "25-4",
+    tagline: "Technically sharp everywhere with excellent timing on level changes and exits.",
+    palette: { primary: "#2c9b74", secondary: "#def8ee", skin: "#c08a68" },
+    stats: { health: 98, stamina: 120, power: 69, speed: 94, chin: 73 }
+  },
+  {
+    id: "sierra-knox",
+    name: "Sierra Knox",
+    nickname: "Heavy Hands",
+    weightClass: "Women's Featherweight",
+    record: "16-1",
+    tagline: "Explosive boxing entries with enough power to change a fight instantly.",
+    palette: { primary: "#8b5bdb", secondary: "#ece1ff", skin: "#9c6b52" },
+    stats: { health: 112, stamina: 104, power: 89, speed: 78, chin: 84 }
+  },
+  {
+    id: "jade-moreno",
+    name: "Jade Moreno",
+    nickname: "Night Current",
+    weightClass: "Women's Flyweight",
+    record: "19-3",
+    tagline: "Slick movement fighter who chips away with fast straight shots and kicks.",
+    palette: { primary: "#1f8d8a", secondary: "#d8f8f6", skin: "#7f573f" },
+    stats: { health: 100, stamina: 116, power: 74, speed: 92, chin: 74 }
+  },
+  {
+    id: "brook-hart",
+    name: "Brook Hart",
+    nickname: "Rattleshot",
+    weightClass: "Women's Bantamweight",
+    record: "14-2",
+    tagline: "Low stance, big overhands, and a rough clinch-break striking style.",
+    palette: { primary: "#d97a29", secondary: "#fff0db", skin: "#b8815f" },
+    stats: { health: 110, stamina: 101, power: 85, speed: 80, chin: 82 }
+  },
+  {
+    id: "lena-sato",
+    name: "Lena Sato",
+    nickname: "Silent Flash",
+    weightClass: "Women's Atomweight",
+    record: "27-6",
+    tagline: "Very fast in and out with precise kicks and a constant angle game.",
+    palette: { primary: "#4a63d8", secondary: "#e1e7ff", skin: "#d0a182" },
+    stats: { health: 92, stamina: 122, power: 64, speed: 97, chin: 68 }
+  },
+  {
+    id: "aria-sloan",
+    name: "Aria Sloan",
+    nickname: "Goldfang",
+    weightClass: "Women's Featherweight",
+    record: "20-4",
+    tagline: "Patient hunter with heavy body work and strong late-round pressure.",
+    palette: { primary: "#c4971f", secondary: "#fff1c8", skin: "#96684c" },
+    stats: { health: 114, stamina: 107, power: 83, speed: 79, chin: 86 }
+  },
+  {
+    id: "jose-jakson-will",
+    name: "Jose Jakson Will",
+    nickname: "Southline",
+    weightClass: "Welterweight",
+    record: "17-3",
+    tagline: "Sharp pressure boxing, quick counters, and a strong finish when the pace rises.",
+    palette: { primary: "#2f78b9", secondary: "#e2eefb", skin: "#9a6a4b" },
+    stats: { health: 109, stamina: 108, power: 82, speed: 85, chin: 81 }
+  },
+  {
+    id: "islas-makacenk",
+    name: "Islas Makacenk",
+    nickname: "Trophy King",
+    weightClass: "Lightweight",
+    record: "26-2",
+    tagline: "A trophy-winning champion with strong balance, heavy pressure, and elite control of every round.",
+    palette: { primary: "#c9a12a", secondary: "#fff0bf", skin: "#a27352" },
+    stats: { health: 118, stamina: 114, power: 90, speed: 83, chin: 89 }
+  },
+  {
+    id: "jason-morales",
+    name: "Jason Morales",
+    nickname: "Iron Snap",
+    weightClass: "Middleweight",
+    record: "19-4",
+    tagline: "Fast combinations, sharp counters, and a strong late-round push when the fight gets messy.",
+    palette: { primary: "#2d6bc8", secondary: "#dfe9ff", skin: "#9c6b4d" },
+    stats: { health: 111, stamina: 109, power: 84, speed: 87, chin: 80 },
+    hair: { style: "braids", color: "#1b1411" }
   }
 ];
 
@@ -190,6 +302,152 @@ const VENUES = [
       glow: "#23140b",
       floor: "#ba8d5a",
       floorDark: "#6a4a2f"
+    }
+  },
+  {
+    id: "madison-garden-card",
+    name: "Madison Garden Card",
+    location: "New York City, New York",
+    description: "Bright television lights, a packed lower bowl, and a huge main-card feel.",
+    theme: {
+      sky: "#273348",
+      glow: "#10161f",
+      floor: "#b7bcc4",
+      floorDark: "#4a515c"
+    }
+  },
+  {
+    id: "london-prime-arena",
+    name: "London Prime Arena",
+    location: "London, England",
+    description: "Cool steel lighting with a crisp championship-night presentation.",
+    theme: {
+      sky: "#30415a",
+      glow: "#111822",
+      floor: "#98a7b8",
+      floorDark: "#475464"
+    }
+  },
+  {
+    id: "miami-bayside-fightnight",
+    name: "Miami Bayside Fightnight",
+    location: "Miami, Florida",
+    description: "Hot coastal colors, flashy production, and a louder crowd palette.",
+    theme: {
+      sky: "#4f486e",
+      glow: "#1c1530",
+      floor: "#b89fbe",
+      floorDark: "#624c73"
+    }
+  },
+  {
+    id: "mexico-city-summit",
+    name: "Mexico City Summit",
+    location: "Mexico City, Mexico",
+    description: "Sharp emerald lighting and a tense high-altitude title-fight vibe.",
+    theme: {
+      sky: "#294b43",
+      glow: "#0d1f1b",
+      floor: "#86aa95",
+      floorDark: "#35584d"
+    }
+  },
+  {
+    id: "seoul-neon-dome",
+    name: "Seoul Neon Dome",
+    location: "Seoul, South Korea",
+    description: "Deep blue shadows, bright edge lights, and a slick modern broadcast look.",
+    theme: {
+      sky: "#243760",
+      glow: "#0d1326",
+      floor: "#8ea4d8",
+      floorDark: "#3a4d79"
+    }
+  },
+  {
+    id: "sydney-harbour-card",
+    name: "Sydney Harbour Card",
+    location: "Sydney, Australia",
+    description: "Clean white spotlights with a brighter premium-event floor treatment.",
+    theme: {
+      sky: "#355470",
+      glow: "#152230",
+      floor: "#c5d0d8",
+      floorDark: "#60717d"
+    }
+  },
+  {
+    id: "sao-paulo-warzone",
+    name: "Sao Paulo Warzone",
+    location: "Sao Paulo, Brazil",
+    description: "Warmer shadows, golden highlights, and a rougher fight-night atmosphere.",
+    theme: {
+      sky: "#5f3b2a",
+      glow: "#24130f",
+      floor: "#b48b68",
+      floorDark: "#6e4a36"
+    }
+  },
+  {
+    id: "backyard-brawl-ring",
+    name: "Backyard Brawl Ring",
+    location: "Creek County Backyard",
+    description: "A scrappy outdoor backyard setup with rough lights, dark fencing, and a homemade fight-night feel.",
+    theme: {
+      sky: "#3e4b2f",
+      glow: "#182012",
+      floor: "#8f9773",
+      floorDark: "#4c5638"
+    }
+  },
+  {
+    id: "chicago-electric-unit-ring",
+    name: "Chicago Electric Unit Ring",
+    location: "Chicago, Illinois",
+    description: "A blacked-out electric fight setup with hard shadows, dim steel lighting, and a colder industrial feel.",
+    theme: {
+      sky: "#14161c",
+      glow: "#05070b",
+      floor: "#2b2f38",
+      floorDark: "#0d1015"
+    }
+  },
+  {
+    id: "o2-ring",
+    name: "O2 Ring",
+    location: "San Antonio, Texas",
+    description: "A dark Texas fight-night build with a square ring, bright rope lines, and cold overhead event lighting.",
+    theme: {
+      sky: "#18253d",
+      glow: "#09111d",
+      floor: "#7d9cc7",
+      floorDark: "#24344d"
+    }
+  },
+  {
+    id: "vka-ring",
+    name: "VKA Ring",
+    location: "Edmonton, Canada",
+    description: "A cold Canadian arena build with sharp lights, deep shadows, and VKA branding over the cage.",
+    signText: "VKA",
+    matText: ["VKA"],
+    theme: {
+      sky: "#2b1242",
+      glow: "#08050d",
+      floor: "#7a1737",
+      floorDark: "#3a185f"
+    }
+  },
+  {
+    id: "jumanjite",
+    name: "Jumanjite",
+    location: "Ancient Cobra Temple",
+    description: "An ancient Indian cobra-gold fight setting with warm temple shadows, rich metallic highlights, and a mythic arena vibe.",
+    theme: {
+      sky: "#6c4f1f",
+      glow: "#24170a",
+      floor: "#c7a14b",
+      floorDark: "#6f5421"
     }
   }
 ];
@@ -284,6 +542,28 @@ const world = {
   upperBowl: null,
   lowerBowl: null,
   overheadRig: null,
+  backyardGroup: null,
+  backyardGround: null,
+  backyardTrampolineMat: null,
+  backyardTrampolinePad: null,
+  backyardTrampolineLegs: [],
+  backyardFence: [],
+  backyardTrees: [],
+  backyardHouse: null,
+  jumanjiteGroup: null,
+  jumanjiteMat: null,
+  jumanjiteApron: null,
+  jumanjitePosts: [],
+  jumanjiteRopes: [],
+  jumanjiteStatue: null,
+  jumanjiteTorches: [],
+  o2RingGroup: null,
+  o2RingMat: null,
+  o2RingApron: null,
+  o2RingPosts: [],
+  o2RingRopes: [],
+  o2RingPillars: [],
+  o2RingSign: null,
   cameraTarget: { x: 0, y: 3.8, z: 0 },
   cameraPosition: { x: 0, y: 8.6, z: 17.6 },
   cameraShake: 0
@@ -691,9 +971,20 @@ function applyVenueTheme(venue) {
   if (!world.scene) {
     return;
   }
+  const isBackyard = venue.id === "backyard-brawl-ring";
+  const isJumanjite = venue.id === "jumanjite";
+  const isO2Ring = venue.id === "o2-ring";
+  const useStandardArena = !isBackyard && !isJumanjite && !isO2Ring;
   world.scene.background = new THREE.Color(venue.theme.sky);
   world.scene.fog = new THREE.Fog(venue.theme.sky, 18, 46);
   world.floorMat.material.color.set(venue.theme.floor);
+  world.floorMat.material.map = createMatTexture(
+    venue.theme.floor,
+    venue.theme.floorDark,
+    venue.theme.glow,
+    venue.matText ?? ["Fight", "Simulator"]
+  );
+  world.floorMat.material.map.needsUpdate = true;
   world.floorGlow.material.color.set(venue.theme.floorDark);
   if (world.apron) {
     world.apron.material.color.set(venue.theme.glow);
@@ -704,7 +995,8 @@ function applyVenueTheme(venue) {
   if (world.upperBowl) {
     world.upperBowl.material.color.set(venue.theme.glow);
   }
-  world.venueSign.material.map = createTextTexture(venue.name, venue.theme.glow, "#f4e0ae", 512, 128, 50);
+  const venueSignText = venue.signText ?? venue.name;
+  world.venueSign.material.map = createTextTexture(venueSignText, venue.theme.glow, "#f4e0ae", 512, 128, 50);
   world.venueSign.material.map.needsUpdate = true;
 
   world.crowdRing.forEach((segment, index) => {
@@ -723,12 +1015,54 @@ function applyVenueTheme(venue) {
   world.spotlights.forEach((light, index) => {
     light.color.set(index % 2 === 0 ? "#fff4d7" : venue.theme.floor);
   });
+
+  setStandardArenaVisibility(useStandardArena);
+  setBackyardVenueMode(isBackyard, venue);
+  setJumanjiteVenueMode(isJumanjite, venue);
+  setO2RingVenueMode(isO2Ring, venue);
+}
+
+function setStandardArenaVisibility(isVisible) {
+  if (world.apron) {
+    world.apron.visible = isVisible;
+  }
+  if (world.floorMat) {
+    world.floorMat.visible = isVisible;
+  }
+  if (world.floorGlow) {
+    world.floorGlow.visible = isVisible;
+  }
+  if (world.lowerBowl) {
+    world.lowerBowl.visible = isVisible;
+  }
+  if (world.upperBowl) {
+    world.upperBowl.visible = isVisible;
+  }
+  if (world.overheadRig) {
+    world.overheadRig.visible = isVisible;
+  }
+  if (world.venueSign) {
+    world.venueSign.visible = isVisible;
+  }
+  world.crowdRing.forEach((item) => {
+    item.visible = isVisible;
+  });
+  world.cageLinks.forEach((item) => {
+    item.visible = isVisible;
+  });
+  world.cageRails.forEach((item) => {
+    item.visible = isVisible;
+  });
+  world.cagePosts.forEach((item) => {
+    item.visible = isVisible;
+  });
 }
 
 function applyFighterTheme(fighter, rig, mirror) {
   if (!rig) {
     return;
   }
+  const hairConfig = fighter.hair ?? null;
   rig.torso.material.color.set(fighter.palette.primary);
   rig.waist.material.color.set("#141920");
   rig.accent.material.color.set(fighter.palette.secondary);
@@ -746,6 +1080,31 @@ function applyFighterTheme(fighter, rig, mirror) {
   rig.gloveRight.material.color.set(fighter.palette.primary);
   rig.bootLeft.material.color.set("#0c0f14");
   rig.bootRight.material.color.set("#0c0f14");
+  if (rig.hairGroup) {
+    rig.hairGroup.visible = Boolean(hairConfig);
+  }
+  if (rig.hairCap) {
+    rig.hairCap.visible = hairConfig?.style === "braids" || hairConfig?.style === "dreads";
+  }
+  if (rig.braids?.length) {
+    rig.braids.forEach((braid) => {
+      braid.visible = hairConfig?.style === "braids";
+      if (hairConfig?.color) {
+        braid.material.color.set(hairConfig.color);
+      }
+    });
+  }
+  if (rig.dreads?.length) {
+    rig.dreads.forEach((dread) => {
+      dread.visible = hairConfig?.style === "dreads";
+      if (hairConfig?.color) {
+        dread.material.color.set(hairConfig.color);
+      }
+    });
+  }
+  if (rig.hairCap && hairConfig?.color) {
+    rig.hairCap.material.color.set(hairConfig.color);
+  }
   rig.baseScale = {
     x: mirror ? -1 : 1,
     y: 1 + (fighter.stats.health - 100) * 0.0014,
@@ -1299,6 +1658,10 @@ function init3DIfNeeded() {
     world.overheadRig.add(lamp);
   }
 
+  createBackyardVenue();
+  createJumanjiteVenue();
+  createO2RingVenue();
+
   world.venueSign = new THREE.Mesh(
     new THREE.PlaneGeometry(7.2, 1.5),
     new THREE.MeshBasicMaterial({ map: createTextTexture("Fight Simulator", "#173553", "#f4e0ae", 512, 128, 50), transparent: true })
@@ -1317,12 +1680,423 @@ function init3DIfNeeded() {
   world.scene.add(world.cpuRoot);
 }
 
+function createBackyardVenue() {
+  world.backyardGroup = new THREE.Group();
+  world.backyardGroup.visible = false;
+  world.scene.add(world.backyardGroup);
+
+  world.backyardGround = new THREE.Mesh(
+    new THREE.CircleGeometry(22, 48),
+    new THREE.MeshStandardMaterial({ color: "#5f7f46", roughness: 0.96 })
+  );
+  world.backyardGround.rotation.x = -Math.PI / 2;
+  world.backyardGround.position.y = -0.02;
+  world.backyardGround.receiveShadow = true;
+  world.backyardGroup.add(world.backyardGround);
+
+  const dirtPatch = new THREE.Mesh(
+    new THREE.CircleGeometry(10.8, 32),
+    new THREE.MeshStandardMaterial({ color: "#6b5b42", roughness: 1 })
+  );
+  dirtPatch.rotation.x = -Math.PI / 2;
+  dirtPatch.position.y = -0.005;
+  world.backyardGroup.add(dirtPatch);
+
+  const fenceMaterial = new THREE.MeshStandardMaterial({ color: "#9f774d", roughness: 0.92 });
+  for (let i = 0; i < 14; i += 1) {
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(2.3, 2.2, 0.16), fenceMaterial);
+    const angle = (i / 14) * Math.PI * 2;
+    panel.position.set(Math.cos(angle) * 16.5, 1.1, Math.sin(angle) * 16.5);
+    panel.lookAt(0, 1.1, 0);
+    world.backyardGroup.add(panel);
+    world.backyardFence.push(panel);
+  }
+
+  world.backyardHouse = new THREE.Group();
+  const houseBase = new THREE.Mesh(
+    new THREE.BoxGeometry(7.6, 3.8, 4.6),
+    new THREE.MeshStandardMaterial({ color: "#ddd7c8", roughness: 0.92 })
+  );
+  houseBase.position.y = 1.9;
+  houseBase.castShadow = true;
+  houseBase.receiveShadow = true;
+  world.backyardHouse.add(houseBase);
+  const roof = new THREE.Mesh(
+    new THREE.ConeGeometry(4.4, 2.6, 4),
+    new THREE.MeshStandardMaterial({ color: "#5e3d2a", roughness: 0.88 })
+  );
+  roof.rotation.y = Math.PI / 4;
+  roof.position.y = 5.0;
+  roof.castShadow = true;
+  world.backyardHouse.add(roof);
+  world.backyardHouse.position.set(-9.8, 0, -10.8);
+  world.backyardGroup.add(world.backyardHouse);
+
+  for (const treePos of [
+    { x: 10.8, z: -12.2 },
+    { x: 13.4, z: -8.4 },
+    { x: -13.2, z: 9.6 }
+  ]) {
+    const tree = new THREE.Group();
+    const trunk = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.34, 0.42, 3.4, 10),
+      new THREE.MeshStandardMaterial({ color: "#6f4e37", roughness: 0.94 })
+    );
+    trunk.position.y = 1.7;
+    trunk.castShadow = true;
+    tree.add(trunk);
+    const leaves = new THREE.Mesh(
+      new THREE.SphereGeometry(1.9, 18, 14),
+      new THREE.MeshStandardMaterial({ color: "#4d7538", roughness: 0.98 })
+    );
+    leaves.position.y = 4.2;
+    leaves.castShadow = true;
+    tree.add(leaves);
+    tree.position.set(treePos.x, 0, treePos.z);
+    world.backyardGroup.add(tree);
+    world.backyardTrees.push(tree);
+  }
+
+  const trampolineGroup = new THREE.Group();
+  world.backyardGroup.add(trampolineGroup);
+  const trampolineFrame = new THREE.Mesh(
+    new THREE.TorusGeometry(7.45, 0.34, 18, 48),
+    new THREE.MeshStandardMaterial({ color: "#21262f", roughness: 0.5, metalness: 0.3 })
+  );
+  trampolineFrame.rotation.x = Math.PI / 2;
+  trampolineFrame.position.y = 1.18;
+  trampolineFrame.castShadow = true;
+  trampolineGroup.add(trampolineFrame);
+
+  world.backyardTrampolinePad = new THREE.Mesh(
+    new THREE.TorusGeometry(6.95, 0.42, 18, 48),
+    new THREE.MeshStandardMaterial({ color: "#2f6fd2", roughness: 0.78 })
+  );
+  world.backyardTrampolinePad.rotation.x = Math.PI / 2;
+  world.backyardTrampolinePad.position.y = 1.17;
+  trampolineGroup.add(world.backyardTrampolinePad);
+
+  world.backyardTrampolineMat = new THREE.Mesh(
+    new THREE.CircleGeometry(6.5, 36),
+    new THREE.MeshStandardMaterial({ color: "#171b20", roughness: 0.9 })
+  );
+  world.backyardTrampolineMat.rotation.x = -Math.PI / 2;
+  world.backyardTrampolineMat.position.y = 1.16;
+  world.backyardTrampolineMat.receiveShadow = true;
+  trampolineGroup.add(world.backyardTrampolineMat);
+
+  for (let i = 0; i < 6; i += 1) {
+    const leg = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.12, 1.18, 10),
+      new THREE.MeshStandardMaterial({ color: "#8a939d", roughness: 0.52, metalness: 0.4 })
+    );
+    const angle = (i / 6) * Math.PI * 2;
+    leg.position.set(Math.cos(angle) * 5.2, 0.58, Math.sin(angle) * 5.2);
+    leg.castShadow = true;
+    trampolineGroup.add(leg);
+    world.backyardTrampolineLegs.push(leg);
+  }
+}
+
+function setBackyardVenueMode(isBackyard, venue) {
+  if (!world.backyardGroup) {
+    return;
+  }
+
+  world.backyardGroup.visible = isBackyard;
+
+  if (isBackyard) {
+    world.backyardGround.material.color.set(venue.theme.sky);
+    world.backyardTrampolinePad.material.color.set("#3167cf");
+    world.backyardTrampolineMat.material.color.set("#101418");
+  }
+}
+
+function createJumanjiteVenue() {
+  world.jumanjiteGroup = new THREE.Group();
+  world.jumanjiteGroup.visible = false;
+  world.scene.add(world.jumanjiteGroup);
+
+  world.jumanjiteApron = new THREE.Mesh(
+    new THREE.BoxGeometry(18.4, 0.74, 18.4),
+    new THREE.MeshStandardMaterial({ color: "#5e461a", roughness: 0.92 })
+  );
+  world.jumanjiteApron.position.y = 0.35;
+  world.jumanjiteApron.receiveShadow = true;
+  world.jumanjiteGroup.add(world.jumanjiteApron);
+
+  world.jumanjiteMat = new THREE.Mesh(
+    new THREE.BoxGeometry(14.2, 0.28, 14.2),
+    new THREE.MeshStandardMaterial({ color: "#c7a14b", roughness: 0.86 })
+  );
+  world.jumanjiteMat.position.y = 0.9;
+  world.jumanjiteMat.receiveShadow = true;
+  world.jumanjiteGroup.add(world.jumanjiteMat);
+
+  const postMaterial = new THREE.MeshStandardMaterial({ color: "#2a2113", roughness: 0.82 });
+  const ropeColors = ["#6f5421", "#c7a14b", "#6f5421"];
+  const corners = [
+    { x: -7.2, z: -7.2 },
+    { x: 7.2, z: -7.2 },
+    { x: 7.2, z: 7.2 },
+    { x: -7.2, z: 7.2 }
+  ];
+
+  corners.forEach((corner) => {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.42, 3.7, 0.42), postMaterial);
+    post.position.set(corner.x, 2.0, corner.z);
+    post.castShadow = true;
+    world.jumanjiteGroup.add(post);
+    world.jumanjitePosts.push(post);
+  });
+
+  const ropeRuns = [
+    { from: corners[0], to: corners[1] },
+    { from: corners[1], to: corners[2] },
+    { from: corners[2], to: corners[3] },
+    { from: corners[3], to: corners[0] }
+  ];
+
+  ropeRuns.forEach((run) => {
+    const dx = run.to.x - run.from.x;
+    const dz = run.to.z - run.from.z;
+    const length = Math.hypot(dx, dz);
+    const midX = (run.from.x + run.to.x) / 2;
+    const midZ = (run.from.z + run.to.z) / 2;
+    const angle = Math.atan2(dz, dx);
+
+    ropeColors.forEach((color, index) => {
+      const rope = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08, 0.08, length - 0.55, 12),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.72, metalness: 0.12 })
+      );
+      rope.rotation.z = Math.PI / 2;
+      rope.rotation.y = angle;
+      rope.position.set(midX, 1.28 + index * 0.7, midZ);
+      rope.castShadow = true;
+      world.jumanjiteGroup.add(rope);
+      world.jumanjiteRopes.push(rope);
+    });
+  });
+
+  world.jumanjiteStatue = new THREE.Group();
+  const statueBase = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.3, 1.8, 1.2, 10),
+    new THREE.MeshStandardMaterial({ color: "#72531c", roughness: 0.9 })
+  );
+  statueBase.position.y = 0.6;
+  statueBase.castShadow = true;
+  world.jumanjiteStatue.add(statueBase);
+
+  const snakeBody = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(0.86, 0.22, 80, 12, 2, 3),
+    new THREE.MeshStandardMaterial({ color: "#a9852e", roughness: 0.58, metalness: 0.32 })
+  );
+  snakeBody.rotation.x = Math.PI / 2;
+  snakeBody.position.y = 2.0;
+  snakeBody.castShadow = true;
+  world.jumanjiteStatue.add(snakeBody);
+
+  const snakeHead = new THREE.Mesh(
+    new THREE.SphereGeometry(0.44, 18, 14),
+    new THREE.MeshStandardMaterial({ color: "#b49135", roughness: 0.54, metalness: 0.28 })
+  );
+  snakeHead.scale.set(1, 1.15, 0.82);
+  snakeHead.position.set(0, 3.1, 0.6);
+  snakeHead.castShadow = true;
+  world.jumanjiteStatue.add(snakeHead);
+
+  const hoodLeft = new THREE.Mesh(
+    new THREE.ConeGeometry(0.48, 1.1, 3),
+    new THREE.MeshStandardMaterial({ color: "#b49135", roughness: 0.58, metalness: 0.24 })
+  );
+  hoodLeft.rotation.z = -0.74;
+  hoodLeft.rotation.x = Math.PI / 2;
+  hoodLeft.position.set(-0.42, 3.05, 0.45);
+  world.jumanjiteStatue.add(hoodLeft);
+
+  const hoodRight = hoodLeft.clone();
+  hoodRight.rotation.z = 0.74;
+  hoodRight.position.set(0.42, 3.05, 0.45);
+  world.jumanjiteStatue.add(hoodRight);
+
+  world.jumanjiteStatue.position.set(0, 0, -11.4);
+  world.jumanjiteGroup.add(world.jumanjiteStatue);
+
+  for (const x of [-8.6, 8.6]) {
+    const pillar = new THREE.Group();
+    const shaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.62, 4.6, 10),
+      new THREE.MeshStandardMaterial({ color: "#7b5d26", roughness: 0.88 })
+    );
+    shaft.position.y = 2.3;
+    shaft.castShadow = true;
+    pillar.add(shaft);
+
+    const bowl = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.56, 0.42, 0.42, 12),
+      new THREE.MeshStandardMaterial({ color: "#3e2b12", roughness: 0.7 })
+    );
+    bowl.position.y = 4.75;
+    bowl.castShadow = true;
+    pillar.add(bowl);
+
+    const flame = new THREE.PointLight("#f3b149", 0.9, 20, 2);
+    flame.position.set(0, 5.1, 0);
+    pillar.add(flame);
+
+    pillar.position.set(x, 0, -9.2);
+    world.jumanjiteGroup.add(pillar);
+    world.jumanjiteTorches.push(pillar);
+  }
+}
+
+function setJumanjiteVenueMode(isJumanjite, venue) {
+  if (!world.jumanjiteGroup) {
+    return;
+  }
+
+  world.jumanjiteGroup.visible = isJumanjite;
+
+  if (isJumanjite) {
+    world.jumanjiteApron.material.color.set(venue.theme.floorDark);
+    world.jumanjiteMat.material.color.set(venue.theme.floor);
+    world.jumanjiteRopes.forEach((rope, index) => {
+      rope.material.color.set(index % 3 === 1 ? "#d8b35a" : "#76531f");
+    });
+  }
+}
+
+function createO2RingVenue() {
+  world.o2RingGroup = new THREE.Group();
+  world.o2RingGroup.visible = false;
+  world.scene.add(world.o2RingGroup);
+
+  world.o2RingApron = new THREE.Mesh(
+    new THREE.BoxGeometry(18.8, 0.82, 18.8),
+    new THREE.MeshStandardMaterial({ color: "#24344d", roughness: 0.9 })
+  );
+  world.o2RingApron.position.y = 0.36;
+  world.o2RingApron.receiveShadow = true;
+  world.o2RingGroup.add(world.o2RingApron);
+
+  world.o2RingMat = new THREE.Mesh(
+    new THREE.BoxGeometry(14.6, 0.24, 14.6),
+    new THREE.MeshStandardMaterial({ color: "#7d9cc7", roughness: 0.84 })
+  );
+  world.o2RingMat.position.y = 0.9;
+  world.o2RingMat.receiveShadow = true;
+  world.o2RingGroup.add(world.o2RingMat);
+
+  const postMaterial = new THREE.MeshStandardMaterial({ color: "#101722", roughness: 0.56, metalness: 0.26 });
+  const ropeColors = ["#d9ecff", "#5fa1ff", "#d9ecff"];
+  const corners = [
+    { x: -7.3, z: -7.3 },
+    { x: 7.3, z: -7.3 },
+    { x: 7.3, z: 7.3 },
+    { x: -7.3, z: 7.3 }
+  ];
+
+  corners.forEach((corner) => {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.46, 3.8, 0.46), postMaterial);
+    post.position.set(corner.x, 2.02, corner.z);
+    post.castShadow = true;
+    world.o2RingGroup.add(post);
+    world.o2RingPosts.push(post);
+  });
+
+  const ropeRuns = [
+    { from: corners[0], to: corners[1] },
+    { from: corners[1], to: corners[2] },
+    { from: corners[2], to: corners[3] },
+    { from: corners[3], to: corners[0] }
+  ];
+
+  ropeRuns.forEach((run) => {
+    const dx = run.to.x - run.from.x;
+    const dz = run.to.z - run.from.z;
+    const length = Math.hypot(dx, dz);
+    const midX = (run.from.x + run.to.x) / 2;
+    const midZ = (run.from.z + run.to.z) / 2;
+    const angle = Math.atan2(dz, dx);
+
+    ropeColors.forEach((color, index) => {
+      const rope = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.085, 0.085, length - 0.62, 12),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.66, metalness: 0.14 })
+      );
+      rope.rotation.z = Math.PI / 2;
+      rope.rotation.y = angle;
+      rope.position.set(midX, 1.3 + index * 0.72, midZ);
+      rope.castShadow = true;
+      world.o2RingGroup.add(rope);
+      world.o2RingRopes.push(rope);
+    });
+  });
+
+  for (const pillarPos of [
+    { x: -10.2, z: -10.2 },
+    { x: 10.2, z: -10.2 },
+    { x: 10.2, z: 10.2 },
+    { x: -10.2, z: 10.2 }
+  ]) {
+    const pillar = new THREE.Group();
+    const shaft = new THREE.Mesh(
+      new THREE.BoxGeometry(0.7, 6.2, 0.7),
+      new THREE.MeshStandardMaterial({ color: "#1a2433", roughness: 0.64, metalness: 0.24 })
+    );
+    shaft.position.y = 3.1;
+    shaft.castShadow = true;
+    pillar.add(shaft);
+
+    const cap = new THREE.Mesh(
+      new THREE.BoxGeometry(1.1, 0.42, 1.1),
+      new THREE.MeshStandardMaterial({ color: "#97b8e7", roughness: 0.4, metalness: 0.3 })
+    );
+    cap.position.y = 6.45;
+    cap.castShadow = true;
+    pillar.add(cap);
+
+    pillar.position.set(pillarPos.x, 0, pillarPos.z);
+    world.o2RingGroup.add(pillar);
+    world.o2RingPillars.push(pillar);
+  }
+
+  world.o2RingSign = new THREE.Mesh(
+    new THREE.PlaneGeometry(5.2, 1.24),
+    new THREE.MeshBasicMaterial({ map: createTextTexture("O2 RING", "#0b1320", "#d8ecff", 512, 128, 54), transparent: true })
+  );
+  world.o2RingSign.position.set(0, 7.1, -9.6);
+  world.o2RingGroup.add(world.o2RingSign);
+}
+
+function setO2RingVenueMode(isO2Ring, venue) {
+  if (!world.o2RingGroup) {
+    return;
+  }
+
+  world.o2RingGroup.visible = isO2Ring;
+
+  if (isO2Ring) {
+    world.o2RingApron.material.color.set(venue.theme.floorDark);
+    world.o2RingMat.material.color.set(venue.theme.floor);
+    world.o2RingRopes.forEach((rope, index) => {
+      rope.material.color.set(index % 3 === 1 ? "#5fa1ff" : "#e3f1ff");
+    });
+    if (world.o2RingSign?.material?.map) {
+      world.o2RingSign.material.map = createTextTexture(venue.name, venue.theme.glow, "#d8ecff", 512, 128, 54);
+      world.o2RingSign.material.map.needsUpdate = true;
+    }
+  }
+}
+
 function createFighterRig() {
   const root = new THREE.Group();
 
   const torsoMaterial = new THREE.MeshStandardMaterial({ color: "#ff6a48", roughness: 0.62 });
   const accentMaterial = new THREE.MeshStandardMaterial({ color: "#ffd9cf", roughness: 0.56 });
   const skinMaterial = new THREE.MeshStandardMaterial({ color: "#f0b98d", roughness: 0.68 });
+  const hairMaterial = new THREE.MeshStandardMaterial({ color: "#1d1713", roughness: 0.78 });
   const shortMaterial = new THREE.MeshStandardMaterial({ color: "#18202d", roughness: 0.8 });
   const shinMaterial = new THREE.MeshStandardMaterial({ color: "#1f2732", roughness: 0.82 });
   const gloveMaterial = new THREE.MeshStandardMaterial({ color: "#ff6a48", roughness: 0.54 });
@@ -1355,6 +2129,100 @@ function createFighterRig() {
   head.position.set(0, 1.56, 0.02);
   head.castShadow = true;
   torsoPivot.add(head);
+
+  const hairGroup = new THREE.Group();
+  hairGroup.position.set(0, 0.05, -0.02);
+  hairGroup.visible = false;
+  head.add(hairGroup);
+
+  const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.405, 18, 14), hairMaterial);
+  hairCap.scale.set(1.02, 0.74, 1.04);
+  hairCap.position.set(0, 0.08, -0.03);
+  hairCap.castShadow = true;
+  hairGroup.add(hairCap);
+
+  const braidOffsets = [-0.2, -0.09, 0.02, 0.13, 0.24];
+  const braids = braidOffsets.map((xOffset, index) => {
+    const braid = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.042, 0.64, 7), hairMaterial);
+    braid.position.set(xOffset, -0.2 - Math.abs(xOffset) * 0.08, -0.34 - Math.abs(xOffset) * 0.08);
+    braid.rotation.x = 0.28 + Math.abs(xOffset) * 0.38;
+    braid.rotation.z = xOffset * -0.2;
+    braid.castShadow = true;
+    hairGroup.add(braid);
+
+    const braidTip = new THREE.Mesh(new THREE.SphereGeometry(0.028, 10, 8), hairMaterial);
+    braidTip.position.set(0, -0.34, 0);
+    braidTip.castShadow = true;
+    braid.add(braidTip);
+
+    braid.userData.baseRotationX = braid.rotation.x;
+    braid.userData.baseRotationZ = braid.rotation.z;
+    braid.userData.phase = index * 0.6;
+    return braid;
+  });
+
+  const sideBraidLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.035, 0.46, 7), hairMaterial);
+  sideBraidLeft.position.set(-0.36, -0.04, -0.12);
+  sideBraidLeft.rotation.set(0.2, 0.22, -0.3);
+  sideBraidLeft.castShadow = true;
+  sideBraidLeft.userData.baseRotationX = sideBraidLeft.rotation.x;
+  sideBraidLeft.userData.baseRotationZ = sideBraidLeft.rotation.z;
+  sideBraidLeft.userData.phase = 3.6;
+  hairGroup.add(sideBraidLeft);
+  braids.push(sideBraidLeft);
+
+  const sideBraidRight = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.035, 0.46, 7), hairMaterial);
+  sideBraidRight.position.set(0.36, -0.04, -0.12);
+  sideBraidRight.rotation.set(0.2, -0.22, 0.3);
+  sideBraidRight.castShadow = true;
+  sideBraidRight.userData.baseRotationX = sideBraidRight.rotation.x;
+  sideBraidRight.userData.baseRotationZ = sideBraidRight.rotation.z;
+  sideBraidRight.userData.phase = 4.2;
+  hairGroup.add(sideBraidRight);
+  braids.push(sideBraidRight);
+
+  const dreadOffsets = [-0.28, -0.18, -0.08, 0.04, 0.16, 0.27];
+  const dreads = dreadOffsets.map((xOffset, index) => {
+    const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.044, 0.86, 8), hairMaterial);
+    dread.position.set(xOffset, -0.18 - Math.abs(xOffset) * 0.04, -0.3 - Math.abs(xOffset) * 0.04);
+    dread.rotation.x = 0.18 + Math.abs(xOffset) * 0.28;
+    dread.rotation.z = xOffset * -0.14;
+    dread.castShadow = true;
+    dread.visible = false;
+    hairGroup.add(dread);
+
+    const dreadTip = new THREE.Mesh(new THREE.SphereGeometry(0.036, 10, 8), hairMaterial);
+    dreadTip.position.set(0, -0.44, 0);
+    dreadTip.castShadow = true;
+    dread.add(dreadTip);
+
+    dread.userData.baseRotationX = dread.rotation.x;
+    dread.userData.baseRotationZ = dread.rotation.z;
+    dread.userData.phase = index * 0.58;
+    return dread;
+  });
+
+  const sideDreadLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.038, 0.74, 8), hairMaterial);
+  sideDreadLeft.position.set(-0.38, -0.12, -0.08);
+  sideDreadLeft.rotation.set(0.18, 0.18, -0.2);
+  sideDreadLeft.castShadow = true;
+  sideDreadLeft.visible = false;
+  sideDreadLeft.userData.baseRotationX = sideDreadLeft.rotation.x;
+  sideDreadLeft.userData.baseRotationZ = sideDreadLeft.rotation.z;
+  sideDreadLeft.userData.phase = 3.7;
+  hairGroup.add(sideDreadLeft);
+  dreads.push(sideDreadLeft);
+
+  const sideDreadRight = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.038, 0.74, 8), hairMaterial);
+  sideDreadRight.position.set(0.38, -0.12, -0.08);
+  sideDreadRight.rotation.set(0.18, -0.18, 0.2);
+  sideDreadRight.castShadow = true;
+  sideDreadRight.visible = false;
+  sideDreadRight.userData.baseRotationX = sideDreadRight.rotation.x;
+  sideDreadRight.userData.baseRotationZ = sideDreadRight.rotation.z;
+  sideDreadRight.userData.phase = 4.3;
+  hairGroup.add(sideDreadRight);
+  dreads.push(sideDreadRight);
 
   const shoulderLeft = new THREE.Group();
   shoulderLeft.position.set(-0.82, 0.68, 0);
@@ -1448,6 +2316,10 @@ function createFighterRig() {
     accent,
     neck,
     head,
+    hairGroup,
+    hairCap,
+    braids,
+    dreads,
     shoulderLeft,
     shoulderRight,
     elbowLeft,
@@ -1522,6 +2394,7 @@ function animateRig(rig, combatant, deltaSeconds, mirrored) {
   rig.elbowRight.rotation.x = -0.52;
   rig.head.rotation.y = clamp(faceYaw * 2.2, -0.28, 0.28);
   rig.head.rotation.x = combatant.blockHeld ? 0.08 : 0;
+  rig.head.rotation.z = 0;
 
   if (combatant.blockHeld && !combatant.defeated) {
     rig.shoulderLeft.rotation.z = mirrored ? -0.88 : 0.88;
@@ -1558,6 +2431,25 @@ function animateRig(rig, combatant, deltaSeconds, mirrored) {
   } else {
     rig.torso.material.emissive.setRGB(0, 0, 0);
     rig.head.rotation.z = 0;
+  }
+
+  if (rig.braids?.length) {
+    const swayBase = walk ? step * 0.12 : idle * 0.05;
+    rig.braids.forEach((braid) => {
+      const phase = braid.userData.phase ?? 0;
+      const braidSwing = Math.sin(time * 0.9 + phase) * 0.045 + swayBase;
+      braid.rotation.x = (braid.userData.baseRotationX ?? 0) + Math.abs(braidSwing) * 0.7;
+      braid.rotation.z = (braid.userData.baseRotationZ ?? 0) + braidSwing * 0.45;
+    });
+  }
+  if (rig.dreads?.length) {
+    const swayBase = walk ? step * 0.18 : idle * 0.08;
+    rig.dreads.forEach((dread) => {
+      const phase = dread.userData.phase ?? 0;
+      const dreadSwing = Math.sin(time * 0.82 + phase) * 0.075 + swayBase;
+      dread.rotation.x = (dread.userData.baseRotationX ?? 0) + Math.abs(dreadSwing) * 0.88;
+      dread.rotation.z = (dread.userData.baseRotationZ ?? 0) + dreadSwing * 0.34;
+    });
   }
 
   rig.shadow.material.opacity = combatant.defeated ? 0.12 : 0.22;
@@ -1622,7 +2514,7 @@ function createTextTexture(text, bgColor, fgColor, width, height, fontSize) {
   return texture;
 }
 
-function createMatTexture(baseColor, lineColor, logoColor) {
+function createMatTexture(baseColor, lineColor, logoColor, logoLines = ["Fight", "Simulator"]) {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 1024;
@@ -1649,11 +2541,17 @@ function createMatTexture(baseColor, lineColor, logoColor) {
   ctx.stroke();
 
   ctx.fillStyle = logoColor;
-  ctx.font = "700 118px Bebas Neue, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("FIGHT", 0, -40);
-  ctx.fillText("SIMULATOR", 0, 78);
+  const normalizedLines = Array.isArray(logoLines) ? logoLines : [logoLines];
+  if (normalizedLines.length === 1) {
+    ctx.font = "700 196px Bebas Neue, sans-serif";
+    ctx.fillText(String(normalizedLines[0]).toUpperCase(), 0, 14);
+  } else {
+    ctx.font = "700 118px Bebas Neue, sans-serif";
+    ctx.fillText(String(normalizedLines[0]).toUpperCase(), 0, -40);
+    ctx.fillText(String(normalizedLines[1]).toUpperCase(), 0, 78);
+  }
 
   ctx.strokeStyle = lineColor;
   ctx.lineWidth = 10;
