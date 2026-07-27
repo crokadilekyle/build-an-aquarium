@@ -252,6 +252,16 @@ const FIGHTERS = [
     palette: { primary: "#2d6bc8", secondary: "#dfe9ff", skin: "#9c6b4d" },
     stats: { health: 111, stamina: 109, power: 84, speed: 87, chin: 80 },
     hair: { style: "braids", color: "#1b1411" }
+  },
+  {
+    id: "ayo-bona",
+    name: "Ayo Bona",
+    nickname: "Night Pulse",
+    weightClass: "Welterweight",
+    record: "18-2",
+    tagline: "Sharp reactions, quick feet, and fast combinations that build pressure in a hurry.",
+    palette: { primary: "#6b2fb8", secondary: "#efe4ff", skin: "#8f6046" },
+    stats: { health: 107, stamina: 112, power: 81, speed: 89, chin: 78 }
   }
 ];
 
@@ -439,6 +449,58 @@ const VENUES = [
     }
   },
   {
+    id: "philadelhia-brawl-zone",
+    name: "Philadelhia Brawl Zone",
+    location: "Philadelphia, Pennsylvania",
+    description: "A red, white, and blue east-coast fight setup with Liberty Bell branding and a loud rough-edged crowd feel.",
+    matText: ["PHILA"],
+    matIcon: "liberty-bell",
+    matLogoColor: "#1f4b9b",
+    matAccentColor: "#c61c30",
+    theme: {
+      sky: "#1c3772",
+      glow: "#9f1428",
+      floor: "#f4f6fb",
+      floorDark: "#24478c"
+    }
+  },
+  {
+    id: "sim-championchip-card",
+    name: "Sim Championchip Card",
+    location: "Sim Arena District",
+    description: "A bright title-night setup with polished lighting, a clean premium mat, and a big championship-event feel.",
+    theme: {
+      sky: "#28385f",
+      glow: "#0f1727",
+      floor: "#c1c8d4",
+      floorDark: "#58657d"
+    }
+  },
+  {
+    id: "sacramento-gasparilla-war",
+    name: "Sacramento Gasparilla War",
+    location: "Sacramento, California",
+    description: "A hot fight-night build with dusty gold lighting, deep red shadows, and a rough main-event war-card feel.",
+    theme: {
+      sky: "#5f341f",
+      glow: "#26110b",
+      floor: "#b89568",
+      floorDark: "#6d2a22"
+    }
+  },
+  {
+    id: "los-angeles-jaguar-ring",
+    name: "Los Angeles Jaguar Ring",
+    location: "Los Angeles, California",
+    description: "A sleek west-coast fight card with black-and-gold lighting, sharp shadows, and a polished big-city main-event feel.",
+    theme: {
+      sky: "#342812",
+      glow: "#0d0b08",
+      floor: "#c4a357",
+      floorDark: "#4a3a18"
+    }
+  },
+  {
     id: "jumanjite",
     name: "Jumanjite",
     location: "Ancient Cobra Temple",
@@ -453,13 +515,42 @@ const VENUES = [
 ];
 
 const ATTACKS = {
-  jab: { key: "f", label: "jab", damage: 7, staminaCost: 8, range: 122, windup: 90, active: 110, recovery: 170, knockback: 18 },
-  heavy: { key: "shift+f", label: "heavy", damage: 13, staminaCost: 16, range: 132, windup: 150, active: 140, recovery: 260, knockback: 30 },
-  kick: { key: "g", label: "kick", damage: 16, staminaCost: 18, range: 152, windup: 170, active: 160, recovery: 280, knockback: 36 }
+  jab: { key: "f", label: "jab", damage: 5, staminaCost: 10, range: 122, windup: 90, active: 110, recovery: 170, knockback: 18 },
+  heavy: { key: "shift+f", label: "heavy", damage: 9, staminaCost: 18, range: 132, windup: 150, active: 140, recovery: 260, knockback: 30 },
+  kick: { key: "g", label: "kick", damage: 11, staminaCost: 20, range: 152, windup: 170, active: 160, recovery: 280, knockback: 36 },
+  slam: { key: "r", label: "body slam", damage: 10, staminaCost: 24, range: 96, windup: 220, active: 150, recovery: 380, knockback: 54 },
+  submission: { key: "t", label: "submission", damage: 4, staminaCost: 22, range: 88, windup: 250, active: 260, recovery: 420, knockback: 0 }
 };
 
 const ARENA = {
-  matchLength: 99
+  roundLengths: [30, 30],
+  maxRounds: 2,
+  openingCountdown: 3,
+  betweenRoundsCountdown: 3,
+  roundBreakLength: 5.2
+};
+
+const BALANCE = {
+  player: {
+    healthBonus: 24,
+    staminaBonus: 28,
+    damageMultiplier: 1.18,
+    incomingDamageMultiplier: 0.58,
+    incomingStaminaMultiplier: 0.68
+  },
+  cpu: {
+    damageMultiplier: 0.72,
+    incomingDamageMultiplier: 1,
+    incomingStaminaMultiplier: 1
+  },
+  cpuAi: {
+    decisionDelayMultiplier: 1.42,
+    moveSpeedMultiplier: 0.8,
+    strikeChance: 0.34,
+    grappleChance: 0.12,
+    submissionChance: 0.1,
+    reactionBlockChance: 0.04
+  }
 };
 
 const SETUP_STAGES = ["fighter", "opponent", "venue", "overview"];
@@ -579,6 +670,17 @@ function getVenueById(id) {
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function getRoundLength(roundNumber) {
+  return ARENA.roundLengths[roundNumber - 1] ?? ARENA.roundLengths[ARENA.roundLengths.length - 1];
+}
+
+function formatClock(seconds) {
+  const safeSeconds = Math.max(0, Math.ceil(seconds));
+  const minutes = Math.floor(safeSeconds / 60);
+  const remainder = safeSeconds % 60;
+  return `${minutes}:${String(remainder).padStart(2, "0")}`;
 }
 
 function scaleStat(value) {
@@ -874,14 +976,17 @@ function resetSetupFlow() {
 }
 
 function createCombatant(fighter, role) {
+  const balance = role === "player" ? BALANCE.player : BALANCE.cpu;
+  const maxHealth = fighter.stats.health + balance.healthBonus;
+  const maxStamina = fighter.stats.stamina + balance.staminaBonus;
   return {
     role,
     profile: fighter,
     x: 0,
-    health: fighter.stats.health,
-    maxHealth: fighter.stats.health,
-    stamina: fighter.stats.stamina,
-    maxStamina: fighter.stats.stamina,
+    health: maxHealth,
+    maxHealth,
+    stamina: maxStamina,
+    maxStamina,
     attack: null,
     hitFlash: 0,
     moveIntent: 0,
@@ -902,9 +1007,12 @@ function createMatchState(launchMode = "play") {
     player: createCombatant(playerProfile, "player"),
     cpu: createCombatant(cpuProfile, "cpu"),
     spectatorMode: launchMode === "watch",
-    timer: ARENA.matchLength,
+    round: 1,
+    maxRounds: ARENA.maxRounds,
+    timer: getRoundLength(1),
     phase: "countdown",
-    countdown: 3,
+    countdown: ARENA.openingCountdown,
+    intermission: 0,
     overlayVisible: true,
     winner: null,
     log: [
@@ -937,13 +1045,13 @@ function startFight(launchMode = "play") {
   app.fightVenueLine.textContent = `${matchState.venue.name} · ${matchState.venue.location}`;
   app.playerHudName.textContent = matchState.player.profile.name;
   app.cpuHudName.textContent = matchState.cpu.profile.name;
-  app.statusChip.textContent = "Fight Ready";
-  setOverlay("Fight Ready", "3", "Touch gloves and get ready.");
+  app.statusChip.textContent = "Round 1 Ready";
+  setOverlay("Round 1", String(ARENA.openingCountdown), "Touch gloves and get ready.");
   updateStatus(
     "Opening bell incoming",
     matchState.spectatorMode
-      ? "Watch mode is active. Both fighters will be controlled by AI for this match."
-      : "Use your jab to manage range and keep enough stamina for heavier shots."
+      ? "Watch mode is active. Both fighters will be controlled by AI, and close fights can spill into round 2."
+      : "Use your jab to manage range and keep enough stamina for heavier shots if the fight stretches into round 2."
   );
   renderLog();
   updateHud();
@@ -981,8 +1089,10 @@ function applyVenueTheme(venue) {
   world.floorMat.material.map = createMatTexture(
     venue.theme.floor,
     venue.theme.floorDark,
-    venue.theme.glow,
-    venue.matText ?? ["Fight", "Simulator"]
+    venue.matLogoColor ?? venue.theme.glow,
+    venue.matText ?? ["Fight", "Simulator"],
+    venue.matIcon ?? null,
+    venue.matAccentColor ?? venue.theme.glow
   );
   world.floorMat.material.map.needsUpdate = true;
   world.floorGlow.material.color.set(venue.theme.floorDark);
@@ -1144,23 +1254,12 @@ function stepFrame(timestamp) {
 
 function updateMatch(deltaSeconds) {
   if (matchState.phase === "countdown") {
-    matchState.countdown -= deltaSeconds;
-    if (matchState.countdown <= 0) {
-      matchState.phase = "live";
-      matchState.overlayVisible = false;
-      app.fightOverlay.classList.add("hidden");
-      updateStatus(
-        "Fight live",
-        matchState.spectatorMode
-          ? "Spectator mode is active. Watch both fighters manage distance, stamina, and counters on their own."
-          : "Work behind the jab, then spend stamina on heavier shots when the CPU is in range."
-      );
-      app.statusChip.textContent = matchState.spectatorMode ? "Watch Mode" : "Fight Live";
-      pushLog("The referee steps back and the fight is on.");
-    } else {
-      const display = Math.max(1, Math.ceil(matchState.countdown));
-      setOverlay("Fight Ready", String(display), "Touch gloves and get ready.");
-    }
+    updateCountdownPhase(deltaSeconds);
+    return;
+  }
+
+  if (matchState.phase === "intermission") {
+    updateIntermissionPhase(deltaSeconds);
     return;
   }
 
@@ -1182,6 +1281,42 @@ function updateMatch(deltaSeconds) {
   resolveAttacks(matchState.cpu, matchState.player);
   enforceSpacing(matchState.player, matchState.cpu);
   checkForWinner();
+}
+
+function updateCountdownPhase(deltaSeconds) {
+  matchState.countdown -= deltaSeconds;
+  if (matchState.countdown <= 0) {
+    matchState.phase = "live";
+    matchState.overlayVisible = false;
+    app.fightOverlay.classList.add("hidden");
+    updateStatus(
+      `Round ${matchState.round} live`,
+      matchState.spectatorMode
+        ? "Spectator mode is active. Watch both fighters manage distance, stamina, and counters on their own."
+        : "Work behind the jab, then spend stamina on heavier shots when the CPU is in range."
+    );
+    app.statusChip.textContent = matchState.spectatorMode ? `Watch R${matchState.round}` : `Round ${matchState.round}`;
+    pushLog(matchState.round === 1 ? "The referee steps back and the fight is on." : `Round ${matchState.round} begins.`);
+    return;
+  }
+
+  const display = Math.max(1, Math.ceil(matchState.countdown));
+  setOverlay(
+    `Round ${matchState.round}`,
+    String(display),
+    matchState.round === 1 ? "Touch gloves and get ready." : `Corners clear. Round ${matchState.round} is about to start.`
+  );
+}
+
+function updateIntermissionPhase(deltaSeconds) {
+  matchState.intermission -= deltaSeconds;
+  app.statusChip.textContent = "Cutscene";
+  updateStatus("Between rounds", "A short cutscene is playing while both corners reset their fighters for round 2.");
+  setOverlay("Round Break", "Round 2", `Both corners go to work. Round 2 starts in ${Math.max(1, Math.ceil(matchState.intermission))}.`);
+
+  if (matchState.intermission <= 0) {
+    startNextRound();
+  }
 }
 
 function updateCombatantTimers(combatant, deltaSeconds) {
@@ -1244,17 +1379,17 @@ function handleCpu(cpu, player, deltaSeconds) {
     return;
   }
 
-  if (player.attack?.phase === "active" && absDistance < 170 && Math.random() < 0.08) {
+  if (player.attack?.phase === "active" && absDistance < 170 && Math.random() < BALANCE.cpuAi.reactionBlockChance) {
     cpu.blockHeld = true;
   }
 
   if (cpu.aiTimer <= 0) {
-    cpu.aiTimer = 0.18 + Math.random() * 0.34;
+    cpu.aiTimer = (0.18 + Math.random() * 0.34) * BALANCE.cpuAi.decisionDelayMultiplier;
     if (absDistance > 140) {
       cpu.aiBehavior = "close";
     } else if (cpu.stamina < 20) {
       cpu.aiBehavior = "retreat";
-    } else if (Math.random() < 0.56) {
+    } else if (Math.random() < 0.4) {
       cpu.aiBehavior = "strike";
     } else {
       cpu.aiBehavior = "circle";
@@ -1269,12 +1404,23 @@ function handleCpu(cpu, player, deltaSeconds) {
     cpu.moveIntent = distance > 0 ? 1 : -1;
   }
 
-  const speed = 92 + cpu.profile.stats.speed * 1.24;
+  const speed = (92 + cpu.profile.stats.speed * 1.24) * BALANCE.cpuAi.moveSpeedMultiplier;
   cpu.x = clamp(cpu.x + cpu.moveIntent * speed * deltaSeconds, metrics.minX, metrics.maxX);
 
-  if (cpu.aiBehavior === "strike" && !cpu.attack && absDistance <= 156) {
-    const options = ["jab", "jab", "heavy", "kick"];
-    const attackName = options[Math.floor(Math.random() * options.length)];
+  if (cpu.aiBehavior === "strike" && !cpu.attack && absDistance <= 156 && Math.random() < BALANCE.cpuAi.strikeChance) {
+    let attackName = null;
+    if (
+      absDistance <= ATTACKS.submission.range &&
+      player.stamina <= player.maxStamina * 0.22 &&
+      Math.random() < BALANCE.cpuAi.submissionChance
+    ) {
+      attackName = "submission";
+    } else if (absDistance <= ATTACKS.slam.range && Math.random() < BALANCE.cpuAi.grappleChance) {
+      attackName = "slam";
+    } else {
+      const options = ["jab", "jab", "heavy", "kick"];
+      attackName = options[Math.floor(Math.random() * options.length)];
+    }
     tryStartAttack(cpu, attackName, true);
     cpu.aiBehavior = "circle";
   }
@@ -1294,6 +1440,17 @@ function tryStartAttack(combatant, attackName, isCpu = false) {
     return;
   }
 
+  if (attackName === "slam" || attackName === "submission") {
+    const opponent = combatant.role === "player" ? matchState.cpu : matchState.player;
+    const distance = opponent ? Math.abs(combatant.x - opponent.x) : Number.POSITIVE_INFINITY;
+    if (distance > spec.range + 10) {
+      if (!isCpu) {
+        updateStatus("Too far out", `${spec.label[0].toUpperCase()}${spec.label.slice(1)} needs close range to start.`);
+      }
+      return;
+    }
+  }
+
   combatant.stamina -= spec.staminaCost;
   combatant.attack = {
     type: attackName,
@@ -1308,7 +1465,7 @@ function tryStartAttack(combatant, attackName, isCpu = false) {
 }
 
 function resolveAttacks(attacker, defender) {
-  if (!attacker.attack || attacker.attack.phase !== "active" || attacker.attack.landed) {
+  if (!attacker.attack || attacker.attack.phase !== "active" || attacker.attack.landed || matchState?.phase !== "live") {
     return;
   }
 
@@ -1320,13 +1477,18 @@ function resolveAttacks(attacker, defender) {
 
   attacker.attack.landed = true;
   const metrics = getArenaMetrics();
+  const isSlam = attacker.attack.type === "slam";
+  const isSubmission = attacker.attack.type === "submission";
+  const attackerBalance = attacker.role === "player" ? BALANCE.player : BALANCE.cpu;
+  const defenderBalance = defender.role === "player" ? BALANCE.player : BALANCE.cpu;
   const baseDamage = spec.damage + attacker.profile.stats.power * 0.12;
   const reducedByChin = defender.profile.stats.chin * 0.06;
-  let damage = Math.max(4, Math.round(baseDamage - reducedByChin));
+  let damage = Math.max(2, Math.round((baseDamage - reducedByChin) * (isSlam ? 0.84 : isSubmission ? 0.45 : 0.7)));
+  let staminaDamage = Math.max(5, Math.round(spec.staminaCost * (isSubmission ? 1.36 : isSlam ? 1.28 : 1.18) + attacker.profile.stats.power * 0.05));
 
   if (defender.blockHeld) {
     damage = Math.max(2, Math.round(damage * 0.38));
-    defender.stamina = Math.max(0, defender.stamina - spec.staminaCost * 0.5);
+    staminaDamage = Math.max(3, Math.round(staminaDamage * 0.72));
     pushLog(`${defender.profile.name} blocks most of the ${spec.label}.`);
     world.cameraShake = Math.max(world.cameraShake, 0.06);
   } else {
@@ -1334,6 +1496,34 @@ function resolveAttacks(attacker, defender) {
     world.cameraShake = Math.max(world.cameraShake, attackTypeToShake(spec.label));
   }
 
+  damage = Math.max(1, Math.round(damage * attackerBalance.damageMultiplier * defenderBalance.incomingDamageMultiplier));
+  staminaDamage = Math.max(2, Math.round(staminaDamage * defenderBalance.incomingStaminaMultiplier));
+
+  if (isSubmission) {
+    const staminaEdge = 1 - defender.stamina / Math.max(1, defender.maxStamina);
+    const healthEdge = 1 - defender.health / Math.max(1, defender.maxHealth);
+    let finishChance = 0.12 + staminaEdge * 0.5 + healthEdge * 0.24;
+    if (defender.blockHeld) {
+      finishChance *= 0.55;
+    }
+    if (defender.stamina <= defender.maxStamina * 0.18 || defender.health <= defender.maxHealth * 0.22) {
+      finishChance += 0.18;
+    }
+    finishChance = clamp(finishChance, 0.08, 0.86);
+
+    if (Math.random() < finishChance) {
+      updateStatus(`${attacker.profile.name} locks it in`, `${defender.profile.name} taps to the submission.`);
+      pushLog(`${attacker.profile.name} forces the tap with a tight submission attempt.`);
+      finishFight(attacker.role, `${attacker.profile.name} wins by submission.`);
+      return;
+    }
+
+    damage = Math.max(1, Math.round(damage * 0.6));
+    pushLog(`${defender.profile.name} survives the submission attempt and scrambles free.`);
+    updateStatus(`${defender.profile.nickname} escapes`, `${defender.profile.name} fights the hands and breaks loose.`);
+  }
+
+  defender.stamina = Math.max(0, defender.stamina - staminaDamage);
   defender.health = Math.max(0, defender.health - damage);
   defender.hitFlash = 0.22;
   defender.x = clamp(
@@ -1345,7 +1535,11 @@ function resolveAttacks(attacker, defender) {
     defender.health <= 0 ? `${attacker.profile.name} scores the finish` : `${attacker.profile.nickname} connects`,
     defender.health <= 0
       ? `${defender.profile.name} cannot continue.`
-      : `${attacker.profile.name} clipped ${defender.profile.name} with a ${spec.label}.`
+      : isSlam
+        ? `${attacker.profile.name} drove through with a body slam.`
+        : isSubmission
+          ? `${attacker.profile.name} nearly finished the submission.`
+          : `${attacker.profile.name} clipped ${defender.profile.name} with a ${spec.label}.`
   );
 }
 
@@ -1377,15 +1571,63 @@ function checkForWinner() {
   }
 
   if (matchState.timer <= 0) {
-    const playerHealth = matchState.player.health;
-    const cpuHealth = matchState.cpu.health;
-    if (playerHealth === cpuHealth) {
-      finishFight("draw", "The judges call it a draw.");
-    } else if (playerHealth > cpuHealth) {
-      finishFight("player", `${matchState.player.profile.name} wins the decision.`);
-    } else {
-      finishFight("cpu", `${matchState.cpu.profile.name} wins the decision.`);
+    if (matchState.round < matchState.maxRounds) {
+      beginRoundIntermission();
+      return;
     }
+
+    finishFightByDecision();
+  }
+}
+
+function beginRoundIntermission() {
+  if (!matchState) {
+    return;
+  }
+
+  matchState.phase = "intermission";
+  matchState.intermission = ARENA.roundBreakLength;
+  resetCombatantForRoundBreak(matchState.player);
+  resetCombatantForRoundBreak(matchState.cpu);
+  setStartingPositions(matchState);
+  layoutCombatants();
+  pushLog(`Round ${matchState.round} ends. The corners get to work before round 2.`);
+  app.fightOverlay.classList.remove("hidden");
+}
+
+function resetCombatantForRoundBreak(combatant) {
+  combatant.attack = null;
+  combatant.hitFlash = 0;
+  combatant.moveIntent = 0;
+  combatant.blockHeld = false;
+  combatant.stamina = Math.min(combatant.maxStamina, combatant.stamina + combatant.maxStamina * 0.42);
+}
+
+function startNextRound() {
+  if (!matchState) {
+    return;
+  }
+
+  matchState.round += 1;
+  matchState.timer = getRoundLength(matchState.round);
+  matchState.phase = "countdown";
+  matchState.countdown = ARENA.betweenRoundsCountdown;
+  matchState.overlayVisible = true;
+  setStartingPositions(matchState);
+  layoutCombatants();
+  app.statusChip.textContent = `Round ${matchState.round} Ready`;
+  updateStatus("Corners clear", `Round ${matchState.round} is about to begin.`);
+}
+
+function finishFightByDecision() {
+  const playerHealth = matchState.player.health;
+  const cpuHealth = matchState.cpu.health;
+  if (playerHealth === cpuHealth) {
+    finishFight("draw", "The judges call it a draw.");
+  } else if (playerHealth > cpuHealth) {
+    finishFight("player", `${matchState.player.profile.name} wins the decision.`);
+  } else {
+    finishFight("cpu", `${matchState.cpu.profile.name} wins the decision.`);
   }
 }
 
@@ -1415,7 +1657,10 @@ function updateHud() {
     return;
   }
 
-  app.roundTimer.textContent = String(Math.max(0, Math.ceil(matchState.timer)));
+  app.roundTimer.textContent =
+    matchState.phase === "intermission"
+      ? `CUT ${Math.max(1, Math.ceil(matchState.intermission))}`
+      : `R${matchState.round} ${formatClock(matchState.timer)}`;
   app.playerHealthFill.style.width = `${(matchState.player.health / matchState.player.maxHealth) * 100}%`;
   app.playerStaminaFill.style.width = `${(matchState.player.stamina / matchState.player.maxStamina) * 100}%`;
   app.cpuHealthFill.style.width = `${(matchState.cpu.health / matchState.cpu.maxHealth) * 100}%`;
@@ -2422,6 +2667,31 @@ function animateRig(rig, combatant, deltaSeconds, mirrored) {
     rig.hipRight.rotation.z = mirrored ? -0.08 : 0.08;
     rig.shoulderLeft.rotation.x = -0.42;
     rig.shoulderRight.rotation.x = -0.28;
+  } else if (attackType === "slam") {
+    rig.torsoPivot.rotation.x = attackPhase === "active" ? 0.34 : 0.2;
+    rig.torsoPivot.rotation.y += mirrored ? -0.18 : 0.18;
+    rig.hipLeft.rotation.x = attackPhase === "active" ? -0.74 : -0.28;
+    rig.hipRight.rotation.x = attackPhase === "active" ? -0.74 : -0.28;
+    rig.kneeLeft.rotation.x = attackPhase === "active" ? 0.82 : 0.34;
+    rig.kneeRight.rotation.x = attackPhase === "active" ? 0.82 : 0.34;
+    rig.shoulderLeft.rotation.x = -1.18;
+    rig.shoulderRight.rotation.x = -1.18;
+    rig.elbowLeft.rotation.x = -0.48;
+    rig.elbowRight.rotation.x = -0.48;
+  } else if (attackType === "submission") {
+    rig.torsoPivot.rotation.x = attackPhase === "active" ? 0.48 : 0.28;
+    rig.torsoPivot.rotation.y += mirrored ? -0.1 : 0.1;
+    rig.hipLeft.rotation.x = attackPhase === "active" ? -0.42 : -0.16;
+    rig.hipRight.rotation.x = attackPhase === "active" ? -0.42 : -0.16;
+    rig.kneeLeft.rotation.x = attackPhase === "active" ? 0.5 : 0.24;
+    rig.kneeRight.rotation.x = attackPhase === "active" ? 0.5 : 0.24;
+    rig.shoulderLeft.rotation.x = -1.02;
+    rig.shoulderRight.rotation.x = -1.02;
+    rig.shoulderLeft.rotation.z = mirrored ? -0.28 : 0.28;
+    rig.shoulderRight.rotation.z = mirrored ? 0.28 : -0.28;
+    rig.elbowLeft.rotation.x = -0.2;
+    rig.elbowRight.rotation.x = -0.2;
+    rig.head.rotation.x = 0.16;
   }
 
   if (combatant.hitFlash > 0) {
@@ -2459,6 +2729,22 @@ function updateCamera(deltaSeconds) {
   if (!matchState) {
     return;
   }
+  if (matchState.phase === "intermission") {
+    const orbit = performance.now() * 0.00042;
+    const desiredX = Math.sin(orbit) * 4.4;
+    const desiredY = 6.9 + Math.sin(orbit * 1.4) * 0.35;
+    const desiredZ = 13.8 + Math.cos(orbit) * 1.1;
+    const easing = Math.min(1, deltaSeconds * 2.4);
+    world.cameraPosition.x += (desiredX - world.cameraPosition.x) * easing;
+    world.cameraPosition.y += (desiredY - world.cameraPosition.y) * easing;
+    world.cameraPosition.z += (desiredZ - world.cameraPosition.z) * easing;
+    world.camera.position.set(world.cameraPosition.x, world.cameraPosition.y, world.cameraPosition.z);
+    world.cameraTarget.x += (0 - world.cameraTarget.x) * easing;
+    world.cameraTarget.y += (3.4 - world.cameraTarget.y) * easing;
+    world.cameraTarget.z += (0 - world.cameraTarget.z) * easing;
+    return;
+  }
+
   const midpoint = (world.playerRoot.position.x + world.cpuRoot.position.x) / 2;
   const separation = Math.abs(world.playerRoot.position.x - world.cpuRoot.position.x);
   const desiredX = midpoint * 0.32;
@@ -2514,7 +2800,7 @@ function createTextTexture(text, bgColor, fgColor, width, height, fontSize) {
   return texture;
 }
 
-function createMatTexture(baseColor, lineColor, logoColor, logoLines = ["Fight", "Simulator"]) {
+function createMatTexture(baseColor, lineColor, logoColor, logoLines = ["Fight", "Simulator"], logoIcon = null, accentColor = "#c2332c") {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 1024;
@@ -2540,14 +2826,32 @@ function createMatTexture(baseColor, lineColor, logoColor, logoLines = ["Fight",
   ctx.closePath();
   ctx.stroke();
 
-  ctx.fillStyle = logoColor;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
   const normalizedLines = Array.isArray(logoLines) ? logoLines : [logoLines];
-  if (normalizedLines.length === 1) {
+
+  if (logoIcon === "liberty-bell") {
+    drawLibertyBell(ctx, {
+      x: 0,
+      y: -72,
+      scale: 1.02,
+      fill: logoColor,
+      stroke: lineColor,
+      crack: accentColor
+    });
+    ctx.fillStyle = accentColor;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "700 110px Bebas Neue, sans-serif";
+    ctx.fillText(String(normalizedLines[0] ?? "PHILA").toUpperCase(), 0, 154);
+  } else if (normalizedLines.length === 1) {
+    ctx.fillStyle = logoColor;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.font = "700 196px Bebas Neue, sans-serif";
     ctx.fillText(String(normalizedLines[0]).toUpperCase(), 0, 14);
   } else {
+    ctx.fillStyle = logoColor;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.font = "700 118px Bebas Neue, sans-serif";
     ctx.fillText(String(normalizedLines[0]).toUpperCase(), 0, -40);
     ctx.fillText(String(normalizedLines[1]).toUpperCase(), 0, 78);
@@ -2562,6 +2866,55 @@ function createMatTexture(baseColor, lineColor, logoColor, logoLines = ["Fight",
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
   return texture;
+}
+
+function drawLibertyBell(ctx, { x, y, scale = 1, fill, stroke, crack }) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 16;
+
+  ctx.beginPath();
+  ctx.moveTo(-118, -98);
+  ctx.bezierCurveTo(-132, -176, -76, -222, 0, -226);
+  ctx.bezierCurveTo(76, -222, 132, -176, 118, -98);
+  ctx.lineTo(106, 44);
+  ctx.bezierCurveTo(88, 112, 44, 146, 0, 154);
+  ctx.bezierCurveTo(-44, 146, -88, 112, -106, 44);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-132, -102);
+  ctx.lineTo(132, -102);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-154, -102);
+  ctx.lineTo(-126, -154);
+  ctx.lineTo(126, -154);
+  ctx.lineTo(154, -102);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0, 52, 24, 0, Math.PI * 2);
+  ctx.fillStyle = stroke;
+  ctx.fill();
+
+  ctx.strokeStyle = crack;
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.moveTo(22, -36);
+  ctx.lineTo(-6, 8);
+  ctx.lineTo(18, 36);
+  ctx.lineTo(-16, 88);
+  ctx.stroke();
+
+  ctx.restore();
 }
 
 function createCageMeshTexture() {
@@ -2612,11 +2965,17 @@ function createCageAlphaTexture() {
 }
 
 function attackTypeToShake(label) {
+  if (label === "body slam") {
+    return 0.3;
+  }
   if (label === "heavy") {
     return 0.22;
   }
   if (label === "kick") {
     return 0.18;
+  }
+  if (label === "submission") {
+    return 0.08;
   }
   return 0.11;
 }
@@ -2647,7 +3006,7 @@ function renderLog() {
 
 function handleKeyDown(event) {
   const key = event.key.toLowerCase();
-  if (["a", "d", "e", "f", "g", "shift"].includes(key)) {
+  if (["a", "d", "e", "f", "g", "r", "t", "shift"].includes(key)) {
     event.preventDefault();
   }
 
@@ -2667,6 +3026,10 @@ function handleKeyDown(event) {
     tryStartAttack(matchState.player, "jab");
   } else if (key === ATTACKS.kick.key) {
     tryStartAttack(matchState.player, "kick");
+  } else if (key === ATTACKS.slam.key) {
+    tryStartAttack(matchState.player, "slam");
+  } else if (key === ATTACKS.submission.key) {
+    tryStartAttack(matchState.player, "submission");
   }
 }
 
