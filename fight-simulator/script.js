@@ -501,6 +501,18 @@ const VENUES = [
     }
   },
   {
+    id: "att-caso-card",
+    name: "AT&T Caso Card",
+    location: "Arlington, Texas",
+    description: "A huge stadium-style fight card with bright white lights, cool steel shadows, and a premium broadcast-night feel.",
+    theme: {
+      sky: "#304964",
+      glow: "#0d1623",
+      floor: "#d5dde8",
+      floorDark: "#66788f"
+    }
+  },
+  {
     id: "jumanjite",
     name: "Jumanjite",
     location: "Ancient Cobra Temple",
@@ -539,6 +551,8 @@ const BALANCE = {
     incomingStaminaMultiplier: 0.68
   },
   cpu: {
+    healthBonus: 0,
+    staminaBonus: 0,
     damageMultiplier: 0.72,
     incomingDamageMultiplier: 1,
     incomingStaminaMultiplier: 1
@@ -977,8 +991,8 @@ function resetSetupFlow() {
 
 function createCombatant(fighter, role) {
   const balance = role === "player" ? BALANCE.player : BALANCE.cpu;
-  const maxHealth = fighter.stats.health + balance.healthBonus;
-  const maxStamina = fighter.stats.stamina + balance.staminaBonus;
+  const maxHealth = fighter.stats.health + (balance.healthBonus ?? 0);
+  const maxStamina = fighter.stats.stamina + (balance.staminaBonus ?? 0);
   return {
     role,
     profile: fighter,
