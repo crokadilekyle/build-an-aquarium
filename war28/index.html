@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>War28</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <div id="game"></div>
+  <header><a href="../">← Creek Games</a><b>WAR<span>28</span></b><small>FRONTLINE</small></header>
+  <section id="hud">
+    <div><small>HEALTH</small><strong id="health">100</strong><i><em id="healthBar"></em></i></div>
+    <div><small>AMMO</small><strong id="ammo">30 / 120</strong></div>
+    <div><small>SCORE</small><strong id="score">0</strong></div>
+    <div><small>OBJECTIVE</small><strong id="objective">Capture Alpha</strong></div>
+    <div><small>CAMERA [Q]</small><strong id="cameraMode">First Person</strong></div>
+  </section>
+  <div id="crosshair"><i></i><i></i></div><div id="hitmarker">×</div>
+  <div id="message"></div><div id="vehicleHud"><b id="vehicleName">IRONCLAD TANK</b><span>Vehicle health: <strong id="vehicleHealth">300</strong></span></div>
+  <div id="damage"></div>
+  <section id="mobileControls">
+    <div class="stick" id="moveStick"><span></span></div>
+    <div class="mobile-actions"><button id="enterBtn">ENTER</button><button id="reloadBtn">RELOAD</button><button id="fireBtn">FIRE</button></div>
+    <div class="stick look" id="lookStick"><span></span></div>
+  </section>
+  <div id="start"><div class="card"><div class="art"><div class="logo">WAR<span>28</span></div><p>THE FRONTLINE NEEDS YOU</p></div><h1>Fight on foot. Take the wheel.</h1><p>Capture battlefield zones, fight enemy squads, and jump into tanks and armored jeeps.</p><button id="playBtn">DEPLOY</button><ul><li>WASD to move · Mouse to aim</li><li>Click to fire · R to reload</li><li>E to enter or exit a vehicle</li><li>Q to switch first and third person</li></ul></div></div>
+  <div id="end"><div><h1 id="endTitle">VICTORY</h1><p id="endCopy"></p><button id="againBtn">PLAY AGAIN</button></div></div>
+  <script type="module" src="script.js"></script>
+</body></html>

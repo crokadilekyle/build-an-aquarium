@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Death Mystery</title><link rel="stylesheet" href="styles.css?v=2"></head><body>
+<div id="game"></div><header><a href="../">← Creek Games</a><b>DEATH <span>MYSTERY</span></b><button id="notebookBtn">Evidence Notebook</button></header>
+<section id="hud"><div><small>CLUES</small><strong id="clueCount">0 / 5</strong></div><div><small>PEOPLE QUESTIONED</small><strong id="talkCount">0 / 4</strong></div><div><small>CASE</small><strong id="caseStatus">Unsolved</strong></div></section>
+<div id="prompt"></div><div id="dialogue"><b id="speaker"></b><p id="dialogueText"></p><small>Press E to continue</small></div>
+<aside id="notebook"><button id="closeNotebook">×</button><h1>Detective’s Notebook</h1><p id="caseHint">Collect at least three clues before making an accusation.</p><h2>Evidence</h2><div id="evidenceList"></div><h2>Suspects</h2><div id="suspectList"></div><button id="accuseBtn" disabled>Make an Accusation</button></aside>
+<section id="accusation"><div><button id="closeAccusation">×</button><h1>Who committed the murder?</h1><p>Choose carefully. You only get one accusation.</p><div id="accuseChoices"></div></div></section>
+<div id="mobile"><div class="pad"><button data-key="w">▲</button><button data-key="a">◀</button><button data-key="s">▼</button><button data-key="d">▶</button></div><button id="actionBtn">INVESTIGATE</button></div>
+<section id="start"><div class="card"><div class="mansion-art"><b>DEATH<br><span>MYSTERY</span></b></div><h1>A secret is hiding in Blackwood Manor.</h1><p>Search for evidence, question every character, compare their stories, and identify the murderer. The guilty suspect changes every game.</p><button id="playBtn">BEGIN INVESTIGATION</button><small>WASD to walk · Mouse to rotate camera · E to investigate</small></div></section>
+<section id="ending"><div><h1 id="endingTitle"></h1><p id="endingText"></p><button id="againBtn">NEW CASE</button></div></section>
+<script type="module" src="script.js?v=2"></script></body></html>
