@@ -1,0 +1,44 @@
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#05070b;color:#fff;font-family:Impact,system-ui,sans-serif}
+#game,canvas{position:fixed;inset:0;width:100%;height:100%}
+header{position:fixed;z-index:5;top:12px;left:16px;right:16px;height:55px;padding:0 18px;display:flex;align-items:center;gap:18px;background:#080a0fe8;border-bottom:3px solid #e1262f}
+header a{color:#ddd;text-decoration:none;font-family:system-ui;font-weight:800}
+header b{margin:auto;font-size:25px;letter-spacing:3px}
+header span,.card span{color:#e1262f}
+header small{color:#aaa}
+#hud{position:fixed;z-index:4;top:80px;left:18px;right:18px;display:grid;grid-template-columns:1fr 140px 1fr;gap:12px}
+.fighter{padding:10px 15px;background:#090c12dc;border-left:5px solid #2985e8}
+.fighter.right{text-align:right;border-left:0;border-right:5px solid #e12b35}
+.fighter b,.fighter small{display:block}
+.fighter i{display:block;height:12px;background:#ffffff20;margin:6px 0}
+.fighter em{display:block;width:100%;height:100%;background:linear-gradient(90deg,#28c66d,#d6e33a)}
+.fighter small{color:#f2c13d}
+.center{text-align:center;background:#090c12e8;padding:7px}
+.center small{display:block;color:#aaa}
+.center strong{font-size:28px}
+#buttons{position:fixed;z-index:5;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:7px}
+#buttons button,.card button{border:0;padding:13px 17px;background:#e1262f;color:#fff;font-weight:1000;border-radius:5px;cursor:pointer;box-shadow:0 4px 0 #7d1118}
+#buttons small{display:block;color:#ffd6d6}
+#message,#count{position:fixed;z-index:6;left:50%;transform:translateX(-50%);font-size:38px;text-shadow:0 4px 12px #000;opacity:0}
+#message{top:145px}
+#count{top:43%;font-size:100px;color:#f3d044}
+#start,#end{position:fixed;z-index:10;inset:0;display:grid;place-items:center;background:radial-gradient(circle,#282d38ed,#030407f5)}
+#start.hide,#end{display:none}
+#end.show{display:grid}
+.card{width:min(560px,92vw);padding:38px;background:linear-gradient(145deg,#171b25,#080a0f);border:1px solid #ffffff24;border-top:6px solid #e1262f;text-align:center;box-shadow:0 30px 100px #000}
+.card h1{font-size:58px;margin:3px}
+.card p{font-family:system-ui;color:#aaa}
+.pickers{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:13px;margin:25px 0}
+.pickers label{display:grid;text-align:left;gap:6px;font-size:12px}
+.pickers select{padding:12px;background:#090c12;color:#fff;border:1px solid #ffffff30}
+.card ul{text-align:left;font-family:system-ui;color:#aaa;line-height:1.8}
+.start-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.start-actions #watchBtn{background:#273242;box-shadow:0 4px 0 #11161e;border:1px solid #ffffff35}
+@media(max-width:700px){header small{display:none}
+#hud{top:74px;left:5px;right:5px;grid-template-columns:1fr 90px 1fr}
+.fighter{padding:6px;font-family:system-ui;font-size:11px}
+#buttons{width:100%;padding:0 6px;gap:3px}
+#buttons button{flex:1;padding:10px 3px;font-size:10px}
+.pickers{grid-template-columns:1fr}
+.card h1{font-size:43px}
+}
